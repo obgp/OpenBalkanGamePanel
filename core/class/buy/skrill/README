@@ -1,0 +1,47 @@
+
+Skrill Api - Version 1.0.0
+This is not the official Skrill API. At the time of creating this api Skrill did not have an library api in PHP. So check of updates from http://skrill.com/.  It's always safe to use Skrill API if they have one.
+
+= Installation
+
+To get started, add the following to your PHP script:
+
+    require_once("/path/to/api/skrill_api.php");
+
+Simple usage looks like:
+
+	// Access skrill api
+	$skril_handle = new Skrillapi($user_email,$secret_word, $merchant_id, $mqi);
+
+	//For sending request	
+
+		$skrill_handle->prepareRequest($fields);
+
+		$response = $skrill_handle->getResponse(); //Returns SID
+
+		$error = $skrill_handle->getError();
+
+	//For validating the received response
+
+		$skrill_handle = new Skrillapi($user_email,$secret_word);
+		
+		$validate= $skrill_handle->validateReponse(); // Returns True or False(boolean)
+
+	// For refund
+		$skrill_handle = new Skrillapi($user_email,$secret_word, null, $mqi);
+
+		$skrill_handle->prepareRequest($fields,"refund",$sid)
+
+		$skrill_handle->refund_response		
+
+
+	$fields contains an array of parameters to be passed to skrill gateway. For more information refer to skrill integration manual	
+
+	$user_email - Skrill merchant email
+	$secret_word - Secret word (Found under developer settings in business account)	
+	$merchant_id - Merchant id (optional)
+	$mqi - MQI password  (optional) 
+
+= Documentation (Version 1.0.0)
+
+Please see http://skrill.com/ for up-to-date documentation. Also read skrill integration manual for detailed information.

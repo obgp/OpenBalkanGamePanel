@@ -1,0 +1,9 @@
+RewriteEngine On
+
+RewriteRule ^home$					"index.php"
+RewriteRule ^login$					"login.php"
+
+<Files 403.shtml>
+	order allow,deny
+	allow from all
+</Files>

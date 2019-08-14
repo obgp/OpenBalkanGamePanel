@@ -1,0 +1,201 @@
+.login-box {
+	background: rgb(28, 32, 48, 0.8);
+	padding:25px;
+	width: 480px;
+	max-width: 100%;
+	border-radius: 12px;
+	clear: both;
+	overflow: hidden;
+	margin: 150px auto 0px auto;
+}
+.login-box h1 {
+	color: #f5f5f5;
+	padding-bottom: 25px;
+	font-weight: 600;
+	text-align: center;
+}
+.login-box .checkbox {
+	color: #f5f5f5;
+	margin-top: 7px;
+}
+.login-box .forgot {
+	color: #f5f5f5f5;
+	padding-top: 20px;
+	text-align: center;
+	clear: both;
+	overflow: hidden;
+}
+.login-box .forgot a {
+	color: #f5f5f5f5;
+}
+.login-footer {
+	width: 480px;
+	max-width: 100%;
+	clear: both;
+	overflow: hidden;
+	margin: 10px auto 0px auto;
+	color: #f5f5f5;
+	font-weight: 600;
+}
+.login-footer a {
+	color: #5cb85c;
+}
+.login-footer a:hover {
+	color: #4cae4c;
+}
+.modal-body {
+	clear: both;
+	overflow: hidden;
+	color: #f5f5f5;
+}
+.contect {
+	background: rgb(28, 32, 48, 0.8);
+	padding: 20px;
+	clear: both;
+	overflow: hidden;
+	border-radius: 4px;
+}
+.contect .white {
+	color: #fff;
+}
+.footer {
+	color: #f5f5f5;
+	margin-top: 20px;
+	font-weight: 600;
+}
+.contect h2 {
+	font-weight: 600;
+	color: #f5f5f5;
+}
+.contect h2 i {
+	vertical-align: middle;
+	margin-right: 2px;
+}
+.contect .table {
+	color: #f5f5f5;
+}
+.contect .table td {
+	font-weight: 600;
+}
+.green {
+	color: #41a85f;
+}
+.yellow {
+	color: #fac51c;
+}
+.red {
+	color: #b8312f;
+}
+.contect .server-name {
+	color: #f5f5f5;
+	font-weight: 600;
+	font-size: 24px;
+}
+.contect .btn {
+	margin-left: 5.2px;
+}
+.space1 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	clear: both;
+	overflow: hidden;
+}
+.panel .show-pw {
+	padding-left: 5px;
+}
+.panel .show-pw:hover {
+	text-decoration: none;
+}
+.contect .table td i {
+	vertical-align: middle;
+} 
+.contect .form-group label {
+	color: #f5f5f5;
+}
+.contect .table-responsive {
+	clear: both;
+	overflow: hidden;
+}
+.gp_game_icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.d_none {
+    width: 100px;
+    background: transparent;
+    border: transparent;
+    cursor: pointer;
+}
+.features-main {
+    width: 100%;
+    max-width: 100%;
+    background-color: rgb(26,26,32,0.8);
+    border-radius: 4px;
+    clear: both;
+    overflow: hidden;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+#msg_bar_ok{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background: orangered;;
+    text-align: center;
+    color: #fff;
+}
+#msg_bar_ok p{   
+    margin-top: 1%;
+    font-size: 15px;
+    font-weight: bold;
+}
+#msg_bar_error{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background: red;
+    text-align: center;
+    color: #fff;
+}
+#msg_bar_error p{   
+    margin-top: 1%;
+    font-size: 15px;
+    font-weight: bold;
+}
+#msg_bar_info{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background: orangered;
+    text-align: center;
+    color: #fff;
+}
+#msg_bar_info p{   
+    margin-top: 1%;
+    font-size: 15px;
+    font-weight: bold;
+}
+#msg_post_song {
+  position: absolute;
+  display: none;
+}
+#servernav ul {
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-bottom: 1px solid #ba4400;
+}
+.plmdmp {
+    border: 1px solid #8f8f8f;
+    background: #1e212ed4;
+    list-style-type: none;
+    max-height: 300px;
+    color: #337ab2;
+    margin-bottom: 10px;
+    padding:10px;
+}

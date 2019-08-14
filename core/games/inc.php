@@ -1,0 +1,12 @@
+<?php
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/cs.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/samp.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/mc.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/cod2.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/cod4.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/ts3.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/csgo.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/mta.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/ark.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/fivem.php');
+?>
