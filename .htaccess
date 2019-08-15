@@ -1,8 +1,7 @@
 RewriteEngine On
-
 RewriteRule ^home$					"index.php"
 RewriteRule ^login$					"login.php"
-
+ErrorDocument 404 /error.php
 <Files 403.shtml>
 	order allow,deny
 	allow from all
