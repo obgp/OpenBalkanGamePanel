@@ -840,15 +840,18 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	$SrwUser			=		server_username($Server_ID);
 	$Bacup_Name			=		"$SrwUser-$Date-$RandomNumber";
 	
-	$in_base = mysql_query("INSERT INTO `server_backup` SET
-		`srvid`		=		'$Server_ID',
-		`time`		=		'$Date',
-		`name`		=		'$Bacup_Name',
+	$rootsec = rootsec();
+	$query = "INSERT INTO `server_backup` SET
+		`srvid`		=		?,
+		`time`		=		?,
+		`name`		=		?,
 		`status`	=		'0',
 		`size`		=		'0'
-	");
+	";
+	$SQLSEC = $rootsec->prepare($query);
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Server_ID, $Date, $Bacup_Name));
 	
-	if (!$in_base) {
+	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-backup.php?id='.$Server_ID);
 		die();
@@ -884,8 +887,11 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_restore") {
 		die();
 	}
 	
-	$Backup = mysql_query("SELECT * FROM `server_backup` WHERE `id` = '$Backup_ID'");
-	$Backup = mysql_fetch_array($Backup);
+	$rootsec = rootsec();
+	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
+	$SQLSEC = $rootsec->prepare($query);
+	$SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$Backup_Name	=	txt($Backup['name']);
 	
 	$server_backup_restore = server_backup_restore($Box_ID, $Server_ID, $Backup_Name);
@@ -918,13 +924,18 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 		die();
 	}
 	
-	$Backup = mysql_query("SELECT * FROM `server_backup` WHERE `id` = '$Backup_ID'");
-	$Backup = mysql_fetch_array($Backup);
+	$rootsec = rootsec();
+	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
+	$SQLSEC = $rootsec->prepare($query);
+	$SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$Backup_Name	=	txt($Backup['name']);
 	
-	$in_base = mysql_query("DELETE FROM `server_backup` WHERE `id` = '$Backup_ID'");
-	
-	if (!$in_base) {
+	$query = "DELETE FROM `server_backup` WHERE `id` = ?";
+	$SQLSEC = $rootsec->prepare($query);
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
+		
+	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-backup.php?id='.$Server_ID);
 		die();
@@ -974,8 +985,13 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		$in_base = mysql_query("UPDATE `serveri` SET `modovi` = '$Mod_ID' WHERE `id` = '$Server_ID'");
-		if (!$in_base) {
+	$rootsec = rootsec();
+	$query = "UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?";
+	$SQLSEC = $rootsec->prepare($query)
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+		
+		if (!$seksdrogasekulicgoga) {
 			sMSG('Uspesno ste instalirali '.server_mod_name($Server_ID).' mod! (Mod nije upisan u bazi, prijavite ovaj problem)', 'info');
 			redirect_to('gp-server.php?id='.$Server_ID);
 			die();
@@ -1001,10 +1017,17 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 	}
 
 	if (empty($User_Pass)) {
-		$in_base  = mysql_query("UPDATE `klijenti` SET `ime` = '$User_Name' WHERE `klijentid` = '$_SESSION[user_login]'");
-		$in_base2 = mysql_query("UPDATE `klijenti` SET `prezime` = '$User_lName' WHERE `klijentid` = '$_SESSION[user_login]'");
+	$rootsec = rootsec();
+	$query = "UPDATE `klijenti` SET `ime` = ? WHERE `klijentid` = ?";
+	$SQLSEC = $rootsec->prepare($query);
+	$in_base = $SQLSEC->Execute(array($User_Name,$_SESSION["user_login"]));
+	
+	$query = "UPDATE `klijenti` SET `prezime` = '' WHERE `klijentid` = ?";
+	$SQLSEC = $rootsec->prepare($query);
+	$in_base2 = $SQLSEC->Execute(array($User_lName,$_SESSION["user_login"]));
+
 		if (!$in_base || !$in_base2) {
-			sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji! #Edit_Prof', 'error');
+			sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji!', 'error');
 			redirect_to('gp-settings.php');
 			die();
 		} else {
@@ -1015,7 +1038,13 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 	} else {
 		if ($User_Pass == $User_rPass) {
 			$User_Pass = md5($User_Pass);
-
+		//NASTAVITI	
+	$rootsec = rootsec();
+	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
+	$rootsec->prepare($query)
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+			
 			$in_base  = mysql_query("UPDATE `klijenti` SET `ime` = '$User_Name' WHERE `klijentid` = '$_SESSION[user_login]'");
 			$in_base2 = mysql_query("UPDATE `klijenti` SET `prezime` = '$User_lName' WHERE `klijentid` = '$_SESSION[user_login]'");
 			$in_base3 = mysql_query("UPDATE `klijenti` SET `sifra` = '$User_Pass' WHERE `klijentid` = '$_SESSION[user_login]'");
@@ -1125,7 +1154,13 @@ if (isset($_GET['a']) && $_GET['a'] == "change_sname") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	}
-
+	
+	$rootsec = rootsec();
+	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
+	$rootsec->prepare($query)
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
 	$in_base = mysql_query("UPDATE `serveri` SET `name` = '$S_New_Name' WHERE `id` = '$Server_ID'");
 	if (!$in_base) {
 		sMSG('Doslo je do greske! Ime servera nije sacuvano u bazi.', 'error');
@@ -1153,7 +1188,14 @@ if (isset($_GET['a']) && $_GET['a'] == "change_m_name") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	}
-
+	
+	$rootsec = rootsec();
+	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
+	$rootsec->prepare($query)
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	
 	$in_base = mysql_query("UPDATE `serveri` SET `map` = '$S_New_Name' WHERE `id` = '$Server_ID'");
 	if (!$in_base) {
 		sMSG('Doslo je do greske! Default mapa nije sacuvana u bazi.', 'error');
