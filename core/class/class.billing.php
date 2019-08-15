@@ -68,23 +68,27 @@ function billing_game_id($bid) {
 
 function game_billing_icon($g_id) {
 	if ($g_id == 1) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon"> Counter-Strike 1.6';
+		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon">';
 	} else if ($g_id == 2) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/samp.jpg" class="gp_game_icon"> San Andreas Multiplayer';
+		$gp_game = '<img src="/assets/img/icon/gp/game/samp.jpg" class="gp_game_icon">';
 	} else if ($g_id == 3) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mc.png" class="gp_game_icon"> Minecraft';
+		$gp_game = '<img src="/assets/img/icon/gp/game/mc.png" class="gp_game_icon">';
 	} else if ($g_id == 4) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod2.png" class="gp_game_icon"> Call of Duty 2';
+		$gp_game = '<img src="/assets/img/icon/gp/game/cod2.png" class="gp_game_icon">';
 	} else if ($g_id == 5) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod4.png" class="gp_game_icon"> Call of Duty 4';
+		$gp_game = '<img src="/assets/img/icon/gp/game/cod4.png" class="gp_game_icon">';
 	} else if ($g_id == 6) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ts3.png" class="gp_game_icon"> TeamSpeak 3';
+		$gp_game = '<img src="/assets/img/icon/gp/game/ts3.png" class="gp_game_icon">';
 	} else if ($g_id == 7) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/csgo.jpg" class="gp_game_icon"> Counter-Strike GO';
+		$gp_game = '<img src="/assets/img/icon/gp/game/csgo.jpg" class="gp_game_icon">';
 	} else if ($g_id == 8) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mta.png" class="gp_game_icon"> Multi Theft Auto';
+		$gp_game = '<img src="/assets/img/icon/gp/game/mta.png" class="gp_game_icon">';
 	} else if ($g_id == 9) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ark.png" class="gp_game_icon"> ARK';
+		$gp_game = '<img src="/assets/img/icon/gp/game/ark.png" class="gp_game_icon">';
+	} else if ($g_id == 10) {
+		$gp_game = '<img src="/assets/img/icon/gp/game/fdl.png" class="gp_game_icon">';
+	} else if ($g_id == 11) {
+		$gp_game = '<img src="/assets/img/icon/gp/game/fivem.png" class="gp_game_icon">';
 	}
 
 	return $gp_game;
