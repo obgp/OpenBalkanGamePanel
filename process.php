@@ -987,9 +987,8 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 	} else {
 	$rootsec = rootsec();
 	$query = "UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?";
-	$SQLSEC = $rootsec->prepare($query)
+	$SQLSEC = $rootsec->prepare($query);
 	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
-	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 		
 		if (!$seksdrogasekulicgoga) {
 			sMSG('Uspesno ste instalirali '.server_mod_name($Server_ID).' mod! (Mod nije upisan u bazi, prijavite ovaj problem)', 'info');
@@ -1038,16 +1037,19 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 	} else {
 		if ($User_Pass == $User_rPass) {
 			$User_Pass = md5($User_Pass);
-		//NASTAVITI	
 	$rootsec = rootsec();
-	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
-	$rootsec->prepare($query)
-	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
-	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
-			
-			$in_base  = mysql_query("UPDATE `klijenti` SET `ime` = '$User_Name' WHERE `klijentid` = '$_SESSION[user_login]'");
-			$in_base2 = mysql_query("UPDATE `klijenti` SET `prezime` = '$User_lName' WHERE `klijentid` = '$_SESSION[user_login]'");
-			$in_base3 = mysql_query("UPDATE `klijenti` SET `sifra` = '$User_Pass' WHERE `klijentid` = '$_SESSION[user_login]'");
+	$query = "UPDATE `klijenti` SET `ime` = ? WHERE `klijentid` = ?";
+	$rootsec->prepare($query);
+	$in_base = $SQLSEC->Execute(array($User_Name,$_SESSION["user_login"]));
+
+	$query = "UPDATE `klijenti` SET `prezime` = ? WHERE `klijentid` = ?";
+	$rootsec->prepare($query);
+	$in_base2 = $SQLSEC->Execute(array($User_lName, $_SESSION["user_login"]));
+
+	$query = "UPDATE `klijenti` SET `sifra` = ? WHERE `klijentid` = ?";
+	$rootsec->prepare($query);
+	$in_base3 = $SQLSEC->Execute(array($User_Pass,$_SESSION["user_login"]));
+
 			if (!$in_base || !$in_base2 || !$in_base3) {
 				sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji! #Edit_Prof', 'error');
 				redirect_to('gp-settings.php');
@@ -1156,13 +1158,11 @@ if (isset($_GET['a']) && $_GET['a'] == "change_sname") {
 	}
 	
 	$rootsec = rootsec();
-	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
-	$rootsec->prepare($query)
-	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
-	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	$query = "UPDATE `serveri` SET `name` = ? WHERE `id` = ?";
+	$rootsec->prepare($query);
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($S_New_Name,$Server_ID));
 	
-	$in_base = mysql_query("UPDATE `serveri` SET `name` = '$S_New_Name' WHERE `id` = '$Server_ID'");
-	if (!$in_base) {
+	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske! Ime servera nije sacuvano u bazi.', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -1190,14 +1190,11 @@ if (isset($_GET['a']) && $_GET['a'] == "change_m_name") {
 	}
 	
 	$rootsec = rootsec();
-	$query = "SELECT * FROM `server_backup` WHERE `id` = ?";
-	$rootsec->prepare($query)
-	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Backup_ID));
-	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	$query = "UPDATE `serveri` SET `map` = ? WHERE `id` = ?";
+	$rootsec->prepare($query);
+	$seksdrogasekulicgoga = $SQLSEC->Execute(array($S_New_Name,$Server_ID));
 	
-	
-	$in_base = mysql_query("UPDATE `serveri` SET `map` = '$S_New_Name' WHERE `id` = '$Server_ID'");
-	if (!$in_base) {
+	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske! Default mapa nije sacuvana u bazi.', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
