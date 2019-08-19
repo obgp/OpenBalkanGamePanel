@@ -1,24 +1,16 @@
 <?php
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php'); 
 
 // For test payments we want to enable the sandbox mode. If you want to put live
 // payments through then this setting needs changing to `false`.
-$enableSandbox = true;
-
-// Database settings. Change these for your database configuration.
-$dbConfig = [
-    'host' => 'localhost',
-    'username' => 'gbhoster_kvikfak',
-    'password' => 'unikatinikadfusevi',
-    'name' => 'gbhoster_kvikfak'
-];
-
+$enableSandbox = false;
 // PayPal settings. Change these to your account details and the relevant URLs
 // for your site.
 $paypalConfig = [
-    'email' => 'brandji985@gmail.com',
-    'return_url' => 'https://gb-hoster.me/PayPal/payment-successful.php',
-    'cancel_url' => 'https://gb-hoster.me/PayPal/payment-cancelled.php',
-    'notify_url' => 'https://gb-hoster.me/PayPal/payments.php'
+    'email' => paymentmail(),
+    'return_url' => site_link().'/core/gateway/paypal/payment-successful.php',
+    'cancel_url' => site_link().'/core/gateway/paypal/payment-cancelled.php',
+    'notify_url' => site_link().'/core/gateway/paypal/payments.php'
 ];
 
 $paypalUrl = $enableSandbox ? 'https://www.sandbox.paypal.com/cgi-bin/webscr' : 'https://www.paypal.com/cgi-bin/webscr';
@@ -66,11 +58,6 @@ if (!isset($_POST["txn_id"]) && !isset($_POST["txn_type"])) {
     exit();
 
 } else {
-    // Handle the PayPal response.
-
-	// Create a connection to the database.
-	$db = new mysqli($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], $dbConfig['name']);
-
 	// Assign posted variables to local data array.
 	$data = [
 		'item_name' => $_POST['item_name'],
