@@ -161,5 +161,20 @@ function paymentmail() {
 
 }
 
+function fortumosecretkey() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['fmtsecret'];
+}
+
+function cryptopubkey() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['cryptokey'];
+}
 
 ?>
