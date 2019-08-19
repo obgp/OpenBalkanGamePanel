@@ -9,7 +9,7 @@ fwrite($myfile, print_r($_GET, true));
 fclose($myfile);
 
 $billing_reports_enabled = false;
-$secret = '375db3f3a30407ef762eaecd91e5ee7c';
+$secret = fortumosecretkey();
 $sender = $_GET[ 'sender' ];
 
 PrintReply( );
@@ -37,8 +37,8 @@ if( $_GET[ 'status' ] == "completed" ) {
 }
 
 function PrintReply( ) {
-	$supportEmail = "support@gb-hoster.me";
-	$companyName = "GB Hoster";
+	$supportEmail = paymentmail();
+	$companyName = site_name();
 
 	echo "You purchased " . $_GET[ 'amount' ] . " " . $_GET[ 'credit_name' ] . " for " . $_GET[ 'price' ] . " " . $_GET[ 'currency' ] . ". Thank You! Support: " . $supportEmail;
 }
