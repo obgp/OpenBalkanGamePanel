@@ -1,4 +1,5 @@
 <?php
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php'); 
 
 function verifyTransaction($data) {
     global $paypalUrl;
@@ -44,7 +45,7 @@ function verifyTransaction($data) {
 }
 
 function checkTxnid($txnid) {
-    global $db;
+    $db = rootsec();
 
     $txnid = $db->real_escape_string($txnid);
     $results = $db->query('SELECT * FROM `payments` WHERE txnid = \'' . $txnid . '\'');
@@ -53,7 +54,7 @@ function checkTxnid($txnid) {
 }
 
 function addPayment($data) {
-    global $db;
+    $db = rootsec();
 
     if (is_array($data)) {
         $stmt = $db->prepare('INSERT INTO `payments` (txnid, payment_amount, payment_status, itemid, createdtime) VALUES(?, ?, ?, ?, ?)');
