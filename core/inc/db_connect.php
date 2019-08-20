@@ -14,7 +14,7 @@ $username = "USERNAME";
 $password = "PASSWORD";
 $dbname = "DBNAME";
 
-return new mysqli($host, $user, $password, $database);
+return new mysqli($servername, $username, $password, $dbname);
 }
 
 function masterserver() {
