@@ -1,11 +1,7 @@
 <?php
-$host     = "localhost"; // Database Host
-$user     = "nerd_s"; // Database Username
-$password = "astalavistabane"; // Database's user Password
-$database = "nerd_s"; // Database Name
-$prefix   = "firewall_"; // Database Prefix for the script tables
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/db_connect.php');
 
-$connect = new mysqli($host, $user, $password, $database);
+$connect = firewallsec();
 
 // Checking Connection
 if (mysqli_connect_errno()) {
@@ -17,6 +13,14 @@ mysqli_set_charset($connect, "utf8");
 
 $client = "No";
 
-$site_url             = "http://nerds-hosting.com";
-$projectsecurity_path = "http://nerds-hosting.com/rootsec";
+function site_link() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['site_link'];
+}
+
+$site_url             = site_link();
+$projectsecurity_path = site_link()."/rootsec";
 ?>
