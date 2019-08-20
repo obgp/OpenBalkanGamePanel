@@ -383,7 +383,6 @@ if (gp_game_id($Server_ID) == 1) {
 			<div class="rows">
 				<div class="contect">
 				<?php include_once($_SERVER['DOCUMENT_ROOT'].'/nav.php'); ?>
-				<?php //echo box_password(getBOX($Server_ID)); ?>
 					<div class="col-md-9"><span class="server-name"><?php echo server_name($Server_ID); ?></span></div>
 					<?php include_once($_SERVER['DOCUMENT_ROOT'].'/komande.php'); ?>
 					<div class="space1"></div>
@@ -403,7 +402,7 @@ if (gp_game_id($Server_ID) == 1) {
 			                        		<?php if (is_user_pin() == false){$provera_df_m = "#pin";} else {$provera_df_m = "#edit_map";} ?>
 								<p>Default mapa: <b class="white"><?php echo server_i_map($Server_ID); ?> <a href="<?php echo $provera_df_m;?>" data-toggle="modal" data-target="<?php echo $provera_df_m;?>"><i class="fa fa-pencil" style="margin-left: 5px;"></i></a></b></p>
 								<?php } else {?>
-								<p>FDL Link: <b class="white">http://fdl.gb-hoster.me/<?php echo server_username($Server_ID); ?>/</b></p>
+								<p>FDL Link: <b class="white"><?php echo fdllink(); ?>/<?php echo server_username($Server_ID); ?>/</b></p>
 								<?php } ?>
 								<p>Datum isteka: <b class="white">
 			                                	<form action="/process.php?a=produzi_srv" method="POST" autocomplete="off" style="display:inline-block;">
