@@ -1,4 +1,6 @@
 <?php 
+
+//ISTA BAZA IDE ZA "rootsec()" i "firewallsec()"
 function rootsec() {
 $servername = "localhost";
 $username = "USERNAME";
