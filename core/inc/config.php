@@ -26,13 +26,8 @@ ob_start();
 
 date_default_timezone_set("Europe/Belgrade");
 
-function rootsec() {
-$servername = "localhost";
-$username = "nerd_s";
-$password = "astalavistabane";
-$dbname = "nerd_s";
-return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
-}
+
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/db_connect.php');
 
 
 /**
