@@ -31,8 +31,8 @@
 
 		<div class="container">
 		<div class="logo hidden-xs">
-	<a href="#">
-		<img class="img-responsive" style="width:20%;" src="https://i.imgur.com/tcsvC03.png">
+	<a href="/">
+		<img class="img-responsive" style="width:20%;" src="<?php echo logolink(); ?>">
 	</a>
 </div>
 			<div class="rows">
@@ -46,7 +46,7 @@
         							<span class="icon-bar"></span>
         							<span class="icon-bar"></span>
       							</button>
-      							<a class="navbar-brand visible-xs" href="index.html"><?php echo site_name(); ?></a>
+      							<a class="navbar-brand visible-xs" href="/"><?php echo site_name(); ?></a>
     						</div>
     						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       							<ul class="nav navbar-nav">
