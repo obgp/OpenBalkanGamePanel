@@ -25,7 +25,6 @@
 
 ```
 Koristiti auto install skriptu sa sajta ili rucno ubaciti
-
 ```
 
 ## TEAM
