@@ -9,8 +9,6 @@
 
 <h4 align="center">OBGP je panel za upravljanje game serverima, najbolji open source gamepanel</h4>
 <p align="center">
-    <a href="#"><img src="https://badge.waffle.io/OrigemWoot/OrigemWoot.svg?label=ready&title=Ready"></a>
-  </a>
   <a href="#"><img src="https://badges.gitter.im/OrigemWootOW/Lobby.svg"></a>
   <a href="#">
       <img src="https://img.shields.io/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg">
