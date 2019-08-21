@@ -14,7 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-USE nerd_s;
 --
 -- Table structure for table `admin`
 --
@@ -192,12 +191,6 @@ CREATE TABLE `box` (
 -- Dumping data for table `box`
 --
 
-LOCK TABLES `box` WRITE;
-/*!40000 ALTER TABLE `box` DISABLE KEYS */;
-INSERT INTO `box` VALUES (6,'DC #1 - lite1','lite1','35.189.227.39','','root','L¯M¤ê­ø…”9.P8E¨','22',21,20,'x^­SËnÛ0ü‚§öP•S¤Ö—9¤\n£b 7ƒµXK¨,¤”8\rüïYÒ²¬6×\0¤},px©!_Zà^h ‡Æ>;hÄþ‡j`ËS€è/Û–OuÙW‘·ˆ<Ô7C°;G—‘˜ þ-„¬¾ëmYÂ˜BK-&òäÑZsç±œº=±Pêq=únK1F2 ßÚÞ5î?’Ÿ®kãûöÇš|!\"“ìîëßÈRßy‡#Õ`ÎöØf	,Ój¬áí~\ZC¦Nâ$Xs®¼†æoï¦9‘=%\\Ý¬b>\\dÓÙÒ>îæ‹œ ”‘eLÑHÆ=U]è[»Ç”ãÚÿÁpœt‡þàü£ó)J\0í®g\Z­tœ»Õúó÷ºŽ‰‡•JÛ_3O6¦À*Õ@n†!†0eÀ
-²~¸%‚ñ\"Åç@ÿ8ß:<ØØÛÁhÉŒã0Ÿ\n¥3Oæ\ZM¾É—¬ß&©$Ia g;%ŸÑ\Z}=[ÃÁR¸UFJû6YuƒO{µw\\j…\'{x¿K¢úª/?Ê|®%s£ÄÂ^DÏD¢4R	Sägü¢%9WŒ£+y®ÂÁ_ay:^~','','','');
-/*!40000 ALTER TABLE `box` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `chat_messages`
@@ -1227,6 +1220,9 @@ CREATE TABLE `site_settings` (
   `cron_server` text NOT NULL,
   `gt` text NOT NULL,
   `paymentmail` text NOT NULL,
+  `cryptokey` text NOT NULL,
+  `fdllink` text NOT NULL,
+  `logolink` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1237,7 +1233,7 @@ CREATE TABLE `site_settings` (
 
 LOCK TABLES `site_settings` WRITE;
 /*!40000 ALTER TABLE `site_settings` DISABLE KEYS */;
-INSERT INTO `site_settings` VALUES (1,'OBGP','3.0.0','RootSec','http://obgp.com','obgp@pm.me','en','0','1','1','','0','','https://gametracker.xyz','paymentobgp@pm.me');
+INSERT INTO `site_settings` VALUES (1,'OBGP','3.0.0','RootSec','http://obgp.me','obgp@pm.me','en','0','1','1','','0','','https://gametracker.xyz','paymentobgp@pm.me','BITCOIN API KEY','http://fdl.obgp.me','https://i.imgur.com/unnxAPA.png');
 /*!40000 ALTER TABLE `site_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
