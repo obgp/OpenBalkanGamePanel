@@ -4,7 +4,10 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
 
 
 function cp_perm_srv_view($s_id) {
-	$a_info = mysql_fetch_array(mysql_query("SELECT * FROM `admin` WHERE `id` = '$_SESSION[admin_login]'"));
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
+	$SQLSEC->Execute(array($_SESSION["admin_login"]));
+	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
 	$Supp_Status = txt($a_info['status']);
 
@@ -84,7 +87,9 @@ function cp_perm_srv_view($s_id) {
 }
 
 function cp_perm_tiket_view($t_id) {
-	$t_id 	= mysql_fetch_array(mysql_query("SELECT * FROM `tiketi` WHERE `id` = '$t_id'"));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `tiketi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($t_id));	
+	$t_id 	= $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$s_id 	= txt($t_id['server_id']);
 
 	if (empty($s_id)||$s_id == 0) {
