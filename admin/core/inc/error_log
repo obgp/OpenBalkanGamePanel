@@ -1,0 +1,1 @@
+[12-Jan-2019 16:16:21 Europe/Belgrade] PHP Fatal error:  Call to undefined function admin_activity() in /home/gbhoster/ghpanel.gb-hoster.me/admin/core/inc/config.php on line 70
