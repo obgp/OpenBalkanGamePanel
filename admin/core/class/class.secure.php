@@ -71,7 +71,7 @@ function valid_ip($ip) {
 
 function txt_secure($string, $br = true) {
     $string = trim($string);
-    $string = mysql_real_escape_string($string);
+   // $string = mysql_real_escape_string($string);
     $string = htmlspecialchars($string, ENT_QUOTES);
 
     if ($br == true) {
