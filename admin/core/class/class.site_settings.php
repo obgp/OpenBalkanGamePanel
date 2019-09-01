@@ -11,64 +11,120 @@
 * Site Active;
 */
 
+function GT_Site_Name() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info["gt"];
+	
+}
+
 function site_name() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
-	return txt($get_site_info['site_name']).' | Admin Panel';
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return txt($get_site_info["site_name"]." Admin Panel");
 }
-
-function real_site_name() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
-	return txt($get_site_info['site_name']);
-}
-
 function site_version() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_version']);
 }
-
 function site_developer() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_developer']);
 }
-
 function site_link() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_link']);
 }
-
 function site_lang() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_lang']);
 }
-
 function site_backup() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_backup']);
 }
-
 function site_cron() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_cron']);
 }
-
 function c_add_server() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['client_add_srw']);
 }
-
 function site_active() {
-	$get_site_info = mysql_fetch_array(mysql_query("SELECT * FROM `site_settings`"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($get_site_info['site_active']);
 }
-
+function site_noreply_mail() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return txt($get_site_info['site_noreply_mail']);
+}
+function paymentmail() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['paymentmail'];
+}
+function fortumosecretkey() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['fmtsecret'];
+}
+function cryptopubkey() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info['cryptokey'];
+}
+function fdllink() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info["fdllink"];
+	
+}
+function logolink() {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
+	$SQLSEC->Execute();
+	$get_site_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $get_site_info["logolink"];
+	
+}
 ?>
