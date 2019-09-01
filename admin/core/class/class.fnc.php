@@ -12,7 +12,9 @@ function multiexplode($delimiters, $string) {
 
 function admin_activity() {
 	if (is_login() == true) {
-		mysql_query("UPDATE `admin` SET `lastactivity` = '".time()."' WHERE `id` = '".$_SESSION['admin_login']."'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `lastactivity` = ? WHERE `id` = ?");
+	$SQLSEC->Execute(array(time(),$_SESSION["admin_login"]));	
 	}
 }
 
