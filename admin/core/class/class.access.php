@@ -4,7 +4,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
 
 
 function cp_perm_srv_view($s_id) {
-	
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($_SESSION["admin_login"]));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -87,6 +87,7 @@ function cp_perm_srv_view($s_id) {
 }
 
 function cp_perm_tiket_view($t_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `tiketi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($t_id));	
 	$t_id 	= $SQLSEC->fetch(PDO::FETCH_ASSOC);
