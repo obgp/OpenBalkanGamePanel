@@ -95,9 +95,11 @@ function cp_perm_tiket_view($t_id) {
 	if (empty($s_id)||$s_id == 0) {
 		$return = true;
 	} else {
-		$a_info = mysql_fetch_array(mysql_query("SELECT * FROM `admin` WHERE `id` = '$_SESSION[admin_login]'"));
-
-		$Supp_Status = txt($a_info['status']);
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
+	$SQLSEC->Execute(array($_SESSION["admin_login"]));
+	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+		
+	$Supp_Status = txt($a_info['status']);
 
 		if (!($Supp_Status == 3||$Supp_Status == 4)) {
 			$exp = explode('|', $a_info['support_za']);
