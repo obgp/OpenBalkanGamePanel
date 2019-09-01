@@ -22,8 +22,8 @@ function sMSG($msg_txt, $msg_mode) {
 	if (is_login() == true) {
 		$get_ip = host_ip();
 		$get_d_t = date('d.m.Y, H:i');
-
-		mysql_query("INSERT INTO `logovi` (`id`, `clientid`, `message`, `name`, `ip`, `vreme`, `adminid`) VALUES (NULL, NULL, '$msg_txt', '$msg_mode', '$get_ip', '$get_d_t', '$_SESSION[admin_login]')");
+		$SQLSEC = $rootsec->prepare("INSERT INTO `logovi` (`id`, `clientid`, `message`, `name`, `ip`, `vreme`, `adminid`) VALUES (NULL, NULL, ?, ?, ?, ?, ?)");
+		$SQLSEC->Execute(array($msg_txt,$msg_mode,$get_ip,$get_d_t,$_SESSION["admin_login"]));
 	}
 }
 
