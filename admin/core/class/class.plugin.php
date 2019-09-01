@@ -7,7 +7,10 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
 */
 
 function is_valid_plugin($pl_id) {
-	$pl_info = mysql_fetch_array(mysql_query("SELECT * FROM `plugins` WHERE `id` = '$pl_id'"));
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `plugins` WHERE `id` = ?");
+	$SQLSEC->Execute(array($pl_id));
+	$pl_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	if (!$pl_info) {
 		return false;
 	} else {
@@ -16,14 +19,18 @@ function is_valid_plugin($pl_id) {
 }
 
 function plugin_name($pl_id) {
-	$pl_info = mysql_fetch_array(mysql_query("SELECT * FROM `plugins` WHERE `id` = '$pl_id'"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `plugins` WHERE `id` = ?");
+	$SQLSEC->Execute(array($pl_id));
+	$pl_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($pl_info['ime']);
 }
 
 function plugin_amxx($pl_id) {
-	$pl_info = mysql_fetch_array(mysql_query("SELECT * FROM `plugins` WHERE `id` = '$pl_id'"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `plugins` WHERE `id` = ?");
+	$SQLSEC->Execute(array($pl_id));
+	$pl_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($pl_info['prikaz']);
 }
 
@@ -34,8 +41,10 @@ function plugin_opis($p_id) {
 }
 
 function plugin_game($p_id) {
-	$pl_info = mysql_fetch_array(mysql_query("SELECT * FROM `plugins` WHERE `id` = '$p_id'"));
-	$g_id = txt($pl_info['game_id']);
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `plugins` WHERE `id` = ?");
+	$SQLSEC->Execute(array($pl_id));
+	$pl_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);	$g_id = txt($pl_info['game_id']);
 
 	if ($g_id == 1) {
 		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon"> Counter-Strike 1.6';
@@ -62,8 +71,10 @@ function plugin_game($p_id) {
 
 
 function save_plugin_name($pl_id) {
-	$pl_info = mysql_fetch_array(mysql_query("SELECT * FROM `plugins` WHERE `id` = '$pl_id'"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `plugins` WHERE `id` = ?");
+	$SQLSEC->Execute(array($pl_id));
+	$pl_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($pl_info['text']);
 }
 
@@ -91,7 +102,7 @@ function plugin_action($Server_ID, $Plugin_ID, $Plugin_Action_ID) {
 		   		fwrite($stream, 'cd cstrike/addons/amxmodx/plugins/'.PHP_EOL);
 				sleep(1);
 
-				fwrite($stream, 'wget http://gb-hoster.me/assets/plugin/'.plugin_amxx($Plugin_ID).PHP_EOL);
+				fwrite($stream, 'wget https://raw.githubusercontent.com/obgp/CDN/master/assets/maps/'.plugin_amxx($Plugin_ID).PHP_EOL);
 				sleep(2);
 
 				$add_to_pl_list = add_to_plugin_list($Server_ID, $Plugin_ID);
@@ -186,7 +197,7 @@ function delete_p_line_plugin_list($Server_ID, $Plugin_ID) {
 
 	$File_Path 	= '/cstrike/addons/amxmodx/configs/';
 	$File_Edit = file_get_contents(LoadFile($Server_ID, $File_Path.'plugins.ini'));
-    $File_Edit = str_replace("; GB-Hoster.me | Auto Install plugin: ".plugin_name($Plugin_ID), "", $File_Edit);
+    $File_Edit = str_replace("; | Auto Install plugin: ".plugin_name($Plugin_ID), "", $File_Edit);
     $File_Edit = str_replace("".plugin_amxx($Plugin_ID)."", "", $File_Edit);
     $File_Edit = str_replace("
 
@@ -223,7 +234,10 @@ function delete_p_line_plugin_list($Server_ID, $Plugin_ID) {
 */
 
 function is_valid_map($map_id) {
-	$map_info = mysql_fetch_array(mysql_query("SELECT * FROM `maps` WHERE `id` = '$map_id'"));
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `maps` WHERE `id` = ?");
+	$SQLSEC->Execute(array($map_id));
+	$map_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	if (!$map_info) {
 		return false;
 	} else {
@@ -232,14 +246,18 @@ function is_valid_map($map_id) {
 }
 
 function map_name($map_id) {
-	$map_info = mysql_fetch_array(mysql_query("SELECT * FROM `maps` WHERE `id` = '$map_id'"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `maps` WHERE `id` = ?");
+	$SQLSEC->Execute(array($map_id));
+	$map_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($map_info['map_name']);
 }
 
 function map_file($map_id) {
-	$map_info = mysql_fetch_array(mysql_query("SELECT * FROM `maps` WHERE `id` = '$map_id'"));
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `maps` WHERE `id` = ?");
+	$SQLSEC->Execute(array($map_id));
+	$map_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($map_info['map_file']);
 }
 
@@ -267,7 +285,7 @@ function map_action($Server_ID, $Map_ID, $Map_Action_ID) {
 		   		fwrite($stream, 'cd cstrike/maps/'.PHP_EOL);
 				sleep(1);
 
-				fwrite($stream, 'wget http://gb-hoster.me/assets/maps/'.map_file($Map_ID).PHP_EOL);
+				fwrite($stream, 'wget https://raw.githubusercontent.com/obgp/CDN/master/assets/maps/'.map_file($Map_ID).PHP_EOL);
 				sleep(2);
 
 				$add_to_pl_list = add_to_plugin_list($Server_ID, $Map_ID);
