@@ -21,9 +21,8 @@ function admin_login($email, $password) {
 	} else {
 		$save_ip = host_ip();
 		$save_host = host_name();
-
 		$pass = md5($password);
-
+		$rootsec = rootsec();
 		if (valid_email($email) == true) {
 				$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `email` = ? AND `password` = ?");
 				$SQLSEC->Execute(array($email,$pass));
@@ -102,6 +101,7 @@ function host_name() {
 ////////////////////////////////////////////////
 
 function is_valid_admin($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -123,6 +123,7 @@ function is_login() {
 }
 
 function admin_rank($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -143,6 +144,7 @@ function admin_rank($a_id) {
 }
 
 function a_username($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -151,6 +153,7 @@ function a_username($a_id) {
 }
 
 function a_status($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -159,6 +162,7 @@ function a_status($a_id) {
 }
 
 function my_name($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -213,6 +217,7 @@ function get_status($last) {
 }
 
 function admin_signature($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -220,6 +225,7 @@ function admin_signature($a_id) {
 }
 
 function admin_lastactivity($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -228,6 +234,7 @@ function admin_lastactivity($a_id) {
 }
 
 function admin_t_odogovori($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `tiketi_odgovori` WHERE `admin_id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$t_a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -244,6 +251,7 @@ function admin_t_odogovori($a_id) {
 }
 
 function admin_rank_avatar($a_id, $a_w) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$admin_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -264,6 +272,7 @@ function admin_rank_avatar($a_id, $a_w) {
 }
 
 function admin_rank_avatar_a($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$admin_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -300,6 +309,7 @@ function admin_code_to_rank($admin_rank) {
 }
 
 function radnik_id_code($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
