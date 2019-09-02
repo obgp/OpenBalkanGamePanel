@@ -36,7 +36,7 @@ class Pagination {
      * @return array - Array of data needed to make pagination: next/prev pages and all page numbers
      * @author Boris Vujicic - turshija@gmail.com
      */
-    function load($numberOfData, $current, $perPage=10, $width = 9) {
+    public static function load($numberOfData, $current, $perPage=10, $width = 9) {
         // Count number of pages
         $numberOfPages = ceil( $numberOfData / $perPage );
 
