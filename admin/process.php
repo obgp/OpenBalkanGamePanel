@@ -41,9 +41,13 @@ if (isset($_GET['a']) && $_GET['a'] == "login") {
 if (isset($_GET['a']) && $_GET['a'] == "del_all_msg") {
 	$Get_True 			= txt($_GET['all']);
 	if ($Get_True == 'true') {
-		$in_base = mysql_query("TRUNCATE `chat_messages`");
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("TRUNCATE `chat_messages`");
+		$in_base = $SQLSEC->Execute();
+		
 		if (!$in_base) {
-			mysql_query("DELETE FROM `chat_messages`");
+			$SQLSEC = $rootsec->prepare("DELETE FROM `chat_messages`");
+			$in_base = $SQLSEC->Execute();
 			die();
 		}
 		die();
@@ -59,7 +63,10 @@ if (isset($_GET['a']) && $_GET['a'] == "send_msg") {
 	if (empty($Msg_Text) || $Msg_Text == "" || $Msg_Text == "a") {
 		die();
 	} else {
-		$in_base = mysql_query("INSERT INTO `chat_messages` (`Text`, `Autor`, `Datum`, `ID`, `admin_id`) VALUES ('$Msg_Text', '$Msg_User', '$Msg_Date', NULL, '$_SESSION[admin_login]')");
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("INSERT INTO `chat_messages` (`Text`, `Autor`, `Datum`, `ID`, `admin_id`) VALUES (?, ?, ?, ?, ?)");
+		$in_base = $SQLSEC->Execute(array($Msg_Text, $Msg_User, $Msg_Date, NULL, $_SESSION["admin_login"]));
+		
 		if (!$in_base) {
 			die();
 		} else {
