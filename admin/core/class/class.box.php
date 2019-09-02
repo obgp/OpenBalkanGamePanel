@@ -1,6 +1,6 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/phpseclib/SSH2.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/phpseclib/Crypt/AES.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/libs/phpseclib/SSH2.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/libs/phpseclib/Crypt/AES.php');
 /**
 * 
 */
