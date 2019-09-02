@@ -51,11 +51,20 @@ function drzava($d) {
 
 function euro_for_slot($s_id) {
 	$g_id = gp_game_id($s_id);
-
-	$ss_info = mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `id` = '$s_id'"));
-	$uu_info = mysql_fetch_array(mysql_query("SELECT * FROM `klijenti` WHERE `klijentid` = '$ss_info[user_id]'"));
-
-	$slot_cena = mysql_fetch_array(mysql_query("SELECT * FROM `gp_cene` WHERE `game_id` = '$g_id'"));
+	$rootsec = rootsec();
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($s_id));
+	$ss_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `klijenti` WHERE `klijentid` = ?");
+	$SQLSEC->Execute(array($ss_info["user_id"]));
+	$uu_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `gp_cene` WHERE `game_id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$slot_cena = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
 	$cena_slota = explode('|', $slot_cena['cena_slota']);
 
 	if ($uu_info['zemlja'] == "RS") {
@@ -83,9 +92,16 @@ function euro_for_slot($s_id) {
 }
 
 function cena_slota($slot, $user_id, $game_id) {
-	$uu_info = mysql_fetch_array(mysql_query("SELECT * FROM `klijenti` WHERE `klijentid` = '$user_id'"));
-
-	$slot_cena = mysql_fetch_array(mysql_query("SELECT * FROM `gp_cene` WHERE `game_id` = '$game_id'"));
+	$rootsec = rootsec();
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `klijenti` WHERE `klijentid` = ?");
+	$SQLSEC->Execute(array($ss_info["user_id"]));
+	$uu_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `gp_cene` WHERE `game_id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$slot_cena = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
 	$cena_slota = explode('|', $slot_cena['cena_slota']);
 
 	if ($uu_info['zemlja'] == "RS") {
@@ -111,7 +127,11 @@ function cena_slota($slot, $user_id, $game_id) {
 }
 
 function mod_cena_for_slot($slot, $game_id, $drzava) {
-	$slot_cena = mysql_fetch_array(mysql_query("SELECT * FROM `gp_cene` WHERE `game_id` = '$game_id'"));
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `gp_cene` WHERE `game_id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$slot_cena = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
 	$cena_slota = explode('|', $slot_cena['cena_slota']);
 
 	if ($drzava == "RS") {
@@ -187,8 +207,12 @@ function money_val($novac, $drzava) {
 
 //CREATE A NEW GAME SERVER - CLIENT MODE
 function cena_slota_code($cl_id, $slot, $game_id, $loc) {
-	$uu_info = mysql_fetch_array(mysql_query("SELECT * FROM `klijenti` WHERE `klijentid` = '$cl_id'"));
-
+	$rootsec = rootsec();
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `klijenti` WHERE `klijentid` = ?");
+	$SQLSEC->Execute(array($cl_id));
+	$uu_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
 	if ($loc == 'premium1'||$loc == 'premium2'||$loc == 'premium3') {
 
 		if ($game_id == 1) {
@@ -221,7 +245,9 @@ function cena_slota_code($cl_id, $slot, $game_id, $loc) {
 		}
 
 	} else if ($loc == 'lite1'||$loc == 'lite2'||$loc == 'lite3') {
-		$slot_cena = mysql_fetch_array(mysql_query("SELECT * FROM `gp_cene` WHERE `game_id` = '$game_id'"));
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `gp_cene` WHERE `game_id` = '$game_id'");
+		$SQLSEC->Execute(array($game_id));
+		$slot_cena = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 		$cena_slota = explode('|', $slot_cena['cena_slota']);
 	}
 
