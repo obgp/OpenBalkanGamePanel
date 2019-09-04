@@ -28,7 +28,7 @@ Koristiti auto install skriptu sa sajta ili rucno ubaciti
 ## TEAM
 
 - [R00tS3c](https://github.com/R00tS3c) __(CURRENT DEVELOPER)__
-- KEVIA (mskoko.me@gmail.com) __(DEVELOPER)__
+- [KEVIA] (https://github.com/Kevia) (mskoko.me@gmail.com) __(DEVELOPER)__
 
 
 ## Jezici
