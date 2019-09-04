@@ -44,7 +44,7 @@ if (view_admin(a_status($_SESSION['admin_login'])) == false) {
 				</a>
 
 				<a class="brand" href="index.php">
-					<img src="<?php echo logolink; ?>" alt="Logo"> 
+					<img src="<?php echo logolink(); ?>" alt="Logo"> 
 				</a>
 				
 				<div class="nav-collapse">
