@@ -694,4 +694,160 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 	}
 	return $return;
 }
+/* Mod Info */	
+ function get_mod_name($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+ 	return txt($m_info['ime']);	
+}	
+ function get_mod_map($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+	return txt($m_info['mapa']);	
+}	
+ function get_mod_komanda($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+	return txt($m_info['komanda']);	
+}	
+ function get_mod_opis($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+	return txt($m_info['opis']);	
+}	
+ function get_mod_link($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+	return txt($m_info['link']);	
+}	
+ function get_mod_link_masina($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	return $m_info['link'];	
+}	
+ function get_mod_game($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	$g_id = txt($m_info['igra']);	
+ 	if ($g_id == 1) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon"> Counter-Strike 1.6';	
+	} else if ($g_id == 2) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/samp.jpg" class="gp_game_icon"> San Andreas Multiplayer';	
+	} else if ($g_id == 3) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/mc.png" class="gp_game_icon"> Minecraft';	
+	} else if ($g_id == 4) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/cod2.png" class="gp_game_icon"> Call of Duty 2';	
+	} else if ($g_id == 5) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/cod4.png" class="gp_game_icon"> Call of Duty 4';	
+	} else if ($g_id == 6) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/ts3.png" class="gp_game_icon"> TeamSpeak 3';	
+	} else if ($g_id == 7) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/csgo.jpg" class="gp_game_icon"> Counter-Strike GO';	
+	} else if ($g_id == 8) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/mta.png" class="gp_game_icon"> Multi Theft Auto';	
+	} else if ($g_id == 9) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/ark.png" class="gp_game_icon"> ARK';	
+	} else if ($g_id == 10) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/fdl.png" class="gp_game_icon"> FDL';	
+	} else if ($g_id == 11) {	
+		$gp_game = '<img src="/assets/img/icon/gp/game/fivem.png" class="gp_game_icon"> FiveM';	
+	}	
+ 	return $gp_game;	
+}	
+ /* ADD SERVER */	
+ function srv_install($Box_ID, $Srv_Username, $Srv_Password, $Mod_ID) {	
+	if (!function_exists("ssh2_connect")) {	
+		$return = false;	
+	}	
+ 	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {	
+	    $return = false;	
+	} else {	
+		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {	
+	    	$return = false;	
+	    } else {	
+	    	$stream = ssh2_shell($ssh_conn, 'xterm');	
+				
+			fwrite($stream, "useradd -m -g gameservers -p $Srv_Password $Srv_Username\n");	
+			sleep(1);	
+				
+			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".server_username($Server_ID)."/*";	
+	    	$cmd2 = "cd /home/".$Srv_Username."/ && wget -qO- ".get_mod_link_masina($Mod_ID). " | tar -xvzf - && rm -rf *.tar.gz";	
+	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
+	    	$cmd4 = "chmod 700 /home/".$Srv_Username;	
+				
+				
+			fwrite($stream, "$cmd1\n");	
+			sleep(1);	
+				
+			fwrite($stream, "$cmd2\n");	
+			sleep(10);	
+				
+			fwrite($stream, "$cmd3\n");	
+			sleep(1);	
+				
+			fwrite($stream, "$cmd4\n");	
+			sleep(1);	
+ 			fwrite($stream, "passwd $Srv_Username\n");	
+			sleep(1);	
+				
+			fwrite($stream, "$Srv_Password\n");	
+			sleep(1);	
+				
+			fwrite($stream, "$Srv_Password\n");	
+			sleep(1);	
+			// CMD Final - Wget mod files and chown user	
+				
+			$data = "";	
+			while($line = fgets($stream)) {	
+				$data .= $line;	
+			}	
+ 			$return = true;	
+	    }	
+	}	
+ 	return $return;	
+}	
+ /* REMOVE SERVER */	
+ function srv_delete($Box_ID, $Srv_Username) {	
+	if (!function_exists("ssh2_connect")) {	
+		$return = false;	
+	}	
+ 	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {	
+	    $return = false;	
+	} else {	
+		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {	
+	    	$return = false;	
+	    } else {	
+	    	$stream = ssh2_shell($ssh_conn, 'xterm');	
+ 	    	//Add user	
+			fwrite($stream, "userdel -rf $Srv_Username\n");	
+			sleep(1);	
+ 			$data = "";	
+			while($line = fgets($stream)) {	
+				$data .= $line;	
+			}	
+ 			$return = true;	
+	    }	
+	}	
+ 	return $return;	
+}
 ?>
