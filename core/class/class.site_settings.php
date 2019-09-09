@@ -197,4 +197,9 @@ function logolink() {
 	
 }
 
+function version()
+{
+	return "fcf24f29227ba08ab079954ce1abe9c0";
+}
+
 ?>
