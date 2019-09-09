@@ -7,16 +7,7 @@ if (is_login() == false) {
 	die();
 }
 
-//
-$stats_klijenti			= mysql_query("SELECT * FROM `klijenti`");
-$stats_tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$stats_server 			= mysql_query("SELECT * FROM `serveri`");
-$stats_masine 			= mysql_query("SELECT * FROM `box`");
-//
-$Svi_Tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$Otv_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '1'");
-$Odg_Tiketi 			= mysql_query("SELECT * FROM `tiketi_odgovori`");
-$Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
+
 
 if (isset($_GET['user_id'])) {
 	$User_ID = txt($_GET['user_id']);
@@ -193,7 +184,7 @@ if (isset($_GET['user_id'])) {
 				</a>
 
 				<a class="brand" href="index.php">
-					<img src="/admin/assets/img/logo.png" alt="GB-Hoster.Me LOGO!"> 
+					<img src="<?php echo logolink(); ?>" alt="LOGO!"> 
 				</a>
 				
 				<div class="nav-collapse">
@@ -591,7 +582,7 @@ if (isset($_GET['user_id'])) {
 				<div class="row">
 					<div class="span12">
 						<center>
-							<img src="/admin/assets/img/icon/gh_logo.png" alt="Gold Hosting LOGO!">
+							<img src="<?php echo logolink(); ?>" alt="LOGO!">
 						</center>
 					</div>
 				</div>
@@ -604,7 +595,7 @@ if (isset($_GET['user_id'])) {
 		<div class="footer-inner">
 			<div class="container">
 				<div class="row">
-					<div class="span12"> &copy; 2017 - <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
+					<div class="span12"> &copy; <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
 				</div>
 			</div>
 		</div>
