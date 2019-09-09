@@ -178,10 +178,10 @@ function cp_perm_tiket_view($t_id) {
 	return $return;
 }
 
-function view_developer($a_status) {
+function view_admin($a_status) {
 	if (empty($a_status)) {
 		$return = false;
-	} else if ($a_status == '4') {
+	} else if ($a_status == '4' || $a_status == '3') {
 		$return = true;
 	} else {
 		$return = false;
