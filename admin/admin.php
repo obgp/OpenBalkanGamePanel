@@ -15,23 +15,13 @@ if (is_valid_admin($Admin_ID) == false) {
 }
 
 if (!($_SESSION['admin_login'] == $Admin_ID)) {
-	if (view_developer(a_status($_SESSION['admin_login'])) == false) {
-		sMSG('Samo Developer ima pristup!', 'error');
+	if (view_admin(a_status($_SESSION['admin_login'])) == false) {
+		sMSG('Samo Admin ima pristup!', 'error');
 		redirect_to('home');
 		die();
 	}
 }
 
-//
-$stats_klijenti			= mysql_query("SELECT * FROM `klijenti`");
-$stats_tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$stats_server 			= mysql_query("SELECT * FROM `serveri`");
-$stats_masine 			= mysql_query("SELECT * FROM `box`");
-//
-$Svi_Tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$Otv_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '1'");
-$Odg_Tiketi 			= mysql_query("SELECT * FROM `tiketi_odgovori`");
-$Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 
 ?>
 <!DOCTYPE html>
@@ -63,7 +53,7 @@ $Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 				</a>
 
 				<a class="brand" href="index.php">
-					<img src="/admin/assets/img/logo.png" alt="GB-Hoster.Me LOGO!"> 
+					<img src="<?php echo logolink(); ?>" alt="LOGO!"> 
 				</a>
 				
 				<div class="nav-collapse">
@@ -418,7 +408,7 @@ $Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 				<div class="row">
 					<div class="span12">
 						<center>
-							<img src="/admin/assets/img/icon/logo.png" alt="<?php echo site_name(); ?>">
+							<img src="<?php echo logolink(); ?>" alt="<?php echo site_name(); ?>">
 						</center>
 					</div>
 				</div>
@@ -431,7 +421,7 @@ $Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 		<div class="footer-inner">
 			<div class="container">
 				<div class="row">
-					<div class="span12"> &copy; 2017 - <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
+					<div class="span12"> &copy; <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
 				</div>
 			</div>
 		</div>
