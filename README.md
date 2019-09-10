@@ -24,6 +24,8 @@
 ```
 Koristiti auto install skriptu sa sajta ili rucno ubaciti
 ```
+## GameFiles Download
+<a href="https://drive.google.com/drive/folders/1GcSZRJkaZSsqkFAAzE2g9gx2Izm5bVab?usp=sharing">DOWNLOAD</a>
 
 ## TEAM
 
