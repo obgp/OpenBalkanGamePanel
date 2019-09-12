@@ -43,6 +43,8 @@ foreach ($lines as $line) {
     }
 }
 $connect = fopen($_SERVER['DOCUMENT_ROOT']."/core/inc/connect_db.php", "w") or die("Unable to open file!");
+$connectadmin = fopen($_SERVER['DOCUMENT_ROOT']."/admin/core/inc/connect_db.php", "w") or die("Unable to open file!");
+
 $string = '
 <?php 
 //ISTA BAZA IDE ZA "rootsec()" i "firewallsec()"
@@ -71,7 +73,9 @@ return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
 ';
 fwrite($connect, $string);
 fclose($connect);
-    
+fwrite($connectadmin, $string);
+fclose($connectadmin);
+
 echo "Uspesno ste instalirali OBGP, obrisite ovaj folder.";
 $con->close($con);
 }
