@@ -42,8 +42,8 @@ foreach ($lines as $line) {
         $templine = '';
     }
 }
-$connect = fopen($_SERVER['DOCUMENT_ROOT']."/core/inc/connect_db.php", "w") or die("Unable to open file!");
-$connectadmin = fopen($_SERVER['DOCUMENT_ROOT']."/admin/core/inc/connect_db.php", "w") or die("Unable to open file!");
+$connect = fopen($_SERVER['DOCUMENT_ROOT']."/core/inc/connect_db.php", "w") or die("Ispraznite bazu stavite i podesite permisije na folder /config/inc/ i pokrenite ponovo instalaciju!");
+$connectadmin = fopen($_SERVER['DOCUMENT_ROOT']."/admin/core/inc/connect_db.php", "w");
 
 $string = '
 <?php 
