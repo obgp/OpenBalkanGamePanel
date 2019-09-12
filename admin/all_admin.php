@@ -218,6 +218,7 @@ if (is_login() == false) {
 
 									<tbody>
 										<?php
+											$rootsec = rootsec();
 											$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` ORDER by id ASC");
 											$SQLSEC->Execute();
 											while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { 
