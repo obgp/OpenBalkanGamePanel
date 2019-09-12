@@ -13,16 +13,6 @@ if (view_developer(a_status($_SESSION['admin_login'])) == false) {
 	die();
 }
 
-//
-$stats_klijenti			= mysql_query("SELECT * FROM `klijenti`");
-$stats_tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$stats_server 			= mysql_query("SELECT * FROM `serveri`");
-$stats_masine 			= mysql_query("SELECT * FROM `box`");
-//
-$Svi_Tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$Otv_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '1'");
-$Odg_Tiketi 			= mysql_query("SELECT * FROM `tiketi_odgovori`");
-$Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 ?>
 <!DOCTYPE html>
 <html>
@@ -237,9 +227,11 @@ $Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 
 									<tbody>
 										<?php  
-											$box_query = mysql_query("SELECT * FROM `box` ORDER BY `boxid` DESC");
+											$rootsec = rootsec();
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `box` ORDER BY `boxid` DESC");
+											$SQLSEC->Execute();
 
-											while($row = mysql_fetch_array($box_query)) { 
+											while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { 
 												$Box_ID 		= txt($row['boxid']);
 												$Box_Cache 		= unserialize(gzuncompress($row['cache']));
 											?>
