@@ -7,16 +7,6 @@ if (is_login() == false) {
 	die();
 }
 
-//
-$stats_klijenti			= mysql_query("SELECT * FROM `klijenti`");
-$stats_tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$stats_server 			= mysql_query("SELECT * FROM `serveri`");
-$stats_masine 			= mysql_query("SELECT * FROM `box`");
-//
-$Svi_Tiketi 			= mysql_query("SELECT * FROM `tiketi`");
-$Otv_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '1'");
-$Odg_Tiketi 			= mysql_query("SELECT * FROM `tiketi_odgovori`");
-$Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 
 ?>
 <!DOCTYPE html>
@@ -228,8 +218,9 @@ $Lck_Tiketi 			= mysql_query("SELECT * FROM `tiketi` WHERE `status` = '0'");
 
 									<tbody>
 										<?php
-											$admini_query = mysql_query("SELECT * FROM `admin` ORDER by id ASC");
-											while($row = mysql_fetch_array($admini_query)) { 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` ORDER by id ASC");
+											$SQLSEC->Execute();
+											while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { 
 												$Admin_ID 			= txt($row['id']);
 											?>
 											<tr>
