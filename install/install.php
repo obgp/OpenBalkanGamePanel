@@ -1,17 +1,5 @@
-<?php
-
-$filename = 'BAZA.sql';
-
-$mysql_host = $_POST["host"];
-$mysql_username = $_POST["username"];
-$mysql_password = $_POST["password"];
-$mysql_database = $_POST["DB"];
-
-if(!$_GET["step"])
-{
-?>
 <title>OBGP Instalacija</title>
-<form method="post" action="/install/install.php?step=2">
+<form method="post" action="">
 <input name="host" placeholder="HOSTNAME">
 <input name="username" placeholder="USERNAME">
 <input name="password" type="password" placeholder="PASSWORD">
@@ -20,9 +8,14 @@ if(!$_GET["step"])
 </form>
 
 <?php
-}
-else if ($_GET["step"]==2)
+if(isset($_POST["submit"])){
 {
+$filename = 'BAZA.sql';
+
+$mysql_host = $_POST["host"];
+$mysql_username = $_POST["username"];
+$mysql_password = $_POST["password"];
+$mysql_database = $_POST["DB"];
 $con = @new mysqli($mysql_host,$mysql_username,$mysql_password,$mysql_database);
 
 if ($con->connect_errno) {
