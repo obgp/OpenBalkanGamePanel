@@ -76,15 +76,17 @@ if (isset($_GET['a']) && $_GET['a'] == "send_msg") {
 }
 
 if (isset($_GET['a']) && $_GET['a'] == "chat_msg_num") {
-	$br_chat = mysql_query("SELECT * FROM `chat_messages` ORDER BY `ID` DESC");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `chat_messages` ORDER BY `ID` DESC");
+	$SQLSEC->Execute();
 
-	if (mysql_num_rows($br_chat) == 0) { ?>
+	if ($SQLSEC->rowCount() == 0) { ?>
 		<div id="cno">
 			<li><strong>Na chatu trenutno nema poruka!</strong></li>
 		</div>
 	<?php }
 
-	while ($row_msg = mysql_fetch_array($br_chat)) { 
+	while ($row_msg = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { 
 		$Chat_Text 	= smile(txt($row_msg['Text']));
 		$Admin_ID 	= txt($row_msg['admin_id']);
 		$Autor 		= $row_msg['Autor'];
@@ -110,8 +112,10 @@ if (isset($_GET['a']) && $_GET['a'] == "delete_client") {
 		redirect_to('clients.php');
 		die();
 	}
-
-	$in_base = mysql_query("DELETE FROM `klijenti` WHERE `klijentid` = '$User_ID'");
+	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("DELETE FROM `klijenti` WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (Klijent nije obrisan)', 'error');
 		redirect_to('clients.php');
@@ -132,8 +136,10 @@ if (isset($_GET['a']) && $_GET['a'] == "banuj_nalog") {
 		redirect_to('clients.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `klijenti` SET `banovan` = '1' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `banovan` = '1' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (Klijent nije banovan)', 'error');
 		redirect_to('clients.php');
@@ -154,8 +160,10 @@ if (isset($_GET['a']) && $_GET['a'] == "un_banuj_nalog") {
 		redirect_to('clients.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `klijenti` SET `banovan` = '0' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `banovan` = '0' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (Klijent nije unbanovan)', 'error');
 		redirect_to('clients.php');
@@ -176,8 +184,10 @@ if (isset($_GET['a']) && $_GET['a'] == "banuj_ftp") {
 		redirect_to('clients.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `klijenti` SET `ftp_ban` = '1' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `ftp_ban` = '1' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (FTP Klijentu nije banovan)', 'error');
 		redirect_to('clients.php');
@@ -199,7 +209,10 @@ if (isset($_GET['a']) && $_GET['a'] == "un_banuj_ftp") {
 		die();
 	}
 
-	$in_base = mysql_query("UPDATE `klijenti` SET `ftp_ban` = '0' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `ftp_ban` = '0' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (FTP Klijentu nije unbanovan)', 'error');
 		redirect_to('clients.php');
@@ -220,8 +233,10 @@ if (isset($_GET['a']) && $_GET['a'] == "banuj_podrsku") {
 		redirect_to('clients.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `klijenti` SET `support_ban` = '1' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `support_ban` = '1' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (Podrska Klijentu nije banovana)', 'error');
 		redirect_to('clients.php');
@@ -243,7 +258,10 @@ if (isset($_GET['a']) && $_GET['a'] == "un_banuj_podrsku") {
 		die();
 	}
 
-	$in_base = mysql_query("UPDATE `klijenti` SET `support_ban` = '0' WHERE `klijentid` = '$User_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `support_ban` = '0' WHERE `klijentid` = ?");
+	$in_base = $SQLSEC->Execute(array($User_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. (Podrsku Klijentu nije unbanovano)', 'error');
 		redirect_to('clients.php');
@@ -272,14 +290,17 @@ if (isset($_GET['a']) && $_GET['a'] == "supp_odg") {
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
 		die();
 	}
-
-	$in_base = mysql_query("INSERT INTO `tiketi_odgovori` (`id`, `tiket_id`, `user_id`, `admin_id`, `odgovor`, `vreme_odgovora`) VALUES (NULL, '$Ticket_ID', '0', '$_SESSION[admin_login]', '$Sup_ODG', '$Date')");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("INSERT INTO `tiketi_odgovori` (`id`, `tiket_id`, `user_id`, `admin_id`, `odgovor`, `vreme_odgovora`) VALUES (?, ?, ?, ?, ?, ?)");
+	$in_base = $SQLSEC->Execute(array(NULL, $Ticket_ID, 0, $_SESSION["admin_login"], $Sup_ODG, $Date));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske, molimo javite nam za ovaj problem!', 'error');
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
 		die();
 	} else {
-		mysql_query("UPDATE `tiketi` SET `status` = '3' WHERE `id` = '$Ticket_ID'");
+		$SQLSEC = $rootsec->prepare("UPDATE `tiketi` SET `status` = '3' WHERE `id` = ?");
+		$SQLSEC->Execute(array($Ticket_ID));
 
 		sMSG('Uspesno ste odgovorili na ovaj tiket!', 'success');
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
@@ -304,9 +325,10 @@ if (isset($_GET['a']) && $_GET['a'] == "delete_odg") {
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
 		die();
 	}
-
-	$in_base = mysql_query("DELETE FROM `tiketi_odgovori` WHERE `id` = '$ODG_ID'");
-
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("DELETE FROM `tiketi_odgovori` WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($ODG_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. #1', 'error');
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
@@ -328,8 +350,10 @@ if (isset($_GET['a']) && $_GET['a'] == "lock_tiket") {
 		redirect_to('gp-tiketi.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `tiketi` SET `status` = '4' WHERE `id` = '$Ticket_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `tiketi` SET `status` = '4' WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Ticket_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. #1', 'error');
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
@@ -351,8 +375,10 @@ if (isset($_GET['a']) && $_GET['a'] == "unlock_tiket") {
 		redirect_to('gp-tiketi.php');
 		die();
 	}
-
-	$in_base = mysql_query("UPDATE `tiketi` SET `status` = '1' WHERE `id` = '$Ticket_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("UPDATE `tiketi` SET `status` = '1' WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Ticket_ID));
+	
 	if (!$in_base) {
 		sMSG('Doslo je do greske. #1', 'error');
 		redirect_to('gp-tiket.php?id='.$Ticket_ID);
@@ -395,7 +421,8 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 	$ssh = new Net_SSH2($Box_IP, $Box_SSH);
 	if ($ssh->login($Box_Username, $Box_Password)) {
 		// In Base
-		mysql_query("INSERT INTO `box` SET
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("INSERT INTO `box` SET
 			`name` 		= '".$Box_Name.' - '.$Box_Location."',
 			`location` 	= '".$Box_Location."',
 			`ip` 		= '".$Box_IP."',
@@ -403,8 +430,10 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 			`password` 	= '".mysql_real_escape_string(box_pass_in_base($Box_Password))."',
 			`sshport` 	= '".$Box_SSH."',
 			`maxsrv` 	= '20'");
+		$SQLSEC->Execute();
+		
 		###
-		$Box_ID = mysql_insert_id();
+		$Box_ID = $SQLSEC->lastInsertId();
 		###
 		// Box Cache
 		box_cache($Box_ID);
@@ -684,10 +713,13 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 		die();
 	} else {
 		//in base
-		$in_base 	= mysql_query("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (NULL, '$User_ID', '$Box_ID', '$Srv_Name', '00000', '$Mod_ID', '$Srv_Mapa', '$Srv_Port', '300', '$Srv_Slot', '$Srv_Username', '$Srv_Password', '$Srv_Istice', '1', '0', '0', '1', '$Game_ID', '$Srv_Komanda', '$Srv_Cena', '0', '0', '0', 'Nema', '-1', '0')");
-		$Server_ID 	= mysql_insert_id();
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base = $SQLSEC->Execute(array(NULL, $User_ID, $Box_ID, $Srv_Name, "00000", $Mod_ID, $Srv_Mapa, $Srv_Port, "300", $Srv_Username, $Srv_Password, 1, 0, 0, 1, $Game_ID, $Srv_Komanda, $Srv_Cena, 0, 0, 0, "Nema", "-1", 0));
+		$Server_ID 	= $SQLSEC->lastInsertId();
 		$Get_IPP 	= box_ip($Box_ID);
-		$in_base2 	= mysql_query("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (NULL, '$G_type', '$Get_IPP', '$Srv_Port', '$Srv_Port', '0', '0', '0', '$Srv_Name', '', '', '')");
+		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base2 = $SQLSEC->Execute(array(NULL, $G_type, $Get_IPP, $Srv_Port, $Srv_Port, $Mod_ID, $Srv_Mapa, $Srv_Port, 0, 0, 0, $Srv_Name, '', '', ''));
 		if (!$in_base && !$in_base2) {
 			sMSG('Server je instaliran, ali dogodila se greska prilikom spajanja na mysql bazu!', 'error');
 			redirect_to('add_server.php?user_id='.$User_ID.'&box_id='.$Box_ID);
@@ -740,7 +772,10 @@ if (isset($_GET['s']) && $_GET['s'] == "delete_server") {
 		die();
 	} else {
 		//in base
-		$in_base = mysql_query("DELETE FROM `serveri` WHERE `id` = '$Server_ID'");
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("DELETE FROM `serveri` WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Server_ID));
+		
 		if ($in_base == false) {
 			sMSG('Server je izbrisan sa masine, ali dogodila se greska prilikom spajanja na mysql bazu!', 'error');
 			redirect_to('gp-server.php?id='.$Server_ID);
@@ -770,9 +805,11 @@ if (isset($_GET['a']) && $_GET['a'] == "add_client") {
 		redirect_to('add_client.php');
 		die();
 	}
-
-	$in_base = mysql_query("INSERT INTO `klijenti` (`klijentid`, `username`, `sifra`, `ime`, `prezime`, `email`, `novac`, `status`, `kreiran`, `zemlja`, `avatar`, `cover`, `sigkod`, `token`, `mail`, `dodao`) VALUES (NULL, '$Client_Username', '$Client_Sifra', '$Client_Ime', '$Client_Prezime', '$Client_Email', '0', '1', '$Reg_User', '$Client_Drzava', 'avatar.png', 'cover.png', '$Client_PinCode', '$Client_Token', '1', '$_SESSION[admin_login]')");
-	$C_New_ACC_ID = mysql_insert_id();
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("INSERT INTO `klijenti` (`klijentid`, `username`, `sifra`, `ime`, `prezime`, `email`, `novac`, `status`, `kreiran`, `zemlja`, `avatar`, `cover`, `sigkod`, `token`, `mail`, `dodao`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$in_base = $SQLSEC->Execute(array(NULL, $Client_Username, $Client_Sifra, $Client_Ime, $Client_Prezime, $Client_Email, 0, 1, $Reg_User, $Client_Drzava, 'avatar.png', 'cover.png', $Client_PinCode, $Client_Token, 1, $_SESSION["admin_login"]));
+	
+	$C_New_ACC_ID = $SQLSEC->lastInsertId();
 
 	if (!$in_base) {
 		sMSG('Doslo je do greske! #ACC nije kreiran', 'error');
@@ -807,10 +844,20 @@ if (isset($_GET['a']) && $_GET['a'] == "change_profile") {
 
 	if (empty($User_Pass)) {
 		//edit bez passworda
-		$in_base  = mysql_query("UPDATE `klijenti` SET `ime` = '$User_Name' WHERE `klijentid` = '$Client_ID'");
-		$in_base2 = mysql_query("UPDATE `klijenti` SET `prezime` = '$User_lName' WHERE `klijentid` = '$Client_ID'");
-		$in_base3 = mysql_query("UPDATE `klijenti` SET `email` = '$User_Email' WHERE `klijentid` = '$Client_ID'");
-		$in_base4 = mysql_query("UPDATE `klijenti` SET `sigkod` = '$User_Code' WHERE `klijentid` = '$Client_ID'");
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `ime` = ? WHERE `klijentid` = ?");
+		$in_base = $SQLSEC->Execute(array($User_Name, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `prezime` = ? WHERE `klijentid` = ?");
+		$in_base2 = $SQLSEC->Execute(array($User_lName, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `email` = ? WHERE `klijentid` = ?");
+		$in_base3 = $SQLSEC->Execute(array($User_Email, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `sigkod` = ? WHERE `klijentid` = ?");
+		$in_base4 = $SQLSEC->Execute(array($User_Code, $Client_ID));
+		
 		if (!$in_base || !$in_base2 || !$in_base3 || !$in_base4) {
 			sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji! #Edit_Prof', 'error');
 			redirect_to('gp-client.php?id='.$Client_ID);
@@ -824,11 +871,23 @@ if (isset($_GET['a']) && $_GET['a'] == "change_profile") {
 		//edit sa passwordom
 		$User_Pass = md5($User_Pass);
 
-		$in_base  = mysql_query("UPDATE `klijenti` SET `ime` = '$User_Name' WHERE `klijentid` = '$Client_ID'");
-		$in_base2 = mysql_query("UPDATE `klijenti` SET `prezime` = '$User_lName' WHERE `klijentid` = '$Client_ID'");
-		$in_base3 = mysql_query("UPDATE `klijenti` SET `email` = '$User_Email' WHERE `klijentid` = '$Client_ID'");
-		$in_base4 = mysql_query("UPDATE `klijenti` SET `sigkod` = '$User_Code' WHERE `klijentid` = '$Client_ID'");
-		$in_base5 = mysql_query("UPDATE `klijenti` SET `sifra` = '$User_Pass' WHERE `klijentid` = '$Client_ID'");
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `ime` = ? WHERE `klijentid` = ?");
+		$in_base = $SQLSEC->Execute(array($User_Name, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `prezime` = ? WHERE `klijentid` = ?");
+		$in_base2 = $SQLSEC->Execute(array($User_lName, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `email` = ? WHERE `klijentid` = ?");
+		$in_base3 = $SQLSEC->Execute(array($User_Email, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `sigkod` = ? WHERE `klijentid` = ?");
+		$in_base4 = $SQLSEC->Execute(array($User_Code, $Client_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `klijenti` SET `sifra` = ? WHERE `klijentid` = ?");
+		$in_base5 = $SQLSEC->Execute(array($User_Pass, $Client_ID));
+		
 		if (!$in_base || !$in_base2 || !$in_base3 || !$in_base4 || !$in_base5) {
 			sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji! #Edit_Prof', 'error');
 			redirect_to('gp-client.php?id='.$Client_ID);
@@ -869,15 +928,27 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_admin") {
 
 	if (empty($Admin_Pass)) {
 		//edit bez passworda
-		$in_base  	= mysql_query("UPDATE `admin` SET `fname` = '$Admin_Name' WHERE `id` = '$Admin_ID'");
-		$in_base2  	= mysql_query("UPDATE `admin` SET `lname` = '$Admin_lName' WHERE `id` = '$Admin_ID'");
-		$in_base3  	= mysql_query("UPDATE `admin` SET `email` = '$Admin_Email' WHERE `id` = '$Admin_ID'");
-		if (view_developer(a_status($_SESSION['admin_login'])) == false) {
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `fname` = ? WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Admin_Name, $Admin_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `lname` = ? WHERE `id` = ?");
+		$in_base2 = $SQLSEC->Execute(array($Admin_lName, $Admin_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `email` = ? WHERE `id` = ?");
+		$in_base3 = $SQLSEC->Execute(array($Admin_Email, $Admin_ID));
+		
+
+		if (view_admin(a_status($_SESSION['admin_login'])) == false) {
 			$in_base4  	= true;
 			$in_base5  	= true;
 		} else {
-			$in_base4 	= mysql_query("UPDATE `admin` SET `status` = '$Admin_Perm' WHERE `id` = '$Admin_ID'");
-			$in_base5  	= mysql_query("UPDATE `admin` SET `username` = '$Admin_UserName' WHERE `id` = '$Admin_ID'");
+			$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `status` = ? WHERE `id` = ?");
+			$in_base4 = $SQLSEC->Execute(array($Admin_Perm, $Admin_ID));
+			
+			$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `username` =  WHERE `id` = ?");
+			$in_base5 = $SQLSEC->Execute(array($Admin_UserName, $Admin_ID));
 		}
 
 		if (!$in_base||!$in_base2||!$in_base3||!$in_base4||!$in_base5) {
@@ -893,18 +964,29 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_admin") {
 	} else {
 		//edit sa passwordom
 		$Admin_Pass = md5($Admin_Pass);
-		//edit bez passworda
-		$in_base  	= mysql_query("UPDATE `admin` SET `fname` = '$Admin_Name' WHERE `id` = '$Admin_ID'");
-		$in_base2  	= mysql_query("UPDATE `admin` SET `lname` = '$Admin_lName' WHERE `id` = '$Admin_ID'");
-		$in_base3  	= mysql_query("UPDATE `admin` SET `email` = '$Admin_Email' WHERE `id` = '$Admin_ID'");
-		if (view_developer(a_status($_SESSION['admin_login'])) == false) {
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `fname` = ? WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Admin_Name, $Admin_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `lname` = ? WHERE `id` = ?");
+		$in_base2 = $SQLSEC->Execute(array($Admin_lName, $Admin_ID));
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `email` = ? WHERE `id` = ?");
+		$in_base3 = $SQLSEC->Execute(array($Admin_Email, $Admin_ID));
+		
+		if (view_admin(a_status($_SESSION['admin_login'])) == false) {
 			$in_base4  	= true;
 			$in_base5  	= true;
 		} else {
-			$in_base4 	= mysql_query("UPDATE `admin` SET `status` = '$Admin_Perm' WHERE `id` = '$Admin_ID'");
-			$in_base5  	= mysql_query("UPDATE `admin` SET `username` = '$Admin_UserName' WHERE `id` = '$Admin_ID'");
+			$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `status` = ? WHERE `id` = ?");
+			$in_base4 = $SQLSEC->Execute(array($Admin_Perm, $Admin_ID));
+			
+			$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `username` =  WHERE `id` = ?");
+			$in_base5 = $SQLSEC->Execute(array($Admin_UserName, $Admin_ID));
 		}
-		$in_base6  	= mysql_query("UPDATE `admin` SET `password` = '$Admin_Pass' WHERE `id` = '$Admin_ID'");
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `password` = ? WHERE `id` = ?");
+		$in_base6 = $SQLSEC->Execute(array($Admin_Pass, $Admin_ID));
 
 		if (!$in_base||!$in_base2||!$in_base3||!$in_base4||!$in_base5||!$in_base6) {
 			sMSG('Doslo je do greske!', 'error');
@@ -964,9 +1046,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_mod") {
 
 	// Primer -- 61din|3.7kn|0.9km|30mkd|0.375eur
 	$Mod_Cena = $Mod_Cena_RS.'din|'.$Mod_Cena_HR.'kn|'.$Mod_Cena_BA.'km|'.$Mod_Cena_MK.'mkd|'.$Mod_Cena_ME.'eur';
-
-	$in_base = mysql_query("INSERT INTO `modovi` (`id`, `link`, `ime`, `opis`, `igra`, `komanda`, `sakriven`, `mapa`, `cena`) VALUES (NULL, '$Mod_Link', '$Mod_Name', '$Mod_Opis', '$Mod_Game', '$Mod_Command', '0', '$Mod_Map', '$Mod_Cena');");
-	$Mod_ID = mysql_insert_id();
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("INSERT INTO `modovi` (`id`, `link`, `ime`, `opis`, `igra`, `komanda`, `sakriven`, `mapa`, `cena`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+	$in_base = $SQLSEC->Execute(array(NULL, $Mod_Link, $Mod_Name, $Mod_Opis, $Mod_Game, $Mod_Command, 0, $Mod_Map, $Mod_Cena));
+	
+	$Mod_ID = $SQLSEC->lastInsertId();
 	if (!$in_base) {
 		sMSG('Mod nije dodat!', 'error');
 		redirect_to('add_mod.php');
@@ -1027,9 +1112,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_plugin") {
 	}
 
 	$Plugin_F_Name 		= txt(basename( $_FILES['fileToUpload']['name']));
-
-	$in_base = mysql_query("INSERT INTO `plugins` (`id`, `ime`, `deskripcija`, `prikaz`, `text`, `game_id`) VALUES (NULL, '$Plugin_Name', '$Plugin_Opis', '$Plugin_F_Name', 'gh_plugins.ini', '$Plugin_Game');");
-	$Plugin_ID = mysql_insert_id();
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("INSERT INTO `plugins` (`id`, `ime`, `deskripcija`, `prikaz`, `text`, `game_id`) VALUES (?, ?, ?, ?, ?, ?);");
+	$in_base = $SQLSEC->Execute(array(NULL, $Plugin_Name, $Plugin_Opis, $Plugin_F_Name, 'obgp_plugins.ini', $Plugin_Game));
+	
+	$Plugin_ID = $SQLSEC->lastInsertId();
 	if (!$in_base) {
 		sMSG('Plugin nije dodat!', 'error');
 		redirect_to('add_plugin.php');
@@ -1090,8 +1178,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_admin") {
 	$Adm_Potpis = "{$Admin_Name} {$Admin_Prezime}
 - $Host_Name ".admin_code_to_rank($Admin_Radnik);
 
-	$in_base = mysql_query("INSERT INTO `admin` (`id`, `fname`, `lname`, `username`, `password`, `email`, `status`, `signature`, `support_za`, `adm_perm`, `note`) VALUES (NULL, '$Admin_Name', '$Admin_Prezime', '$Admin_UserName', '$Admin_Password', '$Admin_Email', '$Admin_Radnik', '$Adm_Potpis', '$Supp_Premission', '$Adm_Premission', '$Admin_Note')");
-	$Admin_ID = mysql_insert_id();
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("INSERT INTO `admin` (`id`, `fname`, `lname`, `username`, `password`, `email`, `status`, `signature`, `support_za`, `adm_perm`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$in_base = $SQLSEC->Execute(array(NULL, $Admin_Name, $Admin_Prezime, $Admin_UserName, $Admin_Password, $Admin_Email, $Admin_Radnik, $Adm_Potpis, $Supp_Premission, $Adm_Premission, $Admin_Note));
+	
+	$Admin_ID = $SQLSEC->lastInsertId();
 	if (!$in_base) {
 		sMSG('Doslo je do greske! -Admin nije dodat! #Error add_admin', 'error');
 		redirect_to('add_admin.php');
@@ -1508,7 +1600,12 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 	$Server_ID 			= txt($_POST['server_id']);
 	$Vreme 				= txt($_POST['autorestart']);
 
-	$in_base = mysql_query("UPDATE `serveri` SET `autorestart` = '$Vreme' WHERE `id` = '$Server_ID'");
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `autorestart` = ? WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Vreme, $Server_ID));
+	
+	$in_base = mysql_query();
 	if (!$in_base) {
 		sMSG('Doslo je do greske! Molimo prijavite ovaj bag (#AutoRestart).', 'error');
 		redirect_to('gp-autorestart.php?id='.$Server_ID);
@@ -2217,12 +2314,20 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	
 	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $Server_ID, $Mod_ID);
 	if (!$reinstall_server == true) {
-		$in_base = mysql_query("UPDATE `serveri` SET `modovi` = '$Mod_ID' WHERE `id` = '$Server_ID'");
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
+		
 		sMSG('Server nije Reinstaliran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		$in_base = mysql_query("UPDATE `serveri` SET `modovi` = '$Mod_ID' WHERE `id` = '$Server_ID'");
+		$rootsec = rootsec();
+		
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
+		
 		sMSG('Server je uspesno Reinstaliran na '.server_mod_name($Server_ID).' mod. (Sacekajte par minuta "Predlog: 1/2min")', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
