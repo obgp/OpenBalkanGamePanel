@@ -13,8 +13,7 @@ if (mysqli_connect_errno()) {
 mysqli_set_charset($connect, "utf8");
 
 $client = "No";
-
 $prefix = "firewall_";
-$site_url             = site_link();
-$projectsecurity_path = site_link()."/rootsec";
+$site_url             = site_link_fw();
+$projectsecurity_path = site_link_fw()."/rootsec";
 ?>
