@@ -106,17 +106,17 @@
 //------------------------------------------------------------------------------------------------------------+
 //[ STAND-ALONE VERSION: LGSL ADMIN LOGON ]
 
-  $lgsl_config['admin']['user'] = "admin";
-  $lgsl_config['admin']['pass'] = "afk123#";
+  $lgsl_config['admin']['user'] = "lgsladmin";
+  $lgsl_config['admin']['pass'] = "changeme";
 
 //------------------------------------------------------------------------------------------------------------+
 //[ DATABASE SETTINGS: FOR STAND-ALONE OR TO OVERRIDE CMS DEFAULTS ]
 
-  $lgsl_config['db']['server'] = 'localhost';
-  $lgsl_config['db']['user']   = 'gbhoster_ghpanel';
-  $lgsl_config['db']['pass']   = 'h_OzT]U7xG$vHN-okE';
-  $lgsl_config['db']['db']     = 'gbhoster_ghpanel';
-  $lgsl_config['db']['table']  = 'lgsl';
+  $lgsl_config['db']['server'] = "localhost";
+  $lgsl_config['db']['user']   = "dev_gb";
+  $lgsl_config['db']['pass']   = "kolkijeprihod1337";
+  $lgsl_config['db']['db']     = "dev_gb";
+  $lgsl_config['db']['table']  = "lgsl";
 
 //------------------------------------------------------------------------------------------------------------+
 //[ HOSTING FIXES ]
@@ -134,7 +134,7 @@
   $lgsl_config['public_feed']   = 0;         // 1=feed requests can add new servers to your list
   $lgsl_config['cache_time']    = 60;        // seconds=time before a server needs updating
   $lgsl_config['live_time']     = 3;         // seconds=time allowed for updating servers per page load
-  $lgsl_config['timeout']       = 1;         // 1=gives more time for servers to respond but adds loading delay
+  $lgsl_config['timeout']       = 0;         // 1=gives more time for servers to respond but adds loading delay
   $lgsl_config['retry_offline'] = 0;         // 1=repeats query when there is no response but adds loading delay
   $lgsl_config['cms']           = "sa";      // sets which CMS specific code to use
 

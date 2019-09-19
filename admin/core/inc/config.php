@@ -28,9 +28,9 @@ date_default_timezone_set("Europe/Belgrade");
 
 function rootsec() {
 $servername = "localhost";
-$username = "USERNAME";
-$password = "PASSWORD";
-$dbname = "DBNAME";
+$username = "root";
+$password = "";
+$dbname = "obgp";
 return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
 }
 

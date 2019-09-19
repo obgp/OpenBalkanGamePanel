@@ -1,6 +1,6 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/db_connect.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/rootsec/func.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/db_connect.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/rootsec/func.php');
 
 $connect = firewallsec();
 

@@ -105,7 +105,7 @@ function is_valid_admin($a_id) {
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
-	if (mysql_num_rows($a_info) == 0) {
+	if ($SQLSEC->rowCount() == 0) {
 		$return = false;
 	} else {
 		$return = true;
@@ -183,6 +183,7 @@ function my_name($a_id) {
 }
 
 function admin_full_name($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -190,6 +191,7 @@ function admin_full_name($a_id) {
 }
 
 function admin_email($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -197,6 +199,7 @@ function admin_email($a_id) {
 }
 
 function admin_user_name($a_id) {
+	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `admin` WHERE `id` = ?");
 	$SQLSEC->Execute(array($a_id));
 	$a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
@@ -239,12 +242,12 @@ function admin_t_odogovori($a_id) {
 	$SQLSEC->Execute(array($a_id));
 	$t_a_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	
-	if (mysql_num_rows($t_a_info) == 0) {
-		$a_t_return = '<span style="color:red;">'.mysql_num_rows($t_a_info).'</span>';
-	} else if (mysql_num_rows($t_a_info) < 20) {
-		$a_t_return = '<span style="color:yellow;">'.mysql_num_rows($t_a_info).'</span>';
+	if ($SQLSEC->rowCount() == 0) {
+		$a_t_return = '<span style="color:red;">'.$SQLSEC->rowCount().'</span>';
+	} else if ($SQLSEC->rowCount() < 20) {
+		$a_t_return = '<span style="color:yellow;">'.$SQLSEC->rowCount().'</span>';
 	} else {
-		$a_t_return = '<span style="color:#0ba3fd;">'.mysql_num_rows($t_a_info).'</span>';
+		$a_t_return = '<span style="color:#0ba3fd;">'.$SQLSEC->rowCount().'</span>';
 	}
 
 	return $a_t_return;

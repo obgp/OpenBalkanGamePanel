@@ -45,7 +45,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
 			 <div class="space"></div>
 <div class="logo hidden-xs">
 	<a href="#">
-		<img class="img-responsive" style="width:15%;" src="https://i.imgur.com/tcsvC03.png">
+		<img class="img-responsive" style="width:15%;" src="<?php echo logolink(); ?>">
 	</a>
 </div>
 <div class="lang-flag">
@@ -53,7 +53,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
     <a href="#"><img width="20" src="/assets/images/flags/fr.png"></a>
 	<a href="#"><img width="20" src="/assets/images/flags/us.png"></a>
 </div>
-<nav class="navbar" style="margin-top:7%">
+<nav class="navbar" style="margin-top:10%">
 	<div class="navbar-header">
 		<button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#navbar">
 			<span class="sr-only">Toggle navigation</span>
@@ -63,7 +63,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
 		</button>
 		<a class="navbar-brand visible-xs" rel="home" href="#" title="Buy Sell Rent Everyting">
         <img style="margin-top: -7px;"
-             src="https://i.imgur.com/tcsvC03.png">
+             src="<?php echo logolink(); ?>">
     	</a>
 	</div>
 	<div id="navbar" class="navbar-offcanvas" data-direction="left">

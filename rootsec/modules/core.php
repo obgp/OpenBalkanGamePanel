@@ -1,4 +1,5 @@
 <?php
+
 $table  = $prefix . 'settings';
 $squery = mysqli_query($connect, "SELECT * FROM `$table`");
 $srow   = mysqli_fetch_assoc($squery);
