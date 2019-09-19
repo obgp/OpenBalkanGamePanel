@@ -21,6 +21,7 @@ function site_link() {
 	return $get_site_info['site_link'];
 }
 
+$prefix = "firewall_";
 $site_url             = site_link();
 $projectsecurity_path = site_link()."/rootsec";
 ?>
