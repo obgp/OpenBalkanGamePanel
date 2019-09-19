@@ -1,5 +1,5 @@
 <?php
-function site_link() {
+function site_link_fw() {
 	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `site_settings`");
 	$SQLSEC->Execute();
