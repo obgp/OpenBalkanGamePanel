@@ -2,7 +2,7 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php'); 
 
 if (is_login() == false) {
-	$User_Email 		= 'obgp@pm.me';
+	$User_Email 		= 'demo@obgp.me';
 	$User_Password 		= 'demo';
 
 	$is_ok = user_login($User_Email, $User_Password);
