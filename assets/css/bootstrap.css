@@ -1086,7 +1086,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background: url('https://forum.gb-hoster.me/uploads/monthly_2019_02/bg.jpg.2725922a83c9d693753e39a6bb688d03.jpg');
+  background: url('/assets/img/BG.jpg');
 }
 input,
 button,
