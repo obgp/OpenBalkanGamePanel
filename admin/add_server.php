@@ -1,11 +1,6 @@
 <?php 
-include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/head.php');
 
-if (is_login() == false) {
-	sMSG('Morate se ulogovati!', 'error');
-	redirect_to('login');
-	die();
-}
 
 
 
@@ -20,14 +15,20 @@ if (isset($_GET['user_id'])) {
 
 		$v_username = 'srv_'.$User_ID.'_'.random_s_key(5).'';
 
-		if(mysql_num_rows(mysql_query("SELECT * FROM `serveri` WHERE `username` = '{$v_username}'")) != 0) {
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `username` = ?");
+		$SQLSEC->Execute(array($v_username));
+
+		if($SQLSEC->rowCount() != 0) {
 			$v_username = 'srv_'.$User_ID.'_'.random_s_key(5).'';  
 		}
 
 		$Rand_PasS = random_s_key(8);
 
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+		$SQLSEC->Execute(array($Box_ID, $s_port));
+
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
+			if($SQLSEC->rowCount() == 0) {
 				$get_free_port = lgsl_query_live('halflife', box_ip($Box_ID), NULL, $s_port, NULL, 's');
 				
 				if(@$get_free_port['b']['status'] == '1') {
@@ -43,8 +44,11 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 
-		for($s_port = 7777; $s_port <= 9999; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+		$SQLSEC->Execute(array($Box_ID, $s_port));
+	
+			for($s_port = 7777; $s_port <= 9999; $s_port++) {
+				if($SQLSEC->rowCount() == 0) {
 				$get_free_port = lgsl_query_live('samp', box_ip($Box_ID), NULL, $s_port, NULL, 's');
 				
 				if(@$get_free_port['b']['status'] == '1') {
@@ -60,24 +64,10 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		
-				for($s_port = 7777; $s_port <= 9999; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$get_free_port = lgsl_query_live('samp', box_ip($Box_ID), NULL, $s_port, NULL, 's');
-				
-				if(@$get_free_port['b']['status'] == '1') {
-					$vrati_inf = 'Da';
-				} else {
-					$vrati_inf = 'Ne';
-				}
-
-				if ($vrati_inf == 'Ne') {
-					$port_for_samp = $s_port;
-					break;
-				}
-			}
-		}
 		for($s_port = 28960; $s_port <= 29960; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
 				$vrati_inf = 'Da';
 			} else {
 			    	$port_for_cod2 = $s_port;
@@ -85,48 +75,60 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 28960; $s_port <= 29960; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_cod4 = $s_port;
 					break;
 			}
 		}
 		for($s_port = 9987; $s_port <= 11000; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_ts = $s_port;
 					break;
 			}
 		}
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_csgo = $s_port;
 					break;
 			}
 		}
 		for($s_port = 22003; $s_port <= 24000; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_mta = $s_port;
 					break;
 			}
 		}
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_ark = $s_port;
 					break;
 			}
 		}
 		for($s_port = 30120; $s_port <= 33120; $s_port++) {
-			if(mysql_fetch_array(mysql_query("SELECT * FROM `serveri` WHERE `box_id` = '$Box_ID' AND `port` = '$s_port' LIMIT 1")) == 0) {
-				$vrati_inf = 'Da';
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC->Execute(array($Box_ID, $s_port));
+			if($SQLSEC->rowCount() == 0) {
+								$vrati_inf = 'Da';
 			} else {
 			    	$port_for_fivem = $s_port;
 					break;
@@ -155,179 +157,6 @@ if (isset($_GET['user_id'])) {
 }
 
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title><?php echo site_name(); ?></title>
-
-	<?php include_once($_SERVER['DOCUMENT_ROOT'].'/admin/assets/php/head.php'); ?>
-</head>
-<body>
-	<!-- Error script -->
-	<div id="gp_msg"> <?php echo eMSG(); ?> </div>
-
-    <script type="text/javascript">
-    	setTimeout(function() {
-    		document.getElementById('gp_msg').innerHTML = "<?php echo unset_msg(); ?>";
-    	}, 5000);
-    </script>
-
-	<!-- header -->
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container"> 
-				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</a>
-
-				<a class="brand" href="index.php">
-					<img src="<?php echo logolink(); ?>" alt="LOGO!"> 
-				</a>
-				
-				<div class="nav-collapse">
-					<ul class="nav pull-right">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<i class="icon-user"></i> <?php echo my_name($_SESSION['admin_login']); ?> <b class="caret"></b>
-							</a>
-
-							<ul class="dropdown-menu">
-								<li><a href="/admin/profile.php">Profile</a></li>
-								<li><a href="/admin/logout.php">Logout</a></li>
-							</ul>
-						</li>
-					</ul>
-				</div> 
-			</div>
-		</div>
-	</div>
-
-	<!-- nav menu -->
-	<div class="subnavbar">
-		<div class="subnavbar-inner">
-			<div class="container">
-				<ul class="mainnav">
-					<li class="active">
-						<a href="/admin/index.php">
-							<i class="icon-dashboard"></i>
-							<span>POCETNA</span> 
-						</a> 
-					</li>
-					
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-th"></i>
-							<span>KLIJENTI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_client.php">DODAJ NALOG</a></li>
-							<li><a href="/admin/clients.php">LISTA KLIJENATA</a></li>
-							<li><a href="/admin/banovani.php">BANOVANI KLIJENTI</a></li>
-						</ul>
-					</li>
-				
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-gamepad"></i>
-							<span>SERVERI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_server.php">DODAJ SERVER</a></li>
-							<li><a href="/admin/gp-servers.php">LISTA SVIH SERVERA</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-comments"></i>
-							<span>TIKETI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/gp-tiketi.php">SVI TIKETI (<span style="color: green;"><?php echo mysql_num_rows($Svi_Tiketi); ?></span>)</a></li>
-							<li><a href="/admin/gp-tiketi-open.php">OTVORENI TIKETI (<span style="color: green;"><?php echo mysql_num_rows($Otv_Tiketi); ?></span>)</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-code"></i>
-							<span>MODOVI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_mod.php">DODAJ NOVI MOD</a></li>
-							<li><a href="/admin/list_mods.php">LISTA MODOVA</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-code"></i>
-							<span>PLUGINI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_plugin.php">DODAJ NOVI PLUGIN</a></li>
-							<li><a href="/admin/list_plugins.php">LISTA PLUGINA</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-hdd-o"></i>
-							<span>MASINE</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_box.php">DODAJ NOVU MASINU</a></li>
-							<li><a href="/admin/all_box.php">PREGLED MASINA</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-users"></i>
-							<span>ADMINI</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/admin/add_admin.php">DODAJ NOVOG ADMINA</a></li>
-							<li><a href="/admin/all_admin.php">PREGLED ADMINA</a></li>
-						</ul>
-					</li>
-
-					<li>
-						<a href="">
-							<i class="icon-bar-chart"></i>
-							<span>Charts</span>
-						</a>
-					</li>
-
-					<li class="dropdown">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-long-arrow-down"></i>
-							<span>Drops</span> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="icons.html">Icons</a></li>
-							<li><a href="faq.html">FAQ</a></li>
-							<li><a href="pricing.html">Pricing Plans</a></li>
-							<li><a href="login.html">Login</a></li>
-							<li><a href="signup.html">Signup</a></li>
-							<li><a href="error.html">404</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
 
 	<!-- Main -->
 	<div class="main">
@@ -358,17 +187,20 @@ if (isset($_GET['user_id'])) {
 									<label>Izaberite klijenta: </label>
 									<select name="user_id" onchange="this.form.submit()" class="selectpicker" data-live-search="true">
 										<option value="0" disabled selected="selected">Izaberite klijenta</option>
-										<?php $get_user = mysql_query("SELECT * FROM `klijenti` ORDER by klijentid ASC");
-										while ($row_user = mysql_fetch_array($get_user)) { ?>
+										
+										<?php 
+										$SQLSEC = $rootsec->prepare("SELECT * FROM `klijenti` ORDER by klijentid ASC");
+										$SQLSEC->Execute();
+										while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 											<?php 
-												if(txt($row_user['klijentid']) == $User_ID) {
+												if(txt($row['klijentid']) == $User_ID) {
 													$get_u_link = 'selected="selected"';
 												} else {
 													$get_u_link = '';
 												}
 											?>
 											<option <?php echo $get_u_link; ?> value="<?php echo txt($row_user['klijentid']); ?>">
-												<?php echo user_full_name($row_user['klijentid']); ?>
+												<?php echo user_full_name($row['klijentid']); ?>
 											</option>
 										<?php } ?>
 									</select>
@@ -384,17 +216,19 @@ if (isset($_GET['user_id'])) {
 										<label>Izaberite masinu: </label>
 										<select name="box_id" onchange="this.form.submit()" class="selectpicker" data-live-search="true">
 											<option value="0" disabled selected="selected">Izaberite masinu</option>
-											<?php $get_box = mysql_query("SELECT * FROM `box` ORDER by boxid ASC");
-											while ($row_box = mysql_fetch_array($get_box)) { ?>
+											<?php 
+										$SQLSEC = $rootsec->prepare("SELECT * FROM `box` ORDER by boxid ASC");
+										$SQLSEC->Execute();
+										while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<?php 
-													if(txt($row_box['boxid']) == $Box_ID) {
+													if(txt($row['boxid']) == $Box_ID) {
 														$get_b_link = 'selected="selected"';
 													} else {
 														$get_b_link = '';
 													}
 												?>
-												<option <?php echo $get_b_link; ?> value="<?php echo txt($row_box['boxid']); ?>">
-													<?php echo txt($row_box['name'].' - '.$row_box['ip']); ?>
+												<option <?php echo $get_b_link; ?> value="<?php echo txt($row['boxid']); ?>">
+													<?php echo txt($row['name'].' - '.$row['ip']); ?>
 												</option>
 											<?php } ?>
 										</select>
@@ -434,8 +268,10 @@ if (isset($_GET['user_id'])) {
 
 										<select name="mod" id="cs_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '1'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(1));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -444,8 +280,10 @@ if (isset($_GET['user_id'])) {
 
 										<select name="mod" id="samp_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '2'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(2));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -454,8 +292,10 @@ if (isset($_GET['user_id'])) {
 
 										<select name="mod" id="mc_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '3'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(3));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -464,8 +304,10 @@ if (isset($_GET['user_id'])) {
 										
 										<select name="mod" id="cod2_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '4'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(4));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -473,8 +315,10 @@ if (isset($_GET['user_id'])) {
 										</select>
                                         <select name="mod" id="cod4_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '5'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(5));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -482,8 +326,10 @@ if (isset($_GET['user_id'])) {
 										</select>
 										<select name="mod" id="csgo_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '7'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(7));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -491,8 +337,10 @@ if (isset($_GET['user_id'])) {
 										</select>
 										<select name="mod" id="mta_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '8'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(8));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>		
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -500,8 +348,10 @@ if (isset($_GET['user_id'])) {
 										</select>
 										<select name="mod" id="ark_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '9'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(9));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -509,8 +359,10 @@ if (isset($_GET['user_id'])) {
 										</select>
 										<select name="mod" id="fivem_mod" style="display: none;">
 											<option value="0" disabled selected="selected">Izaberite mod</option>
-											<?php $get_cs_mod = mysql_query("SELECT * FROM `modovi` WHERE `igra` = '11'");
-											while ($row_cs_mod = mysql_fetch_array($get_cs_mod)) { ?>
+											<?php 
+											$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `igra` = ?");
+											$SQLSEC->Execute(array(11));
+											while($row_cs_mod = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 												<option value="<?php echo txt($row_cs_mod['id']); ?>">
 													<?php echo txt($row_cs_mod['ime']); ?>
 												</option>
@@ -575,31 +427,7 @@ if (isset($_GET['user_id'])) {
 		</div>
 	</div>
 
-	<!-- footer -->
-	<div class="extra">
-		<div class="extra-inner">
-			<div class="container">
-				<div class="row">
-					<div class="span12">
-						<center>
-							<img src="<?php echo logolink(); ?>" alt="LOGO!">
-						</center>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-	<div class="footer">
-		<div class="footer-inner">
-			<div class="container">
-				<div class="row">
-					<div class="span12"> &copy; <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
-				</div>
-			</div>
-		</div>
-	</div>
+<?php include_once($_SERVER['DOCUMENT_ROOT'].'/admin/footer.php'); ?>
 
 	<!-- JS / End -->
 	<?php include_once($_SERVER['DOCUMENT_ROOT'].'/admin/assets/php/java.php'); ?>
