@@ -6,8 +6,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
 */
 function is_valid_server($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	if (!$s_info) {
 		return false;
@@ -17,58 +17,58 @@ function is_valid_server($srv_id) {
 }
 function server_is_start($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['startovan']);
 }
 function server_name($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['name']);
 }
 function server_graph($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['graph']);
 }
 function server_istice($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['istice']);
 }
 function server_autorestart($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['autorestart']);
 }
 function server_istice_d($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$date = str_replace('.', '/', txt($s_info['istice']));
 	return $date;
 }
 function server_slot($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['slotovi']);	
 }
 function server_igra($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -77,8 +77,8 @@ function server_igra($srv_id) {
 }
 function server_game_id($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -113,8 +113,8 @@ function srv_game_name($g_id) {
 }
 function gp_game($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -148,8 +148,8 @@ function gp_game($srv_id) {
 }
 function gp_game_icon($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -182,8 +182,8 @@ function gp_game_icon($srv_id) {
 }
 function gp_game_id($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -192,8 +192,8 @@ function gp_game_id($srv_id) {
 }
 function game_command($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -202,22 +202,22 @@ function game_command($srv_id) {
 }
 function server_location($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return 'DE';
 }
 function server_full_ip($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return server_ip($srv_id).':'.txt($s_info['port']);
 }
 function server_ip($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `box` WHERE `boxid` = ?");
@@ -227,15 +227,15 @@ function server_ip($srv_id) {
 }
 function server_port($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['port']);
 }
 function gp_s_status($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$serverStatus = txt($s_info['status']);
     if ($serverStatus == 1) {
@@ -249,36 +249,36 @@ function gp_s_status($srv_id) {
 }
 function server_cena($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['cena']);
 }
 function server_username($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['username']);
 }
 function server_password($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['password']);
 }
 function server_rank($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['rank']);
 }
 function server_mod($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? ");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['modovi']);
 }
@@ -291,8 +291,8 @@ function s_mod_install($m_id) {
 }
 function server_mod_map($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -301,15 +301,15 @@ function server_mod_map($srv_id) {
 }
 function server_i_map($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['map']);
 }
 function server_mod_install_dir($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -318,8 +318,8 @@ function server_mod_install_dir($srv_id) {
 }
 function server_mod_name($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
@@ -332,8 +332,8 @@ function LoadFile($srv_id, $f_name) {
 }
 function getBOX($srv_id) {
 	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
-	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
 	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	return txt($s_info['box_id']);
 }
@@ -790,7 +790,7 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			fwrite($stream, "useradd -m -g gameservers -p $Srv_Password $Srv_Username\n");	
 			sleep(1);	
 				
-			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".server_username($Server_ID)."/*";	
+			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".$Srv_Username."/*";	
 	    	$cmd2 = "cd /home/".$Srv_Username."/ && wget -qO- ".get_mod_link_masina($Mod_ID). " | tar -xvzf - && rm -rf *.tar.gz";	
 	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
 	    	$cmd4 = "chmod 700 /home/".$Srv_Username;	
