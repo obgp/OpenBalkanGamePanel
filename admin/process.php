@@ -533,7 +533,9 @@ if (isset($_GET['a']) && $_GET['a'] == "box_delete") {
 		3. Delete
 	*/
 	
-	$in_base = mysql_query("DELETE FROM `box` WHERE `boxid` = '$Box_ID'");
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("DELETE FROM `box` WHERE `boxid` = ?");
+	$in_base = $SQLSEC->Execute(array($Box_ID));
 	
 	$act_box = box_action($Box_ID, 3);
 	if ($act_box == true) {
