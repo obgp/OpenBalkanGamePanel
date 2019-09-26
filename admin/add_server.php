@@ -24,7 +24,7 @@ if (isset($_GET['user_id'])) {
 
 		$Rand_PasS = random_s_key(8);
 
-		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 		$SQLSEC->Execute(array($Box_ID, $s_port));
 
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
@@ -65,7 +65,7 @@ if (isset($_GET['user_id'])) {
 		}
 		
 		for($s_port = 28960; $s_port <= 29960; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 				$vrati_inf = 'Da';
@@ -75,7 +75,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 28960; $s_port <= 29960; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -85,7 +85,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 9987; $s_port <= 11000; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -95,7 +95,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -105,7 +105,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 22003; $s_port <= 24000; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -115,7 +115,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 27015; $s_port <= 29999; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -125,7 +125,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 		for($s_port = 30120; $s_port <= 33120; $s_port++) {
-			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+			$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 			$SQLSEC->Execute(array($Box_ID, $s_port));
 			if($SQLSEC->rowCount() == 0) {
 								$vrati_inf = 'Da';
@@ -199,7 +199,7 @@ if (isset($_GET['user_id'])) {
 													$get_u_link = '';
 												}
 											?>
-											<option <?php echo $get_u_link; ?> value="<?php echo txt($row_user['klijentid']); ?>">
+											<option <?php echo $get_u_link; ?> value="<?php echo txt($row['klijentid']); ?>">
 												<?php echo user_full_name($row['klijentid']); ?>
 											</option>
 										<?php } ?>
