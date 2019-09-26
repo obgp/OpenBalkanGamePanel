@@ -14,7 +14,7 @@ function is_valid_user($u_id) {
 	$SQLSEC->Execute(array($u_id));
 	$u_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	
-	if (mysql_num_rows($u_info) == 0) {
+	if ($SQLSEC->rowCount() == 0) {
 		$return = false;
 	} else {
 		$return = true;
