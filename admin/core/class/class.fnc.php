@@ -129,4 +129,14 @@ function format_status($status) {
 	}
 }
 
+function proveriupdate() {
+$updatecheck = file_get_contents("https://raw.githubusercontent.com/obgp/update/master/update.json");
+$data = json_decode($updatecheck, true);
+if($data["hash"]==version())
+{
+	return false;
+} else {
+	return true;
+}
+}
 ?>
