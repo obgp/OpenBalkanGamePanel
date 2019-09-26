@@ -242,9 +242,9 @@ if (isset($_GET['a']) && $_GET['a'] == "naruci_server") {
 		$Buy_Cena = cena_slota_code($Buy_Slot, $Buy_Game, $Buy_Location);
 	}
 	$rootsec = rootsec();
-
-	$SQLSEC = $rootsec->prepare("INSERT INTO `billing` (`id`, `user_id`, `game_id`, `mod_id`, `location`, `slotovi`, `mesec`, `name`, `cena`, `date`, `status`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-	$drkamkurac = $SQLSEC->Execute(array($User_ID, $Buy_Game, $Buy_Mod, $Buy_Location, $Buy_Slot, $Buy_Mesec, $Buy_Name, $Buy_Cena, $Buy_Date));
+	
+	$SQLSEC = $rootsec->prepare("INSERT INTO `billing` (`id`, `user_id`, `game_id`, `mod_id`, `location`, `slotovi`, `mesec`, `name`, `cena`, `date`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$drkamkurac = $SQLSEC->Execute(array(NULL, $User_ID, $Buy_Game, $Buy_Mod, $Buy_Location, $Buy_Slot, $Buy_Mesec, $Buy_Name, $Buy_Cena, $Buy_Date, 'pending'));
 
 	if (!$drkamkurac) {
 		sMSG('Doslo je do greske, molimo pokusajte opet malo kasnije.', 'error');
