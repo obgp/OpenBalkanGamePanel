@@ -1048,7 +1048,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_mod") {
 	$Mod_Cena = $Mod_Cena_RS.'din|'.$Mod_Cena_HR.'kn|'.$Mod_Cena_BA.'km|'.$Mod_Cena_MK.'mkd|'.$Mod_Cena_ME.'eur';
 	$rootsec = rootsec();
 		
-	$SQLSEC = $rootsec->prepare("INSERT INTO `modovi` (`id`, `link`, `ime`, `opis`, `igra`, `komanda`, `sakriven`, `mapa`, `cena`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+	$SQLSEC = $rootsec->prepare("INSERT INTO `modovi` (`id`, `link`, `ime`, `opis`, `igra`, `komanda`, `sakriven`, `mapa`, `cena`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$in_base = $SQLSEC->Execute(array(NULL, $Mod_Link, $Mod_Name, $Mod_Opis, $Mod_Game, $Mod_Command, 0, $Mod_Map, $Mod_Cena));
 	
 	$Mod_ID = $SQLSEC->lastInsertId();
