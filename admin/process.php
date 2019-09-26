@@ -685,8 +685,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 		die();
 	}
 	
-
 	$Srv_Password 	= txt($_POST['password']);
+	if (empty($Srv_Password)) {
+		$Srv_Password = random_s_key(8);
+	}
+	
+	$Srv_Username = txt($_POST['password']);
 	if (empty($Srv_Password)) {
 		$Srv_Password = random_s_key(8);
 	}
