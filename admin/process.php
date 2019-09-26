@@ -427,7 +427,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 			`location` 	= '".$Box_Location."',
 			`ip` 		= '".$Box_IP."',
 			`login` 	= '".$Box_Username."',
-			`password` 	= '".mysql_real_escape_string(box_pass_in_base($Box_Password))."',
+			`password` 	= '".box_pass_in_base($Box_Password)."',
 			`sshport` 	= '".$Box_SSH."',
 			`maxsrv` 	= '20'");
 		$SQLSEC->Execute();
