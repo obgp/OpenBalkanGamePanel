@@ -716,7 +716,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 		$rootsec = rootsec();
 		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		$in_base = $SQLSEC->Execute(array(NULL, $User_ID, $Box_ID, $Srv_Name, "00000", $Mod_ID, $Srv_Mapa, $Srv_Port, "300", $Srv_Username, $Srv_Password, 1, 0, 0, 1, $Game_ID, $Srv_Komanda, $Srv_Cena, 0, 0, 0, "Nema", "-1", 0));
-		$Server_ID 	= $SQLSEC->lastInsertId();
+		$Server_ID 	= $rootsec->lastInsertId();
 		$Get_IPP 	= box_ip($Box_ID);
 		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		$in_base2 = $SQLSEC->Execute(array(NULL, $G_type, $Get_IPP, $Srv_Port, $Srv_Port, $Mod_ID, $Srv_Mapa, $Srv_Port, 0, 0, 0, $Srv_Name, '', '', ''));
@@ -809,7 +809,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_client") {
 	$SQLSEC = $rootsec->prepare("INSERT INTO `klijenti` (`klijentid`, `username`, `sifra`, `ime`, `prezime`, `email`, `novac`, `status`, `kreiran`, `zemlja`, `avatar`, `cover`, `sigkod`, `token`, `mail`, `dodao`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$in_base = $SQLSEC->Execute(array(NULL, $Client_Username, $Client_Sifra, $Client_Ime, $Client_Prezime, $Client_Email, 0, 1, $Reg_User, $Client_Drzava, 'avatar.png', 'cover.png', $Client_PinCode, $Client_Token, 1, $_SESSION["admin_login"]));
 	
-	$C_New_ACC_ID = $SQLSEC->lastInsertId();
+	$C_New_ACC_ID = $rootsec->lastInsertId();
 
 	if (!$in_base) {
 		sMSG('Doslo je do greske! #ACC nije kreiran', 'error');
@@ -1051,7 +1051,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_mod") {
 	$SQLSEC = $rootsec->prepare("INSERT INTO `modovi` (`id`, `link`, `ime`, `opis`, `igra`, `komanda`, `sakriven`, `mapa`, `cena`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$in_base = $SQLSEC->Execute(array(NULL, $Mod_Link, $Mod_Name, $Mod_Opis, $Mod_Game, $Mod_Command, 0, $Mod_Map, $Mod_Cena));
 	
-	$Mod_ID = $SQLSEC->lastInsertId();
+	$Mod_ID = $rootsec->lastInsertId();
 	if (!$in_base) {
 		sMSG('Mod nije dodat!', 'error');
 		redirect_to('add_mod.php');
@@ -1117,7 +1117,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_plugin") {
 	$SQLSEC = $rootsec->prepare("INSERT INTO `plugins` (`id`, `ime`, `deskripcija`, `prikaz`, `text`, `game_id`) VALUES (?, ?, ?, ?, ?, ?);");
 	$in_base = $SQLSEC->Execute(array(NULL, $Plugin_Name, $Plugin_Opis, $Plugin_F_Name, 'obgp_plugins.ini', $Plugin_Game));
 	
-	$Plugin_ID = $SQLSEC->lastInsertId();
+	$Plugin_ID = $rootsec->lastInsertId();
 	if (!$in_base) {
 		sMSG('Plugin nije dodat!', 'error');
 		redirect_to('add_plugin.php');
@@ -1183,7 +1183,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_admin") {
 	$SQLSEC = $rootsec->prepare("INSERT INTO `admin` (`id`, `fname`, `lname`, `username`, `password`, `email`, `status`, `signature`, `support_za`, `adm_perm`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$in_base = $SQLSEC->Execute(array(NULL, $Admin_Name, $Admin_Prezime, $Admin_UserName, $Admin_Password, $Admin_Email, $Admin_Radnik, $Adm_Potpis, $Supp_Premission, $Adm_Premission, $Admin_Note));
 	
-	$Admin_ID = $SQLSEC->lastInsertId();
+	$Admin_ID = $rootsec->lastInsertId();
 	if (!$in_base) {
 		sMSG('Doslo je do greske! -Admin nije dodat! #Error add_admin', 'error');
 		redirect_to('add_admin.php');
