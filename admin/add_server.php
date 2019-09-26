@@ -44,7 +44,7 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 
-		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = '' AND `port` = ? LIMIT 1");
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `box_id` = ? AND `port` = ? LIMIT 1");
 		$SQLSEC->Execute(array($Box_ID, $s_port));
 	
 			for($s_port = 7777; $s_port <= 9999; $s_port++) {
