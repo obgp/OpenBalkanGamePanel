@@ -685,12 +685,6 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 		die();
 	}
 	
-	$Srv_Username 	= txt($_POST['username']);
-	if (is_valid_srv_username($Srv_Username) == $Srv_Username) {
-		sMSG('Dogodila se greska, molimo javite Developeru za ovaj problem ! #No_create_new_username', 'error');
-		redirect_to('add_server.php?user_id='.$User_ID.'&box_id='.$Box_ID);
-		die();
-	}
 
 	$Srv_Password 	= txt($_POST['password']);
 	if (empty($Srv_Password)) {
