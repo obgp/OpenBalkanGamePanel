@@ -409,7 +409,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
 					</div>
       				<div class="form-group">
                 <div class="pull-right">
-      					 <button class="btn btn-purple" type="sumbit"><i class="far fa-sign-in-alt"></i> Uloguj se</button>
+      					 <button class="btn btn-purple" type="sumbit"><i class="far fa-sign-in-alt"></i> Registruj se</button>
                 </div>
       				</div>
       			</form>       		
