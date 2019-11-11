@@ -853,7 +853,29 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			fwrite($stream, "screen -mSL ".server_username($Server_ID)."_change_mod\n");
 			sleep(1);
 			//CMD Final - Copy/Pase mod files and chown user
-			$cmd_final = 'nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cp -Rf '.$S_Install_Dir.'/* /home/'.server_username($Server_ID).' && chown -Rf '.server_username($Server_ID).':'.server_username($Server_ID).' /home/'.server_username($Server_ID).' && exit'; 
+			$link = false;
+			$arhiva = false;
+			if (strpos($S_Install_Dir, 'https') !== false) {
+			  $link = true;
+			}
+			else if (strpos($S_Install_Dir, 'http') !== false) {	
+			  $link = true;
+			} else {
+			  $link = false;
+			}
+			if(strpos($S_Install_Dir, 'tar.gz') !== false) {
+			  $arhiva = true;
+			} else {
+			  $arhiva = false;
+			}
+			if($link==true && $arhiva == true)
+			{
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == true) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz && chown -Rf '.server_username($Server_ID).':'.server_username($Server_ID).' /home/'.server_username($Server_ID).' && exit";
+			} else if ($link == false && $arhiva == false) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* . && chown -Rf '.server_username($Server_ID).':'.server_username($Server_ID).' /home/'.server_username($Server_ID).' && exit";
+			}
 			
 			fwrite($stream, "$cmd_final\n");
 			sleep(2);
