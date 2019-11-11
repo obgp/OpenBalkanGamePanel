@@ -596,9 +596,33 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $
 			} else {
 	    		$return = false;
 	    	}
-	    }*/
+	    }*/	
+		        
+			$link = false;
+			$arhiva = false;
+			if (strpos($S_Install_Dir, 'https') !== false) {
+			  $link = true;
+			}
+			else if (strpos($S_Install_Dir, 'http') !== false) {	
+			  $link = true;
+			} else {
+			  $link = false;
+			}
+			if(strpos($S_Install_Dir, 'tar.gz') !== false) {
+			  $arhiva = true;
+			} else {
+			  $arhiva = false;
+			}
+			if($link==true && $arhiva == true)
+			{
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == true) {
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == false) {
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
+			}
+			
 	            $cmd1 = "screen -m -S ".server_username($Server_ID)."_reinstall && rm -Rf /home/".server_username($Server_ID)."/*";
-	    	    $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
 	    	    $cmd3 = "chown ".server_username($Server_ID)." -Rf /home/".server_username($Server_ID);
 	    	    fwrite($stream, "$cmd1\n");
 	    	    sleep(1);
