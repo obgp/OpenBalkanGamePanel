@@ -206,8 +206,10 @@ if (cp_perm_srv_view($Server_ID) == false) {
 
 				<select name="client_id" class="selectpicker" data-live-search="true">
 					<option value="0" disabled selected="selected">Izaberite klijenta</option>
-					<?php $get_clients = mysql_query("SELECT * FROM `klijenti` ORDER by klijentid ASC");
-					while ($row_client = mysql_fetch_array($get_clients)) { ?>
+					<?php
+					$SQLSEC = $rootsec->prepare("SELECT * FROM `klijenti` ORDER by klijentid ASC");
+					$SQLSEC->Execute();
+					while($row_client = $SQLSEC->fetch(PDO::FETCH_ASSOC)) { ?>
 						<option value="<?php echo txt($row_client['klijentid']); ?>" style="color:#333;">
 							<?php echo user_full_name($row_client['klijentid']).' - '.user_email($row_client['klijentid']); ?>
 						</option>
