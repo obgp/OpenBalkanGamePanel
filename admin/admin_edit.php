@@ -106,7 +106,6 @@ if (!($_SESSION['admin_login'] == $Admin_ID)) {
 													<option value="1" id="helper">Helper</option>
 													<option value="2" id="support">Support</option>
 													<option value="3" id="admin">Administrator</option>
-													<option value="4" id="developer">Developer</option>
 												</select>
 											</div>		
 										</div>
