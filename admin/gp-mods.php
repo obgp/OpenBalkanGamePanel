@@ -139,7 +139,7 @@ if (cp_perm_srv_view($Server_ID) == false) {
 			                                $Mod_ID 		= txt($row['id']);
 			                                $Mod_Name 		= txt($row['ime']);
 			                                $Mod_Desc 		= txt($row['opis']);
-			                                $Mod_Path 		= txt($row['putanja']);
+			                                $Mod_Path 		= txt($row['link']);
 
 			                            if ($mm_id == $Mod_ID) { ?>
 			                                <li>
