@@ -39,7 +39,7 @@ if (is_login() == true) {
 				</a>
 
 				<a class="brand" href="index.php">
-					<img src="/admin/assets/img/logo.png" alt="GB-Hoster.Me LOGO!"> 
+					<img src="<?php echo logolink(); ?>" alt="LOGO"> 
 				</a>
 			</div>
 		</div>
@@ -84,7 +84,7 @@ if (is_login() == true) {
 					<div class="row">
 						<div class="span12">
 							<center>
-								<img src="/admin/assets/img/gh_logo.png" alt="Gold Hosting LOGO!">
+								<img src="<?php echo logolink(); ?>" alt="LOGO">
 							</center>
 						</div>
 					</div>
@@ -96,7 +96,7 @@ if (is_login() == true) {
 			<div class="footer-inner">
 				<div class="container">
 					<div class="row">
-						<div class="span12"> &copy; 2017 - <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana. </div>
+						<div class="span12"> &copy; <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana <a href="https://github.com/obgp/OpenBalkanGamePanel">OpenBalkanGamePanel</a></div>
 					</div>
 				</div>
 			</div>
