@@ -15,6 +15,13 @@ function is_valid_server($srv_id) {
 		return true;
 	}
 }
+function Srw_Owenr($srv_id) {
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
+	$SQLSEC->Execute(array($srv_id));
+	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return txt($s_info['user_id']);
+}
 function server_is_start($srv_id) {
 	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ?");
