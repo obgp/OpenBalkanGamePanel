@@ -714,12 +714,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 	} else {
 		//in base
 		$rootsec = rootsec();
-		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		$in_base = $SQLSEC->Execute(array(NULL, '$User_ID', '$Box_ID', '$Srv_Name', '00000', '$Mod_ID', '$Srv_Mapa', '$Srv_Port', 300, '$Srv_Slot', '$Srv_Username', '$Srv_Password', '$Srv_Istice', 1, 0, 0, 1, '$Game_ID', '$Srv_Komanda', '$Srv_Cena', 0, 0, 0, 'Nema', '-1', 0));
+		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base = $SQLSEC->Execute(array($User_ID, $Box_ID, $Srv_Name, '00000', $Mod_ID, $Srv_Mapa, $Srv_Port, 300, $Srv_Slot, $Srv_Username, $Srv_Password, $Srv_Istice, 1, 0, 0, 1, $Game_ID, $Srv_Komanda, $Srv_Cena, 0, 0, 0, 'Nema', '-1', 0));
 		$Server_ID 	= $rootsec->lastInsertId();
 		$Get_IPP 	= box_ip($Box_ID);
-		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		$in_base2 = $SQLSEC->Execute(array(NULL, '$G_type', '$Get_IPP', '$Srv_Port', '$Srv_Port', 0, 0, 0, '$Srv_Name', '', '', ''));
+		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base2 = $SQLSEC->Execute(array($G_type, $Get_IPP, $Srv_Port, $Srv_Port, 0, 0, 0, '$Srv_Name', '', '', ''));
 		if (!$in_base && !$in_base2) {
 			sMSG('Server je instaliran, ali dogodila se greska prilikom spajanja na mysql bazu!', 'error');
 			redirect_to('add_server.php?user_id='.$User_ID.'&box_id='.$Box_ID);
