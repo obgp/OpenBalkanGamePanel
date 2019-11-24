@@ -2512,7 +2512,10 @@ if (isset($_GET['s']) && $_GET['s'] == "suspend_server") {
 		die();
 	}
 
-	$in_base = mysql_query("UPDATE `serveri` SET `status` = '2' WHERE `id` = '$Server_ID'");
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `status` = '2' WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Server_ID));
 	if (!$in_base) {
 		sMSG('Doslo je do greske!', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -2533,7 +2536,10 @@ if (isset($_GET['s']) && $_GET['s'] == "un_suspend_server") {
 		die();
 	}
 
-	$in_base = mysql_query("UPDATE `serveri` SET `status` = '1' WHERE `id` = '$Server_ID'");
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `status` = '1' WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Server_ID));
 	if (!$in_base) {
 		sMSG('Doslo je do greske!', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -2561,7 +2567,10 @@ if (isset($_GET['s']) && $_GET['s'] == "change_owner") {
 		die();
 	}
 
-	$in_base = mysql_query("UPDATE `serveri` SET `user_id` = '$Client_ID' WHERE `id` = '$Server_ID'");
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `user_id` = ? WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Client_ID, $Server_ID));
 	if (!$in_base) {
 		sMSG('Doslo je do greske!', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
