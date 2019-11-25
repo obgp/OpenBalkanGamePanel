@@ -94,15 +94,13 @@ function plugin_action($Server_ID, $Plugin_ID, $Plugin_Action_ID) {
 		if(!($ssh_conn = ssh2_connect(server_ip($Server_ID), box_ssh($Box_ID)))) {
 		    $return = false;
 		} else {
-			if(!ssh2_auth_password($ssh_conn, server_username($Server_ID), server_password($Server_ID))) {
+			if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
 		    	$return = false;
 		    } else {
 		   		$stream = ssh2_shell($ssh_conn, 'xterm');
-
-		   		fwrite($stream, 'cd cstrike/addons/amxmodx/plugins/'.PHP_EOL);
+		   		fwrite($stream, 'cd /home/'.server_username($Server_ID).'/cstrike/addons/amxmodx/plugins/'.PHP_EOL);
 				sleep(1);
-
-				fwrite($stream, 'wget https://raw.githubusercontent.com/obgp/CDN/master/assets/maps/'.plugin_amxx($Plugin_ID).PHP_EOL);
+				fwrite($stream, 'wget '.plugin_amxx($Plugin_ID).PHP_EOL);
 				sleep(2);
 
 				$add_to_pl_list = add_to_plugin_list($Server_ID, $Plugin_ID);
@@ -121,14 +119,12 @@ function plugin_action($Server_ID, $Plugin_ID, $Plugin_Action_ID) {
 		if(!($ssh_conn = ssh2_connect(server_ip($Server_ID), box_ssh($Box_ID)))) {
 		    $return = false;
 		} else {
-			if(!ssh2_auth_password($ssh_conn, server_username($Server_ID), server_password($Server_ID))) {
+			if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
 		    	$return = false;
 		    } else {
 		   		$stream = ssh2_shell($ssh_conn, 'xterm');
-
-		   		fwrite($stream, 'cd cstrike/addons/amxmodx/plugins/'.PHP_EOL);
+		   		fwrite($stream, 'cd /home/'.server_username($Server_ID).'/cstrike/addons/amxmodx/plugins/'.PHP_EOL);
 				sleep(1);
-
 				fwrite($stream, 'rm '.plugin_amxx($Plugin_ID).PHP_EOL);
 				sleep(2);
 
@@ -158,7 +154,7 @@ function add_to_plugin_list($Server_ID, $Plugin_ID) {
 	$File_Path 	= '/cstrike/addons/amxmodx/configs/';
 
 	$File_Edit 	= file_get_contents(LoadFile($Server_ID, $File_Path.'plugins.ini')).PHP_EOL.PHP_EOL;
-    $File_Edit .= "; GB-Hoster.me | Auto Install plugin: ".plugin_name($Plugin_ID).PHP_EOL;
+    $File_Edit .= "; OBGP | Auto Install plugin: ".plugin_name($Plugin_ID).PHP_EOL;
     $File_Edit .= plugin_amxx($Plugin_ID);
 		
 	if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
@@ -277,15 +273,13 @@ function map_action($Server_ID, $Map_ID, $Map_Action_ID) {
 		if(!($ssh_conn = ssh2_connect(server_ip($Server_ID), box_ssh($Box_ID)))) {
 		    $return = false;
 		} else {
-			if(!ssh2_auth_password($ssh_conn, server_username($Server_ID), server_password($Server_ID))) {
+			if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
 		    	$return = false;
 		    } else {
 		   		$stream = ssh2_shell($ssh_conn, 'xterm');
-
-		   		fwrite($stream, 'cd cstrike/maps/'.PHP_EOL);
+		   		fwrite($stream, 'cd /home/'.server_username($Server_ID).'/cstrike/maps/'.PHP_EOL);
 				sleep(1);
-
-				fwrite($stream, 'wget https://raw.githubusercontent.com/obgp/CDN/master/assets/maps/'.map_file($Map_ID).PHP_EOL);
+				fwrite($stream, 'wget '.map_file($Map_ID).PHP_EOL);
 				sleep(2);
 
 				$add_to_pl_list = add_to_plugin_list($Server_ID, $Map_ID);
@@ -304,14 +298,12 @@ function map_action($Server_ID, $Map_ID, $Map_Action_ID) {
 		if(!($ssh_conn = ssh2_connect(server_ip($Server_ID), box_ssh($Box_ID)))) {
 		    $return = false;
 		} else {
-			if(!ssh2_auth_password($ssh_conn, server_username($Server_ID), server_password($Server_ID))) {
+			if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
 		    	$return = false;
 		    } else {
 		   		$stream = ssh2_shell($ssh_conn, 'xterm');
-
-		   		fwrite($stream, 'cd cstrike/addons/maps/'.PHP_EOL);
+		   		fwrite($stream, 'cd /home/'.server_username($Server_ID).'/cstrike/addons/maps/'.PHP_EOL);
 				sleep(1);
-
 				fwrite($stream, 'rm '.map_file($Plugin_ID).PHP_EOL);
 				sleep(2);
 
