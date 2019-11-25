@@ -2550,5 +2550,8 @@ if (isset($_GET['s']) && $_GET['s'] == "change_owner") {
 		die();
 	}
 }
-
+if (isset($_GET['s']) && $_GET['s'] == "csfirewallinstall") {
+	$boxid		= txt($_POST['boxid']);
+	csfirewallinstall($boxid);
+}
 ?>
