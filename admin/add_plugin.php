@@ -46,9 +46,9 @@ if (view_admin(a_status($_SESSION['admin_login'])) == false) {
 										</div>
 
 										<div class="control-group">											
-											<label class="control-label" for="upload">Upload AMXX file: </label>
+											<label class="control-label" for="link">Link plugina/Putanja: </label>
 											<div class="controls">
-												<input type="file" name="fileToUpload" id="fileToUpload" required="">
+												<input type="text" name="link" class="span6" id="link" value="" required="">
 											</div>				
 										</div>
 
