@@ -29,7 +29,7 @@ Admin Login: Admin/demo
 
 ## TEAM
 
-- [R00tS3c](https://github.com/R00tS3c) __(CURRENT DEVELOPER)__
+- [R00tS3c](https://github.com/R00tS3c) __(DEVELOPER)__
 - [MSKOKO.ME](https://github.com/mskoko) (mskoko.me@gmail.com) __(DEVELOPER)__
 
 
@@ -43,5 +43,3 @@ Admin Login: Admin/demo
 GPL-3.0
 
 ---
-
-> GitHub [@R00tS3c](https://github.com/R00tS3c) &nbsp;&middot;&nbsp;
