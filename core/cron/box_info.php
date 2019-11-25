@@ -12,9 +12,8 @@ $SQLSEC->Execute();
 echo 'Box Cache!<br><br>';
 
 while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) {
-    $Box_ID 	= txt($row['boxid']);
-	
-	$Box_Cache = box_cache($Box_ID);
+	$Box_ID 	= txt($row['boxid']);
+	$Box_Cache 	= box_cache($Box_ID);
 	
 	if($Box_Cache) {
 		$Box_CacheStatus = "<span style='color:#54ff00;'>Successfully</span>";
@@ -22,11 +21,8 @@ while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) {
 		$Box_CacheStatus = "<span style='color:red;'>Not Successfully</span>";
 	}
 	
-	echo "Box ID : $Box_ID<br>";
-	echo "Box Name : ".box_name($Box_ID)."<br>";
-	echo "Cache Status : $Box_CacheStatus<br><br>";
+	echo 'Box ID: '.$Box_ID.' | Box Name: '.box_name($Box_ID).' | Cache Status:'.$Box_CacheStatus.'<hr>';
 }
-
 update_cron();
 
 ?>
