@@ -1069,6 +1069,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_plugin") {
 	$Plugin_Opis 		= $_POST['opis'];
 	$Plugin_Game 		= txt($_POST['game_']);
 	$Plugin_Cvars 		= txt($_POST['cvarovi']);
+	$Plugin_link		= $_POST['link'];
 
 	if (empty($Plugin_Name)||empty($Plugin_Opis)||empty($Plugin_Game)) {
 		sMSG('Plugin nije dodat! -Sva polja moraju biti popunjena!', 'error');
@@ -1081,41 +1082,15 @@ if (isset($_GET['a']) && $_GET['a'] == "add_plugin") {
 	}
 
 	if (!$Plugin_Game == 1) {
-		sMSG('Plugin nije dodat! -Ova opcija je omogucena samo za Counter-Strike 1.6 igru!', 'error');
+		sMSG('Plugin nije dodat! - Ova opcija je omogucena samo za Counter-Strike 1.6 igru!', 'error');
 		redirect_to('add_plugin.php');
 		die();
 	}
 
-	$target_dir 	= $_SERVER['DOCUMENT_ROOT'].'/assets/plugin/';
-	$target_file 	= $target_dir.basename($_FILES['fileToUpload']['name']);
-	$uploadOk 		= '';
-
-	$plugin_upload = pathinfo($target_file, PATHINFO_EXTENSION);
-	if($plugin_upload == 'amxx') {
-	    $uploadOk = true;
-	} else {
-		$uploadOk = false;
-	}
-
-	//
-	if (file_exists($target_file)) {
-	    sMSG('Plugin nije dodat! Ovaj Plugin vec postoji!', 'info');
-		redirect_to('add_plugin.php');
-		die();
-	}
-
-	//
-	if ($_FILES['fileToUpload']['size'] > 500000) {
-	    sMSG('Plugin nije dodat! Fajl je prevelik!', 'error');
-		redirect_to('add_plugin.php');
-		die();
-	}
-
-	$Plugin_F_Name 		= txt(basename( $_FILES['fileToUpload']['name']));
 	$rootsec = rootsec();
 		
 	$SQLSEC = $rootsec->prepare("INSERT INTO `plugins` (`id`, `ime`, `deskripcija`, `prikaz`, `text`, `game_id`) VALUES (?, ?, ?, ?, ?, ?);");
-	$in_base = $SQLSEC->Execute(array(NULL, $Plugin_Name, $Plugin_Opis, $Plugin_F_Name, 'obgp_plugins.ini', $Plugin_Game));
+	$in_base = $SQLSEC->Execute(array(NULL, $Plugin_Name, $Plugin_Opis, $Plugin_F_Name, $Plugin_link, $Plugin_Game));
 	
 	$Plugin_ID = $rootsec->lastInsertId();
 	if (!$in_base) {
@@ -1123,15 +1098,9 @@ if (isset($_GET['a']) && $_GET['a'] == "add_plugin") {
 		redirect_to('add_plugin.php');
 		die();
 	} else {
-		if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file)) {
-	        sMSG('Uspesno ste dodali novi plugin! '.$Plugin_F_Name, 'success');
-			redirect_to('gp-plugin.php?id='.$Plugin_ID);
-			die();
-	    } else {
 	    	sMSG('Plugin nije dodat! Doslo je do greske!', 'error');
 			redirect_to('add_plugin.php');
 			die();
-	    }
 	}
 }
 
