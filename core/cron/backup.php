@@ -4,9 +4,11 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-$Backups = mysql_query("SELECT * FROM `server_backup`");
+$rootsec = rootsec();
+$SQLSEC = $rootsec->prepare("SELECT * FROM `server_backup`");
+$SQLSEC->Execute();
 
-while($row = mysql_fetch_array($Backups)) {
+while($row = $SQLSEC->fetch(PDO::FETCH_ASSOC)) {
 	$Server_ID 		=		txt($row['srvid']);
 	$Backup_Name 		=		txt($row['name']);
 	$BackupStatus 		=		txt($row['status']);
@@ -24,7 +26,9 @@ while($row = mysql_fetch_array($Backups)) {
 		$BackupStatus 	=		"0";
 		$BackupSize 	=		"0";
 	}
-	mysql_query("UPDATE `server_backup` SET `status` = '$BackupStatus', `size` = '$BackupSize'");
+	
+	$SQLSEC = $rootsec->prepare("UPDATE `server_backup` SET `status` = ?, `size` = ?");
+	$SQLSEC->Execute(array($BackupStatus, $BackupSize));
 	
 	echo "Backup Name : ".$Backup_Name." | Backup Status : ".$BackupStatus." | ".$BackupSize."<hr>";
 }
