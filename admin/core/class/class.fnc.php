@@ -11,10 +11,10 @@ function multiexplode($delimiters, $string) {
 }
 
 function admin_activity() {
-	if (is_login() == true) {
-	$rootsec = rootsec();
-	$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `lastactivity` = ? WHERE `id` = ?");
-	$SQLSEC->Execute(array(time(),$_SESSION["admin_login"]));	
+	if (is_login()) {
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("UPDATE `admin` SET `lastactivity` = ? WHERE `id` = ?");
+		$SQLSEC->Execute(array(time(),$_SESSION["admin_login"]));	
 	}
 }
 
@@ -36,49 +36,42 @@ function random_n_key($key) {
 
 function random_s_key($length = 32, $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890") {
 	$chars_length = strlen( $chars ) - 1;
-    $string = $chars[rand( 0, $chars_length )];
-    $i = 1;
-    while ( $i < $length ) {
-        $r = $chars[rand( 0, $chars_length )];
-        if ( $r != $string[$i - 1] ) {
-            $string .= $r;
-        }
-        $i = strlen( $string );
-    }
-
-    return $string;
+	$string = $chars[rand( 0, $chars_length )];
+	$i = 1;
+	while ( $i < $length ) {
+		$r = $chars[rand( 0, $chars_length )];
+		if ( $r != $string[$i - 1] ) {
+			$string .= $r;
+		}
+		$i = strlen( $string );
+    	}
+	return $string;
 }
 
 function get_size($size) {
-	if ( $size < 0 - 1 )
-	{
+	if ( $size < 0 - 1 ) {
 		return 'Nepoznato';
 	}
-    if ( $size < 1024 )
-	{
+	if ( $size < 1024 ) {
 		return round( $size, 2 )." Byte";
 	}
-	if ( $size < 1024 * 1024 )
-	{
+	if ( $size < 1024 * 1024 ) {
 		return round( $size / 1024, 2 )." Kb";
 	}
-	if ( $size < 1024 * 1024 * 1024 )
-	{
+	if ( $size < 1024 * 1024 * 1024 ) {
 		return round( $size / 1024 / 1024, 2 )." Mb";
 	}
-	if ( $size < 1024 * 1024 * 1024 * 1024 )
-	{
+	if ( $size < 1024 * 1024 * 1024 * 1024 ) {
 		return round( $size / 1024 / 1024 / 1024, 2 )." Gb";
 	}
-	if ( $size < 1024 * 1024 * 1024 * 1024 * 1024 )
-	{
+	if ( $size < 1024 * 1024 * 1024 * 1024 * 1024 ) {
 		return round( $size / 1024 / 1024 / 1024 / 1024, 2 )." Tb";
 	}
 }
 
 function file_size($size) {
-    $filesizename = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-    return $size ? round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i] : '0 Bytes';
+	$filesizename = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+	return $size ? round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i] : '0 Bytes';
 }
 
 function cs_cfg($find, $s_id) {
