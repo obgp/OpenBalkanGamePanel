@@ -454,26 +454,7 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $
 	    	$return = false;
 	    } else {
 	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-/*            include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/reinstall/cs16.php');
-            include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/reinstall/mc.php');
-            include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/reinstall/samp.php');
-            
-            if (gp_game_id($Server_ID) == 4) {
-				$return = false;
-			} else if (gp_game_id($Server_ID) == 5) {
-				$return = false;
-			} else if (gp_game_id($Server_ID) == 6) {
-				$return = false;
-			} else if (gp_game_id($Server_ID) == 7) {
-				$return = false;
-			} else if (gp_game_id($Server_ID) == 8) {
-				$return = false;
-			} else if (gp_game_id($Server_ID) == 9) {
-				$return = false;
-			} else {
-	    		$return = false;
-	    	}
-	    }*/
+
 	            $cmd1 = "screen -m -S ".server_username($Server_ID)."_reinstall && rm -Rf /home/".server_username($Server_ID)."/*";
 	    	    $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
 	    	    $cmd3 = "chown ".server_username($Server_ID)." -Rf /home/".server_username($Server_ID);
@@ -694,8 +675,29 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 	    	//User add screen
 			fwrite($stream, "screen -mSL ".server_username($Server_ID)."_change_mod\n");
 			sleep(1);
-			//CMD Final - Copy/Pase mod files and chown user
-			$cmd_final = 'nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cp -Rf '.$S_Install_Dir.'/* /home/'.server_username($Server_ID).' && chown -Rf '.server_username($Server_ID).':'.server_username($Server_ID).' /home/'.server_username($Server_ID).' && exit'; 
+			$link = false;
+			$arhiva = false;
+			if (strpos($S_Install_Dir, 'https') !== false) {
+			  $link = true;
+			}
+			else if (strpos($S_Install_Dir, 'http') !== false) {	
+			  $link = true;
+			} else {
+			  $link = false;
+			}
+			if(strpos($S_Install_Dir, 'tar.gz') !== false) {
+			  $arhiva = true;
+			} else {
+			  $arhiva = false;
+			}
+			if($link==true && $arhiva == true)
+			{
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == true) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == false) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
+			}
 			
 			fwrite($stream, "$cmd_final\n");
 			sleep(2);
@@ -803,11 +805,34 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 				
 			fwrite($stream, "useradd -m -g gameservers -p $Srv_Password $Srv_Username\n");	
 			sleep(1);	
-				
+			
+			$link = false;
+			$arhiva = false;
+			if (strpos($S_Install_Dir, 'https') !== false) {
+			  $link = true;
+			}
+			else if (strpos($S_Install_Dir, 'http') !== false) {	
+			  $link = true;
+			} else {
+			  $link = false;
+			}
+			if(strpos($S_Install_Dir, 'tar.gz') !== false) {
+			  $arhiva = true;
+			} else {
+			  $arhiva = false;
+			}
+			if($link==true && $arhiva == true)
+			{
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == true) {
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == false) {
+			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
+			}
+			
 			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".$Srv_Username."/*";	
-	    	$cmd2 = "cd /home/".$Srv_Username."/ && wget -qO- ".get_mod_link_masina($Mod_ID). " | tar -xvzf - && rm -rf *.tar.gz";	
-	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
-	    	$cmd4 = "chmod 700 /home/".$Srv_Username;	
+	    		$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
+	    		$cmd4 = "chmod 700 /home/".$Srv_Username;	
 				
 				
 			fwrite($stream, "$cmd1\n");	
