@@ -7,6 +7,16 @@ function redirect_to($rdr_link) {
     }
 }
 
+/* Nova Secure Funkcija (Testirati)  */
+function SecureTxt($String)  {
+    $String = htmlspecialchars(trim($String), ENT_QUOTES);
+
+    $String = str_ireplace('&amp;#34;', '"', $String);
+    $String = str_ireplace('&amp;#39;', "'", $String);
+
+    return $String;
+}
+
 /**
 * Secure Text
 */
