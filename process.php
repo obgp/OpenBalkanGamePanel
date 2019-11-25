@@ -1167,7 +1167,7 @@ if (isset($_GET['a']) && $_GET['a'] == "change_sname") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		sMSG('Uspesno ste promenili ime servera u GamePanl-u! '.$S_New_Name, 'success');
+		sMSG('Uspesno ste promenili ime servera u GamePanel-u! '.$S_New_Name, 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	}
@@ -1205,4 +1205,66 @@ if (isset($_GET['a']) && $_GET['a'] == "change_m_name") {
 	}
 }
 
+if (isset($_GET['a']) && $_GET['a'] == "boost") {
+	$mdb = masterserver();
+	$rootsec = rootsec();
+	$server_id = txt($_POST['server_id']);
+	
+	if ($server_id == "") {
+		$_SESSION['error'] = "Greska - BOOST";
+		header("Location: gp-home.php");
+		die();
+	}
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM serveri WHERE id=?");
+	$SQLSEC->Execute(array($server_id));
+	$pp_server = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `box` WHERE `boxid` = ?");
+	$SQLSEC->Execute(array($pp_server["box_id"]));
+	$info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	$server_ip 		= $info['ip'];
+	$ime 		= $info['name'];
+	$server_port    = $pp_server['port'];
+	$fullip = $server_ip.":".$server_port;
+	$vreme = date('Y-m-d H:i:s');
+	
+	$razlikavremena =($istice-strtotime($vreme)) / 86400;
+	
+	$SQLSEC = $mdb->prepare("SELECT * FROM servers WHERE `ip`= ?");
+	$SQLSEC->Execute(array($fullip));
+    	$broj = $SQLSEC->rowCount();
+	
+	if($pp_server['igra'] != "1") {
+	$_SESSION['info'] = "GRESKA! - VAS SERVER NIJE CS 1.6";
+	header("Location: $_SERVER[HTTP_REFERER]");
+	die();
+	}
+	
+	if($broj == 0)
+	{
+	$SQLSEC = $mdb->prepare("INSERT INTO servers (ip, ime) VALUES (?,?)");
+	if($SQLSEC->Execute(array($fullip, $ime)) === TRUE) {
+	$srvid = $rootsec->lastInsertId();
+	$SQLSEC = $mdb->prepare("INSERT INTO boost_list (serverid, expiry_time) VALUES (?,?)");
+	if($SQLSEC->Execute(array($srvid, $razlikavremena)) === TRUE)
+	{
+	$_SESSION['info'] = "Uspesno ste boostovali vas server!";
+	header("Location: $_SERVER[HTTP_REFERER]");
+	die();
+	}
+	else
+	{
+		echo $mdb->error;
+	}
+	} else { 	 
+		echo $mdb->error;}
+	}
+	else 
+	{
+		$_SESSION['info'] = "Sacekajte 2 dana da bi boostovali opet server!";
+		header("Location: $_SERVER[HTTP_REFERER]");
+		die();
+	}
+}
 ?>
