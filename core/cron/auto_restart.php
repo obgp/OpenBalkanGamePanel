@@ -13,13 +13,12 @@ echo "Restartovanje svih servera zakazanih za {$hour}:00 !<br>";
 echo '<br>';
 
 while($row = mysql_fetch_array($list_server)) {
-    $Server_ID 	= txt($row['id']);
-    $Box_ID 	= txt($row['box_id']);
+	$Server_ID 	= txt($row['id']);
+	$Box_ID 	= txt($row['box_id']);
 	
-    cron_stop_server(box_ip($Box_ID), box_ssh($Box_ID), server_username($Server_ID), server_password($Server_ID), $Server_ID, 'admin', true);
-	cron_start_server(box_ip($Box_ID), box_ssh($Box_ID), server_username($Server_ID), server_password($Server_ID), $Server_ID, 'admin', true);
-	
-    echo '<br>';
+	cron_stop_server(box_ip($Box_ID), box_ssh($Box_ID), server_username($Server_ID), server_password($Server_ID), $Server_ID, 'admin', true);
+	cron_start_server(box_ip($Box_ID), box_ssh($Box_ID), server_username($Server_ID), server_password($Server_ID), $Server_ID, 'admin', true);	
+	echo '<br>';
 }
 
 function cron_stop_server($ip, $port, $username, $password, $serverid, $klijentid, $restart) {
