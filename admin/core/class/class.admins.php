@@ -41,11 +41,12 @@ function admin_login($email, $password) {
 		
 		$_SESSION['admin_login'] = $proveri_usera['id'];
 		
-		setcookie('admin_login', $proveri_usera['id'], time() + 60*60*24*7); // 7 days (604800)
+		// Set Cookie expiration // for 7 days (7 dana)
+		$cookie_expiration_time = $current_time + (30 * 24 * 60 * 60);  // for 7 days (7 dana)
+		setcookie('admin_login', $proveri_usera['id'], $cookie_expiration_time, '/', null, null, TRUE);
 		
 		$_SESSION['admin_rank'] = $proveri_usera['status'];
-		
-		setcookie('admin_rank', $proveri_usera['status'], time() + 60*60*24*7); // 7 days (604800)
+		setcookie('admin_rank', $proveri_usera['status'], $cookie_expiration_time, '/', null, null, TRUE);
 		
 		$save_sesion = md5( time() . $_SESSION['admin_login'] . time() );
 
