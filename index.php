@@ -312,7 +312,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
 			</div>
             <div class="col-md-12">
                 <div class="footer">
-    <div class="pull-left">Kodirao <a href="https://github.com/R00tS3c">RootSec</a></div>
+    <div class="pull-left"><a href="https://github.com/obgp/OpenBalkanGamePanel/">OpenBalkanGamePanel</a></div>
     <div class="pull-right">
         <a href="#">Naruči server</a>
         <a href="#">Game panel</a>
