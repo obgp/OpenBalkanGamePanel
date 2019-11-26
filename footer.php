@@ -1,5 +1,5 @@
 				<div class="footer">
-					<div class="col-md-4">Coded by: <a href="https://github.com/R00tS3c">RootSec</a></div>
+					<div class="col-md-4"><a href="https://github.com/obgp/OpenBalkanGamePanel">OpenBalkanGamePanel</a></div>
 					<div class="col-md-4">Copyright 2019 <span style="color: #337ab7;"><?php echo site_name(); ?></span>. All Rights Reserved.</div>
 				</div>
 			</div>
