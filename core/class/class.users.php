@@ -38,7 +38,7 @@ function user_login($email, $password) {
 		
 		// Set Cookie expiration for 7 days (7 dana)
 		$cookie_expiration_time = $current_time + (30 * 24 * 60 * 60);  //for 7 days (7 dana)
-		setcookie('user_login', $proveri_usera['klijentid'], $cookie_expiration_time, '/', null, null, TRUE)	
+		setcookie('user_login', $proveri_usera['klijentid'], $cookie_expiration_time, '/', null, null, TRUE);
 
 		$save_sesion = md5( time() . $_SESSION['user_login'] . time() );
 
