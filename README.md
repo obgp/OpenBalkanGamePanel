@@ -20,6 +20,7 @@
 
 
 ## Kako koristiti
+<a href="https://obgp.herokuapp.com/">DEMO</a>
 
 ```
 Admin Login: Admin/demo
