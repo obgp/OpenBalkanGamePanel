@@ -39,7 +39,7 @@ if (is_login() == true) {
 				</a>
 
 				<a class="brand" href="index.php">
-					<img src="<?php echo logolink(); ?>" alt="LOGO"> 
+					<img src="<?php echo logolink(); ?>" style="height:100px!important" alt="LOGO"> 
 				</a>
 			</div>
 		</div>
