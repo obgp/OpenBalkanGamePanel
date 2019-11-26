@@ -84,7 +84,7 @@ if (is_login() == true) {
 					<div class="row">
 						<div class="span12">
 							<center>
-								<img src="<?php echo logolink(); ?>" alt="LOGO">
+								<img src="<?php echo logolink(); ?>" style="height: 100px;" alt="LOGO">
 							</center>
 						</div>
 					</div>
