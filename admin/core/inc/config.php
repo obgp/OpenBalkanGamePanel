@@ -20,7 +20,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
         $username   = "root";
         $password   = "";
         $dbname     = "obgp";
-        return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
+        return new PDO("mysql:host=".$servername.";dbname=$dbname", $username, $password);
     }
 } else {
     //Database for Live
@@ -29,7 +29,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
         $username   = "root";
         $password   = "";
         $dbname     = "obgp";
-        return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
+        return new PDO("mysql:host=".$servername.";dbname=$dbname", $username, $password);
     }
 }
 
