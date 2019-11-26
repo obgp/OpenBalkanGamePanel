@@ -5,7 +5,7 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "obgp";
-return new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
+return new PDO("mysql:host=".$servername.";dbname=$dbname", $username, $password);
 }
 function firewallsec() {
 $servername = "localhost";
