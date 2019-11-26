@@ -475,4 +475,113 @@ function url_secure($url_secure) {
     return $url_secure;
 }
 
+function obgpfw() {
+@header("X-XSS-Protection: 1");
+@header("X-Content-Type-Options: nosniff");
+$_GET  = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+        if (!function_exists('cleanInput')) {
+            function cleanInput($input)
+            {
+                $search = array(
+                    '@<script[^>]*?>.*?</script>@si', // Strip out javascript
+                    '@<[\/\!]*?[^<>]*?>@si', // Strip out HTML tags
+                    '@<style[^>]*?>.*?</style>@siU', // Strip style tags properly
+                    '@<![\s\S]*?--[ \t\n\r]*>@' // Strip multi-line comments
+                );
+                
+                $output = preg_replace($search, '', $input);
+                return $output;
+            }
+        }
+        
+        if (!function_exists('sanitize')) {
+            function sanitize($input)
+            {
+                if (is_array($input)) {
+                    foreach ($input as $var => $val) {
+                        $output[$var] = sanitize($val);
+                    }
+                } else {
+                    $input  = str_replace('"', "", $input);
+                    $input  = str_replace("'", "", $input);
+                    $input  = cleanInput($input);
+                    $output = htmlentities($input, ENT_QUOTES);
+                }
+                return @$output;
+            }
+        }
+        $_POST    = sanitize($_POST);
+        $_GET     = sanitize($_GET);
+        $_REQUEST = sanitize($_REQUEST);
+        $_COOKIE  = sanitize($_COOKIE);
+        if (isset($_SESSION)) {
+            $_SESSION = sanitize($_SESSION);
+        }
+        $query_string = $_SERVER['QUERY_STRING'];
+        $patterns = array(
+        "+select+",
+        "+union+",
+        "union+",
+        "+or+",
+        "**/",
+        "/**",
+        "0x3a",
+        "/*",
+        "*/",
+        "*",
+        "--",
+        ";",
+        "||",
+        "' #",
+        "or 1=1",
+        "'1'='1",
+        "S@BUN",
+        "`",
+        "'",
+        '"',
+        "[",
+        "]",
+        "<",
+        ">",
+        "++",
+        "1,1",
+        "1=1",
+        "sleep(",
+        "%27",
+        "%22",
+        "(",
+        ")",
+        "<?",
+        "<?php",
+        "?>",
+        "../",
+        "/localhost",
+        "127.0.0.1",
+        "loopback",
+        "%0A",
+        "%0D",
+        "%3C",
+        "%3E",
+        "%00",
+        "%2e%2e",
+        "input_file",
+        "path=.",
+        "mod=.",
+        "eval\(",
+        "javascript:",
+        "base64_",
+        "boot.ini",
+        "etc/passwd",
+        "self/environ",
+        "echo.*kae",
+        "=%27$"
+    );
+     foreach ($patterns as $pattern) {
+     if (strpos(strtolower($query_string), strtolower($pattern)) !== false) {
+            echo '<meta http-equiv="refresh" content="0;url="https://www.google.com" />';
+            exit;
+     }
+     }
+}
 ?>
