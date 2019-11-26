@@ -159,7 +159,7 @@ $cmd3 = "iptables -A PREROUTING -t raw -j OBGP_VALVE";
 $cmd4 = "iptables -A OBGP_VALVE -d obgp -t raw -m set ! --match-set valve_allowed src -j VALVE";
 $cmd5 = "iptables -A VALVE -t raw -p tcp -m multiport --dports 21,".box_ssh($Box_ID).",80,443,27015:27800 -j RETURN";
 $cmd6 = "iptables -A VALVE -t raw -p udp --sport 53 -m length --length 750:65535 -j DROP";
-$cmd7 = "iptables -A VALVE -t raw -p udp ! --sport 53 -m hashlimit --hashlimit-upto 7/sec --hashlimit-burst 10 --hashlimit-mode dstip --hashlimit-name obgp_valve --hashlimit-htable-max 2000000 -m string --string "TSource" --algo kmp -j SET --add-set valve_allowed src";
+$cmd7 = 'iptables -A VALVE -t raw -p udp ! --sport 53 -m hashlimit --hashlimit-upto 7/sec --hashlimit-burst 10 --hashlimit-mode dstip --hashlimit-name obgp_valve --hashlimit-htable-max 2000000 -m string --string "TSource" --algo kmp -j SET --add-set valve_allowed src';
 $cmd8 = "iptables -A VALVE -t raw -m set ! --match-set valve_allowed src -j DROP";
 $cmd9 = "iptables-save > /etc/sysconfig/iptable";
 	if (!function_exists("ssh2_connect")) {	
