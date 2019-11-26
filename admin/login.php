@@ -96,7 +96,7 @@ if (is_login() == true) {
 			<div class="footer-inner">
 				<div class="container">
 					<div class="row">
-						<div class="span12"> &copy; <?php echo date('Y').' '.real_site_name(); ?>. Sva prava zadrzana <a href="https://github.com/obgp/OpenBalkanGamePanel">OpenBalkanGamePanel</a></div>
+						<div class="span12"> &copy; <?php echo date('Y').' '.site_name(); ?>. Sva prava zadrzana <a href="https://github.com/obgp/OpenBalkanGamePanel">OpenBalkanGamePanel</a></div>
 					</div>
 				</div>
 			</div>
