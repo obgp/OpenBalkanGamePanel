@@ -83,16 +83,12 @@ function importujbazu($mysql_host, $mysql_username, $mysql_password, $mysql_data
     $con->close();
     if (!SaveCondig($mysql_host, $mysql_username, $mysql_password, $mysql_database, $FileArr['panel'],1)) {
         die('Nesto nije ok :(');
-    } else {
-        //rdr/
-        die('Idemo dalje.. :)');
-	}
-	if (!SaveCondig($mysql_host, $mysql_username, $mysql_password, $mysql_database, $FileArr['admin'],2)) {
+    }
+    if (!SaveCondig($mysql_host, $mysql_username, $mysql_password, $mysql_database, $FileArr['admin'],2)) {
         die('Nesto nije ok :(');
     } else {
-        //rdr/
-        die('Idemo dalje.. :)');
-	}
+        die('OBGP je uspesno instaliran!');
+    }
 } 
 //Save information
 function SaveCondig($Host, $User, $Pass, $DB_Name, $FileLoc, $type) {
