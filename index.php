@@ -320,6 +320,11 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
         <a href="tos.html">Uslovi korišcenja</a>
     </div>
 </div>
+<style>
+.form-control {
+text-transform: initial!important;
+}
+</style>		    
 <!-- Login -->
 <div id="login" class="modal fade" role="dialog" style="margin-top: 100px;">
   	<div class="modal-dialog" style="width: 300px;max-width: 100%;margin-left: 15px;margin-right: 15px;display: block;margin: 0 auto;">
