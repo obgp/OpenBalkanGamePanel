@@ -132,5 +132,15 @@ function proveriupdate() {
 	}
 }
 
+function alertupdate() {
+if(proveriupdate()==true)
+{
+	echo '
+	<div class="alert alert-danger" role="alert" id="updatemsg">
+ 		 Nova verzija OBGP panela je dostupna molimo vas da apdejtujete panel
+	</div>
+	';
+}
+}
 
 ?>
