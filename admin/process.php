@@ -1143,7 +1143,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_admin") {
 
 	$Admin_Password = md5($Admin_Password);
 
-	$Host_Name = real_site_name();
+	$Host_Name = site_name();
 	$Adm_Potpis = "{$Admin_Name} {$Admin_Prezime}
 - $Host_Name ".admin_code_to_rank($Admin_Radnik);
 
