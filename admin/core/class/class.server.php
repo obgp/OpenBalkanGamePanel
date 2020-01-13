@@ -790,8 +790,7 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 	}	
  	return $gp_game;	
 }	
- /* ADD SERVER */	
- function srv_install($Box_ID, $Srv_Username, $Srv_Password, $Mod_ID) {	
+function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {	
 	if (!function_exists("ssh2_connect")) {	
 		$return = false;	
 	}	
@@ -823,11 +822,11 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			}
 			if($link==true && $arhiva == true)
 			{
-			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd2 = "cd /home/".$Srv_Username."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == true) {
-			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd2 = "cd /home/".$Srv_Username."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == false) {
-			 $cmd2 = "cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
+			 $cmd2 = "cp -r ".$S_Install_Dir. "/* /home/".$Srv_Username."/";
 			}
 			
 			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".$Srv_Username."/*";	
