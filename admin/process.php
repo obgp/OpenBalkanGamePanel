@@ -422,15 +422,11 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 	if ($ssh->login($Box_Username, $Box_Password)) {
 		// In Base
 		$rootsec = rootsec();
-		$SQLSEC = $rootsec->prepare("INSERT INTO `box` SET
-			`name` 		= '".$Box_Name.' - '.$Box_Location."',
-			`location` 	= '".$Box_Location."',
-			`ip` 		= '".$Box_IP."',
-			`login` 	= '".$Box_Username."',
-			`password` 	= '".box_pass_in_base($Box_Password)."',
-			`sshport` 	= '".$Box_SSH."',
-			`maxsrv` 	= '20'");
-		$SQLSEC->Execute();
+		$name = $Box_Name.' - '.$Box_Location;
+		$boxpass = box_pass_in_base($Box_Password);
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("INSERT INTO `box` (`name`, `location`, `ip`, `login`, `password`, `sshport`, `maxsrv`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		$SQLSEC->Execute(array($name, $Box_Location, $Box_IP, $Box_Username, $boxpass, $Box_SSH, 20));
 		
 		###
 		$Box_ID = $rootsec->lastInsertId();
