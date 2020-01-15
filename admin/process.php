@@ -1899,8 +1899,10 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		mysql_query("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = '$Server_ID'");
-
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Server_ID));
+		
 		sMSG('Server je uspesno startovan.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -2211,8 +2213,10 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		mysql_query("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = '$Server_ID'");
-
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Server_ID));
+		
 		sMSG('Server je uspesno restartovan.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -2246,8 +2250,10 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		mysql_query("UPDATE `serveri` SET `startovan` = '0' WHERE `id` = '$Server_ID'");
-
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '0' WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Server_ID));
+		
 		sMSG('Server je uspesno stopiran.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
