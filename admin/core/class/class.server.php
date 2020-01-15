@@ -398,7 +398,7 @@ function MTA_ServerHTTPPort($s_id, $f_name, $find) {
 * 4 = Backup
 *
 */
-function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $Server_ID) {
+function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
 	if (!function_exists("ssh2_connect")) {
 		$return = false;
 	}
@@ -408,19 +408,15 @@ function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_In
 		if(!ssh2_auth_password($ssh_conn, $BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-		$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.server_username($Server_ID).PHP_EOL;
-	    	$stream = ssh2_exec($ssh_conn, $cmd1);
-		stream_set_blocking($stream, true);
-				$data = "";
-				while($line = fgets($stream)) {
-					$data .= $line;
-				}
-				$return = true;
-		return $return;
+			$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user.PHP_EOL;
+			$stream = ssh2_exec($ssh_conn, $cmd1);
+			stream_set_blocking($stream, true);
+			$return = true;
 	}
 }
+	return $return;
 }
-function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $Server_ID) {
+function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
 	if (!function_exists("ssh2_connect")) {
 		$return = false;
 	}
@@ -430,20 +426,15 @@ function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Ins
 		if(!ssh2_auth_password($ssh_conn, $BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-		$cmd1='su -lc "screen -r gameserver -X quit" '.server_username($Server_ID).PHP_EOL;
+			$cmd1='su -lc "screen -r gameserver -X quit" '.$user.PHP_EOL;
 	    	$stream = ssh2_exec($ssh_conn, $cmd1);
 	    	stream_set_blocking($stream, true);
- 
-				$data = "";
-				while($line = fgets($stream)) {
-					$data .= $line;
-				}
-				$return = true;
+			$return = true;
 	    }
-		return $return;
 	}
+	return $return;
 }
-function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $Server_ID) {
+function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
 	if (!function_exists("ssh2_connect")) {
 		$return = false;
 	}
@@ -455,9 +446,9 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $
 	    } else {
 	    	$stream = ssh2_shell($ssh_conn, 'xterm');
 
-	            $cmd1 = "screen -m -S ".server_username($Server_ID)."_reinstall && rm -Rf /home/".server_username($Server_ID)."/*";
-	    	    $cmd2 = "cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
-	    	    $cmd3 = "chown ".server_username($Server_ID)." -Rf /home/".server_username($Server_ID);
+	            $cmd1 = "screen -m -S ".$user."_reinstall && rm -Rf /home/".$user."/*";
+	    	    $cmd2 = "cd /home/".$user."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+	    	    $cmd3 = "chown ".$user." -Rf /home/".$user;
 	    	    fwrite($stream, "$cmd1\n");
 	    	    sleep(1);
 	    	    fwrite($stream, "$cmd2\n");
@@ -790,7 +781,8 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 	}	
  	return $gp_game;	
 }	
-function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {	
+ /* ADD SERVER */	
+ function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {	
 	if (!function_exists("ssh2_connect")) {	
 		$return = false;	
 	}	
@@ -829,9 +821,9 @@ function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {
 			 $cmd2 = "cp -r ".$S_Install_Dir. "/* /home/".$Srv_Username."/";
 			}
 			
-			$cmd1 = "screen -m -S ".$Srv_Username."_reinstall && rm -Rf /home/".$Srv_Username."/*";	
-	    		$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
-	    		$cmd4 = "chmod 700 /home/".$Srv_Username;	
+			$cmd1 = "screen -m -S ".$Srv_Username."_install";	
+	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
+	    	$cmd4 = "chmod -R 700 /home/".$Srv_Username;	
 				
 				
 			fwrite($stream, "$cmd1\n");	
@@ -875,14 +867,9 @@ function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {
 		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {	
 	    	$return = false;	
 	    } else {	
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');	
- 	    	//Add user	
-			fwrite($stream, "userdel -rf $Srv_Username\n");	
-			sleep(1);	
- 			$data = "";	
-			while($line = fgets($stream)) {	
-				$data .= $line;	
-			}	
+			$cmd1='userdel -rf '.$Srv_Username.PHP_EOL;
+			$stream = ssh2_exec($ssh_conn, $cmd1);
+			stream_set_blocking($stream, true);	
  			$return = true;	
 	    }	
 	}	
