@@ -683,7 +683,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 	
 	$Srv_Password 	= txt($_POST['password']);
 	if (empty($Srv_Password)) {
-		$Srv_Password = random_s_key(8);
+		$Srv_Password = random_s_key(12);
 	}
 	
 	$Srv_Username = txt($_POST['username']);
@@ -700,9 +700,9 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 	$Srv_Komanda 	= get_mod_komanda($Mod_ID);
 	$Box_Location 	= box_location($Box_ID);
 	$Srv_Cena 		= cena_slota_code($User_ID, $Srv_Slot, $Game_ID, $Box_Location);
-
+	$Srv_mod = get_mod_link($Mod_ID);
 	//Install srv
-	$srv_install 	= srv_install($Box_ID, $Srv_Username, $Srv_Password, $Mod_ID);
+	$srv_install 	= srv_install($Box_ID, $Srv_Username, $Srv_Password, $Srv_mod);
 	if ($srv_install == false) {
 		sMSG('Doslo je do greske! (Server nije instaliran)', 'error');
 		redirect_to('add_server.php?user_id='.$User_ID.'&box_id='.$Box_ID);
@@ -1595,6 +1595,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
@@ -1608,292 +1609,10 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 		die();
 	}
 
-	if (gp_game_id($Server_ID) == 1) {
-		#CS 1.6
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = './hlds_run -game cstrike +ip {$ip} +port {$port} +maxplayers {$slots} +sys_ticrate 300 +map {$map} +servercfgfile server.cfg';
-		}
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/admin/games/inc.php');
 
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
 
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 1;		
-		}
-
-	} else if (gp_game_id($Server_ID) == 2) {
-		#SAMP
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = './samp03svr';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 2;		
-		}
-
-		$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-		if(!$ftp_connect) {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID);
-			die();
-		}
-
-		if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-			ftp_pasv($ftp_connect, true);
-
-			$Load_File = LoadFile($Server_ID, 'server.cfg');
-			$Load_File = file($Load_File, FILE_IGNORE_NEW_LINES);
-			
-			$bind = false;
-		    $port = false;
-		    $maxplayers = false;
-
-		    foreach ($Load_File as &$line) {
-				$val = explode(' ', $line);
-				
-				if ($val[0] == 'port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode(' ', $val);
-					$port = true;
-				}
-				else if ($val[0] == 'maxplayers') {
-					$val[1] = server_slot($Server_ID);
-					$line = implode(' ', $val);
-					$maxplayers = true;
-				}
-				else if ($val[0] == 'bind') {
-					$val[1] = server_ip($Server_ID);
-					$line = implode(' ', $val);
-					$bind = true;
-				}
-			}
-			unset($line);
-
-			$folder = $_SERVER['DOCUMENT_ROOT'].'/assets/_cache/start_'.server_username($Server_ID).'_samp_server.cfg';
-		    if (!$fw = fopen(''.$folder.'', 'w+')) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-
-			foreach($Load_File as $line) {
-				$fb = fwrite($fw, $line.PHP_EOL);
-			}
-
-			if (!$port) {
-				fwrite($fw, 'port '.server_port($Server_ID).''.PHP_EOL);
-			}
-			if (!$maxplayers) {
-				fwrite($fw, 'maxplayers '.server_slot($Server_ID).''.PHP_EOL);
-			}
-			if (!$bind) {
-				fwrite($fw, 'bind '.server_ip($Server_ID).''.PHP_EOL);
-			}
-
-			//$fb = fwrite($fw, stripslashes($Load_File));
-			$remote_file = '/server.cfg';
-
-			if (!ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			fclose($fw);
-			unlink($folder);
-		} else {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-			redirect_to('gp-server.php?id='.$Server_ID);
-			die();
-		}
-		ftp_close($ftp_connect);
-		
-	} else if (gp_game_id($Server_ID) == 3) {
-		#Minecraft
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = 'java -d64 -Xincgc -Xms512M -Xmx1024M -XX:MaxPermSize=128M -XX:+DisableExplicitGC -XX:+AggressiveOpts -Dfile.encoding=UTF-8 -jar Server.jar';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 3;		
-		}
-
-		$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-		if(!$ftp_connect) {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID);
-			die();
-		}
-
-		if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-			ftp_pasv($ftp_connect, true);
-
-			$Load_File = LoadFile($Server_ID, 'server.properties');
-			$Load_File = file($Load_File, FILE_IGNORE_NEW_LINES);
-
-			foreach ($Load_File as &$line) {
-				$val = explode('=', $line);
-				
-				if ($val[0] == 'server-port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'query.port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'max-players') {
-					$val[1] = server_slot($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'server-ip') {
-					$val[1] = server_ip($Server_ID);
-					$line = implode('=', $val);
-				}
-			}
-			unset($line);
-
-			$folder = $_SERVER['DOCUMENT_ROOT'].'/assets/_cache/start_'.server_username($Server_ID).'_minecraft_server.cfg';
-
-			$fw = fopen(''.$folder.'', 'w+');
-			foreach($Load_File as $line) {
-				$fb = fwrite($fw, $line.PHP_EOL);
-			}
-
-		    if (!$fw = fopen(''.$folder.'', 'w+')) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			
-			//$fb = fwrite($fw, stripslashes($Load_File));
-			$remote_file = '/server.properties';
-
-			if (!ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije startovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			fclose($fw);
-			unlink($folder);
-		}
-		ftp_close($ftp_connect);
-	} else if (gp_game_id($Server_ID) == 4) {
-		#COD2
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 4;		
-		}
-	} else if (gp_game_id($Server_ID) == 5) {
-		#COD4
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 5;		
-		}
-	} else if (gp_game_id($Server_ID) == 6) {
-		redirect_to('gp-server.php?id='.$Server_ID);
-		die();
-	} else if (gp_game_id($Server_ID) == 7) {
-		#CS:GO
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 7;		
-		}
-	} else if (gp_game_id($Server_ID) == 8) {
-		#MTA
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 8;		
-		}
-	} else if (gp_game_id($Server_ID) == 9) {
-		#ARK
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 9;		
-		}
-	}
-
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $Server_ID);
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$start_server == true) {
 		sMSG('Server nije startovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -1902,7 +1621,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 		$rootsec = rootsec();
 		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = ?");
 		$in_base = $SQLSEC->Execute(array($Server_ID));
-		
+
 		sMSG('Server je uspesno startovan.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -1914,6 +1633,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
@@ -1921,294 +1641,11 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 		die();
 	}
 
-	if (gp_game_id($Server_ID) == 1) {
-		#CS 1.6
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = './hlds_run -game cstrike +ip {$ip} +port {$port} +maxplayers {$slots} +sys_ticrate 300 +map {$map} +servercfgfile server.cfg';
-		}
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/admin/games/inc.php');
 
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 1;		
-		}
-
-	} else if (gp_game_id($Server_ID) == 2) {
-		#SAMP
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = './samp03svr';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 2;		
-		}
-
-		$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-		if(!$ftp_connect) {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID);
-			die();
-		}
-
-		if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-			ftp_pasv($ftp_connect, true);
-
-			$Load_File = LoadFile($Server_ID, 'server.cfg');
-			$Load_File = file($Load_File, FILE_IGNORE_NEW_LINES);
-			
-			$bind = false;
-		    $port = false;
-		    $maxplayers = false;
-
-		    foreach ($Load_File as &$line) {
-				$val = explode(' ', $line);
-				
-				if ($val[0] == 'port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode(' ', $val);
-					$port = true;
-				}
-				else if ($val[0] == 'maxplayers') {
-					$val[1] = server_slot($Server_ID);
-					$line = implode(' ', $val);
-					$maxplayers = true;
-				}
-				else if ($val[0] == 'bind') {
-					$val[1] = server_ip($Server_ID);
-					$line = implode(' ', $val);
-					$bind = true;
-				}
-			}
-			unset($line);
-
-			$folder = $_SERVER['DOCUMENT_ROOT'].'/assets/_cache/start_'.server_username($Server_ID).'_samp_server.cfg';
-		    if (!$fw = fopen(''.$folder.'', 'w+')) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-
-			foreach($Load_File as $line) {
-				$fb = fwrite($fw, $line.PHP_EOL);
-			}
-
-			if (!$port) {
-				fwrite($fw, 'port '.server_port($Server_ID).''.PHP_EOL);
-			}
-			if (!$maxplayers) {
-				fwrite($fw, 'maxplayers '.server_slot($Server_ID).''.PHP_EOL);
-			}
-			if (!$bind) {
-				fwrite($fw, 'bind '.server_ip($Server_ID).''.PHP_EOL);
-			}
-
-			//$fb = fwrite($fw, stripslashes($Load_File));
-			$remote_file = '/server.cfg';
-
-			if (!ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			fclose($fw);
-			unlink($folder);
-		} else {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-			redirect_to('gp-server.php?id='.$Server_ID);
-			die();
-		}
-		ftp_close($ftp_connect);
-		
-	} else if (gp_game_id($Server_ID) == 3) {
-		#Minecraft
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = 'java -d64 -Xincgc -Xms512M -Xmx1024M -XX:MaxPermSize=128M -XX:+DisableExplicitGC -XX:+AggressiveOpts -Dfile.encoding=UTF-8 -jar Server.jar';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 3;		
-		}
-
-		$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-		if(!$ftp_connect) {
-			sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restarotvan)', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID);
-			die();
-		}
-
-		if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-			ftp_pasv($ftp_connect, true);
-
-			$Load_File = LoadFile($Server_ID, 'server.properties');
-			$Load_File = file($Load_File, FILE_IGNORE_NEW_LINES);
-
-			foreach ($Load_File as &$line) {
-				$val = explode('=', $line);
-				
-				if ($val[0] == 'server-port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'query.port') {
-					$val[1] = server_port($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'max-players') {
-					$val[1] = server_slot($Server_ID);
-					$line = implode('=', $val);
-				} else if ($val[0] == 'server-ip') {
-					$val[1] = server_ip($Server_ID);
-					$line = implode('=', $val);
-				}
-			}
-			unset($line);
-
-			$folder = $_SERVER['DOCUMENT_ROOT'].'/assets/_cache/start_'.server_username($Server_ID).'_minecraft_server.cfg';
-
-			$fw = fopen(''.$folder.'', 'w+');
-			foreach($Load_File as $line) {
-				$fb = fwrite($fw, $line.PHP_EOL);
-			}
-
-		    if (!$fw = fopen(''.$folder.'', 'w+')) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			
-			//$fb = fwrite($fw, stripslashes($Load_File));
-			$remote_file = '/server.properties';
-
-			if (!ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)) {
-				sMSG('Doslo je do greske prilikom spajanja na FTP server. (Server nije restartovan)', 'error');
-				redirect_to('gp-server.php?id='.$Server_ID);
-				die();
-			}
-			fclose($fw);
-			unlink($folder);
-		}
-		ftp_close($ftp_connect);
-	} else if (gp_game_id($Server_ID) == 4) {
-		#COD2
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 4;		
-		}
-	} else if (gp_game_id($Server_ID) == 5) {
-		#COD4
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 5;		
-		}
-	} else if (gp_game_id($Server_ID) == 6) {
-		redirect_to('gp-server.php?id='.$Server_ID);
-		die();
-	} else if (gp_game_id($Server_ID) == 7) {
-		#CS:GO
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 7;		
-		}
-	} else if (gp_game_id($Server_ID) == 8) {
-		#MTA
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 8;		
-		}
-	} else if (gp_game_id($Server_ID) == 9) {
-		#ARK
-		$S_Command = game_command($Server_ID);
-		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = '';
-		}
-
-		//Instalation exec query command
-		$S_Command 	= str_replace('{$ip}', server_ip($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$port}', server_port($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$slots}', server_slot($Server_ID), $S_Command);
-		$S_Command 	= str_replace('{$map}', server_i_map($Server_ID), $S_Command);
-
-		//GameID
-		$S_Game_ID = gp_game_id($Server_ID);
-		if (empty($S_Game_ID) || $S_Game_ID == '') {
-			$S_Game_ID = 9;		
-		}
-	}
-	
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $Server_ID);
-	if (!$start_server == true) {
+	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
+	if (!$start_server == true && !$stop_server == true) {
 		sMSG('Server nije restartovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -2216,7 +1653,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 		$rootsec = rootsec();
 		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '1' WHERE `id` = ?");
 		$in_base = $SQLSEC->Execute(array($Server_ID));
-		
+
 		sMSG('Server je uspesno restartovan.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -2228,6 +1665,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
@@ -2244,7 +1682,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$S_Command 		= '';
 	$S_Install_Dir 	= '';
 
-	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $Server_ID);
+	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$stop_server == true) {
 		sMSG('Server nije stopiran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -2253,7 +1691,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 		$rootsec = rootsec();
 		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `startovan` = '0' WHERE `id` = ?");
 		$in_base = $SQLSEC->Execute(array($Server_ID));
-		
+
 		sMSG('Server je uspesno stopiran.', 'success');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
