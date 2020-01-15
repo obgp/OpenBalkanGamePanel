@@ -685,7 +685,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
-
+	$user = server_username($Server_ID);
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
 		redirect_to('gp-servers.php');
@@ -700,7 +700,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 	
 	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
 
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $Server_ID);
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$start_server == true) {
 		sMSG('Server nije startovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -722,6 +722,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
@@ -731,8 +732,8 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 	
 	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
 
-	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $Server_ID);
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $Server_ID);
+	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$stop_server == true && !$start_server == true) {
 		sMSG('Server nije restartovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -754,7 +755,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
-
+	$user = server_username($Server_ID);
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
 		redirect_to('gp-servers.php');
@@ -770,7 +771,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$S_Command 		= '';
 	$S_Install_Dir 	= '';
 
-	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $Server_ID);
+	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$stop_server == true) {
 		sMSG('Server nije stopiran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
@@ -792,6 +793,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	$Server_ID 			= txt($_POST['server_id']);
 
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
@@ -807,7 +809,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 
 	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
 	
-	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $Server_ID);
+	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
 	if (!$reinstall_server == true) {
 		sMSG('Server nije Reinstaliran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
