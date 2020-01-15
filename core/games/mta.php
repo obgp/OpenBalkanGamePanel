@@ -32,33 +32,34 @@
 				$val = explode(' ', $line);
 				
 				if ($val[0] == '<serverip>') {
-				    $val[1] = server_ip($Server_ID)."</serverip>";
+				    $val[1] = server_ip($Server_ID).'</serverip>';
 					$line = implode('', $val);
 					$porttcp = true;
 				}
 				else if ($val[0] == '<serverport>') {
-				    $val[1] = server_port($Server_ID)."</serverport>";
+				    $val[1] = server_port($Server_ID).'</serverport>';
 					$line = implode(' ', $val);
 					$portudp = true;
 				} 
 				else if ($val[0] == '<maxplayers>') {
-					$val[1] = server_slot($Server_ID)."</maxplayers>";
+					$val[1] = server_slot($Server_ID).'</maxplayers>';
 					$line = implode(' ', $val);
 					$maxplayers = true;
 				}  
-				else if ($val[0] == "<httpport>") {
-    					$val[1] = server_port($Server_ID)+2."</httpport>";
-    					$line = implode(" ", $val);
+				else if ($val[0] == '<httpport>') {
+					    $tpor = server_port($Server_ID)+2;
+    					$val[1] = $tpor.'</httpport>';
+    					$line = implode(' ', $val);
     					$httpport = true;
     				} 
-			    	else if ($val[0] == "<bandwidth_reduction>") {
-    					$val[1] = "medium</bandwidth_reduction>";
-    					$line = implode(" ", $val);
+			    	else if ($val[0] == '<bandwidth_reduction>') {
+    					$val[1] = 'medium</bandwidth_reduction>';
+    					$line = implode(' ', $val);
     					$bandwidth = true;
     				} 
-			    	else if ($val[0] == "<fpslimit>") {
-    					$val[1] = "36</fpslimit>";
-    					$line = implode(" ", $val);
+			    	else if ($val[0] == '<fpslimit>') {
+    					$val[1] = '36</fpslimit>';
+    					$line = implode(' ', $val);
     					$fpslimit = true;
     				} 
 			}
@@ -82,16 +83,17 @@
 			    fwrite($fw,'<serverport>'.server_port($Server_ID).'</serverport>'.PHP_EOL);
 			}
 			if (!$maxplayers) {
-					fwrite($fw,"<maxplayers>$server_slot</maxplayers>".PHP_EOL);
+					fwrite($fw,'<maxplayers>$server_slot</maxplayers>'.PHP_EOL);
 			}
 			if (!$httpport) {
-					fwrite($fw,"<httpport>".server_port($Server_ID)+2."</httpport>".PHP_EOL);
+					$tpor = server_port($Server_ID)+2;
+					fwrite($fw,'<httpport>'.$tpor.'</httpport>'.PHP_EOL);
 			}
 			if (!$bandwidth) {
-					fwrite($fw,"<bandwidth_reduction>auto</bandwidth_reduction>".PHP_EOL);
+					fwrite($fw,'<bandwidth_reduction>auto</bandwidth_reduction>'.PHP_EOL);
 			}
 			if (!$fpslimit) {
-					fwrite($fw,"<fpslimit>36</fpslimit>".PHP_EOL);
+					fwrite($fw,'<fpslimit>36</fpslimit>'.PHP_EOL);
 			}
 			//$fb = fwrite($fw, stripslashes($Load_File));
 			$remote_file = '/mods/deathmatch/mtaserver.conf';
