@@ -524,9 +524,9 @@ function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_In
 	    	$stream = ssh2_exec($ssh_conn, $cmd1);
 			stream_set_blocking($stream, true);
 			$return = true;
+		}
 	}
 	return $return;
-}
 }
 
 function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
@@ -546,8 +546,8 @@ function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Ins
 			$return = true;
 	    }
 
-		return $return;
 	}
+	return $return;
 }
 
 function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $Server_ID) {
@@ -625,7 +625,7 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $
 
 				$return = true;
 
-		return $return;
+		
 	}
 }
 }
