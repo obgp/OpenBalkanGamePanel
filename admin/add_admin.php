@@ -112,7 +112,6 @@ if (view_admin(a_status($_SESSION['admin_login'])) == false) {
 													<option value="1">Helper</option>
 													<option value="2">Support</option>
 													<option value="3">Administrator</option>
-													<option value="4">Developer</option>
 												</select>
 											</div>		
 										</div>
