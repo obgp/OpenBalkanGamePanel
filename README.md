@@ -31,8 +31,6 @@ Admin Login: Admin/demo
 ## TEAM
 
 - [R00tS3c](https://github.com/R00tS3c) __(DEVELOPER)__
-- [MSKOKO.ME](https://github.com/mskoko) (mskoko.me@gmail.com) __(DEVELOPER)__
-- [rade023](https://rade023.com/) __(DESIGNER)__
 
 
 ## Jezici
