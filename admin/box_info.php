@@ -317,34 +317,6 @@ $Box_Cache 				= unserialize(gzuncompress($Box_Info['cache']));
 	<!-- JS / End -->
 	<?php include_once($_SERVER['DOCUMENT_ROOT'].'/admin/assets/php/java.php'); ?>
 
-	<div id="jesi_siguran" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="dali_ste_sigurni" aria-hidden="true" style="display:none;outline:none;">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h4 class="modal-title">Prebaci server</h4>
-		</div>
-
-		<div class="modal-footer">
-			<form action="/admin/process.php?a=change_owner" method="POST" id="forma_popup" class="left">
-				<input type="text" name="server_id" value="<?php echo $Server_ID; ?>" style="display:none;">
-
-				<select name="client_id" class="selectpicker" data-live-search="true">
-					<option value="0" disabled selected="selected">Izaberite klijenta</option>
-					<?php $get_clients = mysql_query("SELECT * FROM `klijenti` ORDER by klijentid ASC");
-					while ($row_client = mysql_fetch_array($get_clients)) { ?>
-						<option value="<?php echo txt($row_client['klijentid']); ?>" style="color:#333;">
-							<?php echo user_full_name($row_client['klijentid']).' - '.user_email($row_client['klijentid']); ?>
-						</option>
-					<?php } ?>
-				</select>
-
-				<div class="space clear"></div>
-
-				<button class="left btn btn-success">
-					<i class="icon-ok"></i> Prebaci
-				</button>
-			</form>
-		</div>
-	</div>
 
 </body>
 </html>

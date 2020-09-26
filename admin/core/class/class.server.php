@@ -1,5 +1,9 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/SSH2.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/SFTP.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/Crypt/AES.php');
+
 /**
 * Valid server;
 * Server name;
@@ -399,189 +403,117 @@ function MTA_ServerHTTPPort($s_id, $f_name, $find) {
 *
 */
 function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	if(!($ssh_conn = ssh2_connect($BOX_IP, $BOX_SSH))) {
+	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, $BOX_User, $Box_Pass)) {
+		if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-			$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user.PHP_EOL;
-			$stream = ssh2_exec($ssh_conn, $cmd1);
-			stream_set_blocking($stream, true);
+			$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user;
+			$ssh->exec($cmd1);
 			$return = true;
 	}
 }
 	return $return;
 }
 function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	if(!($ssh_conn = ssh2_connect($BOX_IP, $BOX_SSH))) {
+	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, $BOX_User, $Box_Pass)) {
+		if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-			$cmd1='su -lc "screen -r gameserver -X quit" '.$user.PHP_EOL;
-	    	$stream = ssh2_exec($ssh_conn, $cmd1);
-	    	stream_set_blocking($stream, true);
+			$cmd1='su -lc "screen -r gameserver -X quit" '.$user;
+			$ssh->exec($cmd1);
 			$return = true;
-	    }
 	}
+}
 	return $return;
 }
-function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	if(!($ssh_conn = ssh2_connect($BOX_IP, $BOX_SSH))) {
+function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Install_Dir, $user) {
+	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, $BOX_User, $Box_Pass)) {
+		if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-
-	            $cmd1 = "screen -m -S ".$user."_reinstall && rm -Rf /home/".$user."/*";
-	    	    $cmd2 = "cd /home/".$user."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
-	    	    $cmd3 = "chown ".$user." -Rf /home/".$user;
-	    	    fwrite($stream, "$cmd1\n");
-	    	    sleep(1);
-	    	    fwrite($stream, "$cmd2\n");
-	    	    sleep(5);
-	    	    fwrite($stream, "$cmd3\n");
-	    	    sleep(1);
-				$data = "";
-				
-	    	    while($line = fgets($stream)) {
-	    	    	$data .= $line;
-	    	    }
-				$return = true;
-		return $return;
-	}
+			$link = false;
+			$arhiva = false;
+			if (strpos($S_Install_Dir, 'https') !== false) {
+			  $link = true;
+			}
+			else if (strpos($S_Install_Dir, 'http') !== false) {	
+			  $link = true;
+			} else {
+			  $link = false;
+			}
+			if(strpos($S_Install_Dir, 'tar.gz') !== false) {
+			  $arhiva = true;
+			} else {
+			  $arhiva = false;
+			}
+			if($link==true && $arhiva == true)
+			{
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == true) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			} else if ($link == false && $arhiva == false) {
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. "/* .";
+			}
+			$ssh->exec($cmd_final);
+			$return = true;
+		}
 }
+		return $return;
 }
 function server_backup($Box_ID, $Server_ID, $Backup_Name) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	
-	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-			
-			$cmd1 = 'mkdir /home/BackUP';
-			$cmd2 = 'mkdir /home/BackUP/Server';
-			$cmd3 = 'cd /home/BackUP/Server';
-			$cmd4 = 'screen -mSL '.server_username($Server_ID).'_backup\n';
-			$cmd5 = 'tar -czvf '.$Backup_Name.'.tar.gz /home/'.server_username($Server_ID).'/* && exit';
-			
-			fwrite($stream, "$cmd1".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd2".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd3".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd4".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd5".PHP_EOL);
+			$cmd = 'screen -mSL '.server_username($Server_ID).'_backup;mkdir /home/BackUP;mkdir /home/BackUP/Server;cd /home/BackUP/Server;tar -czvf '.$Backup_Name.'.tar.gz /home/'.server_username($Server_ID).'/* && exit';
+			$ssh->exec($cmd);
 			sleep(20);
-			
-			$data = "";
-			
-    	    while($line = fgets($stream)) {
-    	    	$data .= $line;
-    	    }
-			
 			$return = true;
 	    }
 	}
-	
 	return $return;
 }
+
 function server_backup_restore($Box_ID, $Server_ID, $Backup_Name) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	
-	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-			
-			$cmd1 = 'cd /';
-			$cmd2 = 'mv /home/BackUP/Server/'.$Backup_Name.'.tar.gz /';
-			$cmd3 = 'rm -rf /home/'.server_username($Server_ID).'';
-			$cmd4 = 'screen -mSL '.server_username($Server_ID).'_backup_restore';
-			$cmd5 = 'tar xvzf '.$Backup_Name.'.tar.gz';
-			$cmd6 = 'mv /'.$Backup_Name.'.tar.gz /home/BackUP/Server && exit';
-			
-			fwrite($stream, "$cmd1".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd2".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd3".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd4".PHP_EOL);
-			sleep(1);
-			fwrite($stream, "$cmd5".PHP_EOL);
-			sleep(30);
-			fwrite($stream, "$cmd6".PHP_EOL);
-			sleep(1);
-			
-			$data = "";
-			
-    	    while($line = fgets($stream)) {
-    	    	$data .= $line;
-    	    }
-			
+			$cmd = 'screen -mSL '.server_username($Server_ID).'_backup_restore;cd /;mv /home/BackUP/Server/'.$Backup_Name.'.tar.gz /;rm -rf /home/'.server_username($Server_ID).';tar xvzf '.$Backup_Name.'.tar.gz;mv /'.$Backup_Name.'.tar.gz /home/BackUP/Server && exit;';
+			$ssh->exec($cmd);
+			sleep(20);
 			$return = true;
 	    }
 	}
-	
 	return $return;
 }
+
 function server_backup_delete($Box_ID, $Server_ID, $Backup_Name) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	
-	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-			
-			$cmd1 = 'rm -rf /home/BackUP/Server/'.$Backup_Name.'.tar.gz';
-			
-			fwrite($stream, "$cmd1".PHP_EOL);
-			sleep(1);
-			
-			$data = "";
-			
-    	    while($line = fgets($stream)) {
-    	    	$data .= $line;
-    	    }
-			
+			$cmd = 'rm -rf /home/BackUP/Server/'.$Backup_Name.'.tar.gz';
+			$ssh->exec($cmd);
+			sleep(20);
 			$return = true;
 	    }
 	}
-	
 	return $return;
 }
+
 function GetBackUPStatus($Box_ID, $Server_ID, $Backup_Name) {
 	$ID = 0;
 	$Scan1 = 0;
@@ -607,20 +539,14 @@ function GetBackUPStatus($Box_ID, $Server_ID, $Backup_Name) {
 	return $return;
 }
 function GetBackUPSize($Box_ID, $Server_ID, $Backup_Name) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	
-	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	if(!($ssh = new Net_SFTP(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
-			$SFTP = ssh2_sftp($ssh_conn);
-			$StatInfo = ssh2_sftp_stat($SFTP, '/home/BackUP/Server/'.$Backup_Name.'.tar.gz');
-			
-			$return = ConvertBackUPSize($StatInfo['size']);
+			$StatInfo = $ssh->size('/home/BackUP/Server/'.$Backup_Name.'.tar.gz');
+			$return = $StatInfo['size'];
 	    }
 	}
 	
@@ -653,18 +579,13 @@ function ConvertBackUPSize($Size) {
 	}
 }
 function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
-	if (!function_exists("ssh2_connect")) {
-		$return = false;
-	}
-	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');
-	    	//User add screen
-			fwrite($stream, "screen -mSL ".server_username($Server_ID)."_change_mod\n");
+			$ssh->write("screen -mSL ".server_username($Server_ID)."_change_mod\n");
 			sleep(1);
 			$link = false;
 			$arhiva = false;
@@ -683,24 +604,20 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			}
 			if($link==true && $arhiva == true)
 			{
-			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".server_username($Server_ID)."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == true) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == false) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/'.server_username($Server_ID).'/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
 			}
-			
-			fwrite($stream, "$cmd_final\n");
+			$ssh->write($cmd_final."\n");
 			sleep(2);
-			$data = "";
-			while($line = fgets($stream)) {
-				$data .= $line;
-			}
 			$return = true;
 	    }
 	}
 	return $return;
 }
+
 /* Mod Info */	
  function get_mod_name($m_id) {	
 	$rootsec = rootsec();
@@ -783,20 +700,14 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 }	
  /* ADD SERVER */	
  function srv_install($Box_ID, $Srv_Username, $Srv_Password, $S_Install_Dir) {	
-	if (!function_exists("ssh2_connect")) {	
-		$return = false;	
-	}	
- 	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {	
-	    $return = false;	
-	} else {	
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {	
-	    	$return = false;	
-	    } else {	
-	    	$stream = ssh2_shell($ssh_conn, 'xterm');	
-				
-			fwrite($stream, "useradd -m -g gameservers -p $Srv_Password $Srv_Username\n");	
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
+	    $return = false;
+	} else {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
+	    	$return = false;
+	    } else {
+			$ssh->write("useradd -m -g gameservers -p $Srv_Password $Srv_Username\n");	
 			sleep(1);	
-			
 			$link = false;
 			$arhiva = false;
 			if (strpos($S_Install_Dir, 'https') !== false) {
@@ -820,56 +731,39 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			} else if ($link == false && $arhiva == false) {
 			 $cmd2 = "cp -r ".$S_Install_Dir. "/* /home/".$Srv_Username."/";
 			}
-			
 			$cmd1 = "screen -m -S ".$Srv_Username."_install";	
 	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
 	    	$cmd4 = "chmod -R 700 /home/".$Srv_Username;	
-				
-				
-			fwrite($stream, "$cmd1\n");	
+			$ssh->write("$cmd1\n");	
 			sleep(1);	
-				
-			fwrite($stream, "$cmd2\n");	
+			$ssh->write("$cmd2\n");	
 			sleep(10);	
-				
-			fwrite($stream, "$cmd3\n");	
+			$ssh->write("$cmd3\n");	
 			sleep(1);	
-				
-			fwrite($stream, "$cmd4\n");	
+			$ssh->write("$cmd4\n");	
 			sleep(1);	
- 			fwrite($stream, "passwd $Srv_Username\n");	
+ 			$ssh->write("passwd $Srv_Username\n");	
 			sleep(1);	
-				
-			fwrite($stream, "$Srv_Password\n");	
+			$ssh->write("$Srv_Password\n");	
 			sleep(1);	
-				
-			fwrite($stream, "$Srv_Password\n");	
+			$ssh->write("$Srv_Password\n");	
 			sleep(1);	
-			// CMD Final - Wget mod files and chown user	
-				
-			$data = "";	
-			while($line = fgets($stream)) {	
-				$data .= $line;	
-			}	
  			$return = true;	
 	    }	
 	}	
  	return $return;	
 }	
  /* REMOVE SERVER */	
+
  function srv_delete($Box_ID, $Srv_Username) {	
-	if (!function_exists("ssh2_connect")) {	
-		$return = false;	
-	}	
- 	if(!($ssh_conn = ssh2_connect(box_ip($Box_ID), box_ssh($Box_ID)))) {	
-	    $return = false;	
-	} else {	
-		if(!ssh2_auth_password($ssh_conn, box_username($Box_ID), box_password($Box_ID))) {	
-	    	$return = false;	
-	    } else {	
-			$cmd1='userdel -rf '.$Srv_Username.PHP_EOL;
-			$stream = ssh2_exec($ssh_conn, $cmd1);
-			stream_set_blocking($stream, true);	
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_password($Box_ID)))) {
+	    $return = false;
+	} else {
+		if(!$ssh->login(box_username($Box_ID), $Box_Pass)) {
+	    	$return = false;
+	    } else {
+			$cmd='userdel -rf '.$Srv_Username;
+			$ssh->exec($cmd);
  			$return = true;	
 	    }	
 	}	

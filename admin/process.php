@@ -1054,7 +1054,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_mod") {
 		die();
 	} else {
 		sMSG('Uspesno ste dodali novi mod! #'.$Mod_Name, 'success');
-		redirect_to('gp-mod.php?id='.$Mod_ID);
+		redirect_to('list_mods.php');
 		die();
 	}
 
@@ -1569,8 +1569,7 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 		
 	$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `autorestart` = ? WHERE `id` = ?");
 	$in_base = $SQLSEC->Execute(array($Vreme, $Server_ID));
-	
-	$in_base = mysql_query();
+
 	if (!$in_base) {
 		sMSG('Doslo je do greske! Molimo prijavite ovaj bag (#AutoRestart).', 'error');
 		redirect_to('gp-autorestart.php?id='.$Server_ID);
@@ -1593,7 +1592,7 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 
 if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 	$Server_ID 			= txt($_POST['server_id']);
-
+	$S_Command 			= game_command($Server_ID);
 	$Box_ID 			= getBOX($Server_ID); 
 	$user = server_username($Server_ID);
 
@@ -1631,7 +1630,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 
 if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 	$Server_ID 			= txt($_POST['server_id']);
-
+	$S_Command 			= game_command($Server_ID);
 	$Box_ID 			= getBOX($Server_ID); 
 	$user = server_username($Server_ID);
 
@@ -1663,7 +1662,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 
 if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$Server_ID 			= txt($_POST['server_id']);
-
+	$S_Command 			= game_command($Server_ID);
 	$Box_ID 			= getBOX($Server_ID); 
 	$user = server_username($Server_ID);
 
@@ -1702,6 +1701,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	$Server_ID 			= txt($_POST['server_id']);
 	$Box_ID 			= getBOX($Server_ID); 
+	$user = server_username($Server_ID);
 	
 	if(isset($_POST['mod_id']))
 		$Mod_ID 		= txt($_POST['mod_id']); 
@@ -1721,7 +1721,9 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	if(!isset($Mod_ID))
 		$Mod_ID = server_mod($Server_ID);
 	
-	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $Server_ID, $Mod_ID);
+	$ModLoc = get_mod_link($Mod_ID);
+	
+	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $ModLoc, $user);
 	if (!$reinstall_server == true) {
 		$rootsec = rootsec();
 		
@@ -1763,14 +1765,18 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	$Date				=		date("d_m_Y");
 	$SrwUser			=		server_username($Server_ID);
 	$Bacup_Name			=		"$SrwUser-$Date-$RandomNumber";
-	
-	$in_base = mysql_query("INSERT INTO `server_backup` SET
-		`srvid`		=		'$Server_ID',
-		`time`		=		'$Date',
-		`name`		=		'$Bacup_Name',
+	$rootsec = rootsec();
+		
+	$SQLSEC = $rootsec->prepare("INSERT INTO `server_backup` SET
+		`srvid`		=		?,
+		`time`		=		?,
+		`name`		=		?,
 		`status`	=		'0',
 		`size`		=		'0'
 	");
+
+	$in_base = $SQLSEC->Execute(array($Server_ID, $Date,$Bacup_Name));
+
 	
 	if (!$in_base) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
@@ -1807,10 +1813,12 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_restore") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	}
-	
-	$Backup = mysql_query("SELECT * FROM `server_backup` WHERE `id` = '$Backup_ID'");
-	$Backup = mysql_fetch_array($Backup);
-	$Backup_Name	=	txt($Backup['name']);
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `server_backup` WHERE `id` = ?");
+	$SQLSEC = $SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+
+	$Backup_Name	=	$Backup['name'];
 	
 	$server_backup_restore = server_backup_restore($Box_ID, $Server_ID, $Backup_Name);
 	
@@ -1842,11 +1850,14 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 		die();
 	}
 	
-	$Backup = mysql_query("SELECT * FROM `server_backup` WHERE `id` = '$Backup_ID'");
-	$Backup = mysql_fetch_array($Backup);
-	$Backup_Name	=	txt($Backup['name']);
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `server_backup` WHERE `id` = ?");
+	$SQLSEC = $SQLSEC->Execute(array($Backup_ID));
+	$Backup = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	$Backup_Name = $Backup['name'];
 	
-	$in_base = mysql_query("DELETE FROM `server_backup` WHERE `id` = '$Backup_ID'");
+	$SQLSEC = $rootsec->prepare("DELETE FROM `server_backup` WHERE `id` = ?");
+	$in_base = $SQLSEC->Execute(array($Backup_ID));
 	
 	if (!$in_base) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
@@ -1898,7 +1909,10 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
 	} else {
-		$in_base = mysql_query("UPDATE `serveri` SET `modovi` = '$Mod_ID' WHERE `id` = '$Server_ID'");
+		$rootsec = rootsec();
+		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?");
+		$in_base = $SQLSEC->Execute(array($Mod_ID,$Server_ID));
+
 		if (!$in_base) {
 			sMSG('Uspesno ste instalirali '.server_mod_name($Server_ID).' mod! (Mod nije upisan u bazi, prijavite ovaj problem)', 'info');
 			redirect_to('gp-server.php?id='.$Server_ID);

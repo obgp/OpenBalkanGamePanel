@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+
 if (gp_game_id($Server_ID) == 3) {
 		#Minecraft
 		$S_Command = game_command($Server_ID);

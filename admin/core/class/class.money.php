@@ -129,7 +129,7 @@ function cena_slota($slot, $user_id, $game_id) {
 function mod_cena_for_slot($slot, $game_id, $drzava) {
 	$rootsec = rootsec();
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `gp_cene` WHERE `game_id` = ?");
-	$SQLSEC->Execute(array($g_id));
+	$SQLSEC->Execute(array($game_id));
 	$slot_cena = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	
 	$cena_slota = explode('|', $slot_cena['cena_slota']);
