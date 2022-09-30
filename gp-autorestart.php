@@ -27,9 +27,6 @@ if (is_valid_server($Server_ID) == false) {
 					<div class="col-md-12">
                     <div id="top">
 		                        <div id="left">
-		                            <div>
-		                                <img src="/assets/img/icon/gp/gp-sett.png">
-		                            </div> 
 		                            <div style="margin-top:15px;color: #fff;">
 		                                <strong>Autorestart</strong>
 		                                <p>Ovde mozete podesiti vreme kada zelite da vam se server automatski restartuje svaki dan.

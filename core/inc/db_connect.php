@@ -6,13 +6,6 @@ $password = "";
 $dbname = "obgp";	
 return new PDO("mysql:host=".$servername.";dbname=$dbname", $username, $password);	
 }	
-function firewallsec() {	
-$servername = "localhost";	
-$username = "root";	
-$password = "";	
-$dbname = "obgp";	
-return new mysqli($servername, $username, $password, $dbname);	
-}	
 function masterserver() {	
 $servername = "localhost";	
 $username = "USERNAME";	

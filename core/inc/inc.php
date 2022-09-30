@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'/rootsec/project-security.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/core/class/class.waf.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/core/class/class.secure.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/core/class/class.site_settings.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/core/class/class.alert_msg.php');

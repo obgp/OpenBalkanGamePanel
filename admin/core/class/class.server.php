@@ -1,5 +1,4 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/inc/config.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/SSH2.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/SFTP.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/admin/core/libs/phpseclib/Crypt/AES.php');
@@ -402,7 +401,7 @@ function MTA_ServerHTTPPort($s_id, $f_name, $find) {
 * 4 = Backup
 *
 */
-function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
+function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
@@ -416,7 +415,7 @@ function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_In
 }
 	return $return;
 }
-function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
+function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
@@ -454,13 +453,19 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Install_Di
 			}
 			if($link==true && $arhiva == true)
 			{
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && wget -q ".$S_Install_Dir." -O /home/".$user."/ && tar -xvzf *.tar.gz && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == true) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && cp -r ".$S_Install_Dir. " /home/".$user."/ | tar -xvzf *.tar.gz && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == false) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. "/* .";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && cp -r ".$S_Install_Dir. "/* /home/".$user."/";
 			}
-			$ssh->exec($cmd_final);
+			$cmd3 = "chown ".$user." -Rf /home/".$user;	
+	    	$cmd4 = "chmod -R 700 /home/".$user;
+			$ssh->write("$cmd_final\n");
+			sleep(10);
+			$ssh->write("$cmd3\n");
+			sleep(2);
+			$ssh->write("$cmd4\n");
 			$return = true;
 		}
 }
@@ -611,7 +616,7 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".server_username($Server_ID)."/ && cp -r ".$S_Install_Dir. "/* .";
 			}
 			$ssh->write($cmd_final."\n");
-			sleep(2);
+			sleep(10);
 			$return = true;
 	    }
 	}
@@ -756,10 +761,10 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
  /* REMOVE SERVER */	
 
  function srv_delete($Box_ID, $Srv_Username) {	
-	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_password($Box_ID)))) {
+	if(!($ssh = new Net_SSH2(box_ip($Box_ID), box_ssh($Box_ID)))) {
 	    $return = false;
 	} else {
-		if(!$ssh->login(box_username($Box_ID), $Box_Pass)) {
+		if(!$ssh->login(box_username($Box_ID), box_password($Box_ID))) {
 	    	$return = false;
 	    } else {
 			$cmd='userdel -rf '.$Srv_Username;

@@ -102,13 +102,6 @@ function rootsec() {
     $dbname = "'.$DB_Name.'";
     return new PDO("mysql:host=".$servername.";dbname=$dbname", $username, $password);
 }
-function firewallsec() {
-    $servername = "'.$Host.'";
-    $username = "'.$User.'";
-    $password = "'.$Pass.'";
-    $dbname = "'.$DB_Name.'";
-    return new mysqli($servername, $username, $password, $dbname);
-}
 function masterserver() {
     $servername = "localhost";
     $username = "USERNAME";

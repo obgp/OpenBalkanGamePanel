@@ -1591,10 +1591,10 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 /* Server process Start,Stop,Restart,Reinstall,BackUP */
 
 if (isset($_GET['s']) && $_GET['s'] == "server_start") {
+
 	$Server_ID 			= txt($_POST['server_id']);
-	$S_Command 			= game_command($Server_ID);
 	$Box_ID 			= getBOX($Server_ID); 
-	$user = server_username($Server_ID);
+
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
@@ -1611,8 +1611,8 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 	include_once($_SERVER['DOCUMENT_ROOT'].'/core/admin/games/inc.php');
 
 
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
-	if (!$start_server == true) {
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
+	if ($start_server != true) {
 		sMSG('Server nije startovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -1630,9 +1630,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 
 if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 	$Server_ID 			= txt($_POST['server_id']);
-	$S_Command 			= game_command($Server_ID);
 	$Box_ID 			= getBOX($Server_ID); 
-	$user = server_username($Server_ID);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
@@ -1642,9 +1640,10 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 
 	include_once($_SERVER['DOCUMENT_ROOT'].'/core/admin/games/inc.php');
 
-	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
-	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
-	if (!$start_server == true && !$stop_server == true) {
+	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
+	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
+	
+	if ($stop_server != true || $start_server != true) {
 		sMSG('Server nije restartovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -1682,7 +1681,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$S_Install_Dir 	= '';
 
 	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $S_Command, $S_Install_Dir, $user);
-	if (!$stop_server == true) {
+	if ($stop_server != true) {
 		sMSG('Server nije stopiran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();
@@ -1701,7 +1700,6 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	$Server_ID 			= txt($_POST['server_id']);
 	$Box_ID 			= getBOX($Server_ID); 
-	$user = server_username($Server_ID);
 	
 	if(isset($_POST['mod_id']))
 		$Mod_ID 		= txt($_POST['mod_id']); 
@@ -1723,8 +1721,8 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 	
 	$ModLoc = get_mod_link($Mod_ID);
 	
-	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $ModLoc, $user);
-	if (!$reinstall_server == true) {
+	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $ModLoc, server_username($Server_ID));
+	if ($reinstall_server != true) {
 		$rootsec = rootsec();
 		
 		$SQLSEC = $rootsec->prepare("UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?");
@@ -1786,7 +1784,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	
 	$backup_server = server_backup($Box_ID, $Server_ID, $Bacup_Name);
 	
-	if (!$backup_server == true) {
+	if ($backup_server != true) {
 		sMSG('Backup nije napravljen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-backup.php?id='.$Server_ID);
 		die();
@@ -1822,7 +1820,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_restore") {
 	
 	$server_backup_restore = server_backup_restore($Box_ID, $Server_ID, $Backup_Name);
 	
-	if (!$server_backup_restore == true) {
+	if ($server_backup_restore != true) {
 		sMSG('Backup nije vracen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-backup.php?id='.$Server_ID);
 		die();
@@ -1867,7 +1865,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 	
 	$server_backup_delete = server_backup_delete($Box_ID, $Server_ID, $Backup_Name);
 	
-	if (!$server_backup_delete == true) {
+	if ($server_backup_delete != true) {
 		sMSG('Backup nije vracen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
 		redirect_to('gp-backup.php?id='.$Server_ID);
 		die();
@@ -1904,7 +1902,7 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 	$S_Install_Dir = s_mod_install($Mod_ID);
 
 	$install_mod = install_mod($Box_ID, $S_Install_Dir, $Server_ID);
-	if (!$install_mod == true) {
+	if ($install_mod != true) {
 		sMSG('Promena moda nije uspela! #ChangeMod | #err1', 'error');
 		redirect_to('gp-server.php?id='.$Server_ID);
 		die();

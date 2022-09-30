@@ -1,9 +1,7 @@
 <?php
-
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/config.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/libs/phpseclib/SSH2.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/libs/phpseclib/SFTP.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/core/libs/phpseclib/Crypt/AES.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/phpseclib/SSH2.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/phpseclib/SFTP.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/phpseclib/Crypt/AES.php');
 /**
 * Valid server;
 * Server name;
@@ -379,7 +377,7 @@ function s_mod_install($m_id) {
 	$SQLSEC->Execute(array($s_info["modovi"]));
 	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
-	return txt($m_info['putanja']);
+	return txt($m_info['link']);
 }
 
 function server_mod_map($srv_id) {
@@ -450,6 +448,15 @@ function getBOX($srv_id) {
 	return txt($s_info['box_id']);
 }
 
+function get_mod_link($m_id) {	
+	$rootsec = rootsec();
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
+	$SQLSEC->Execute(array($m_id));
+	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	 
+	return txt($m_info['link']);	
+}	
+
 function MTA_Max_Player($s_id, $f_name, $find) {
 	$file = 'ftp://'.server_username($s_id).':'.server_password($s_id).'@'.server_ip($s_id).':21/'.$f_name;
 				
@@ -511,22 +518,27 @@ function MTA_ServerHTTPPort($s_id, $f_name, $find) {
 *
 */
 
-function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
+function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
+		echo "crko 1";
+		die();
 	} else {
 	   if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
+			echo "crko 2 ". $BOX_User. " ". $Box_Pass;
+			die();
 	    } else {
 			$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user;
-			$ssh->exec($cmd1);
+			$ssh->write("$cmd1\n");
+			sleep(2);
 			$return = true;
 	    }
 	}	
 	return $return;
 }
 
-function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
+function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
@@ -534,14 +546,15 @@ function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Ins
 	    	$return = false;
 	    } else {
 			$cmd1='su -lc "screen -r gameserver -X quit" '.$user;
-			$ssh->exec($cmd1);
+			$ssh->write("$cmd1\n");
+			sleep(2);
 			$return = true;
 	}
 }
 	return $return;
 }
 
-function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $S_Install_Dir, $user) {
+function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Install_Dir, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
 	} else {
@@ -565,13 +578,19 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $
 			}
 			if($link==true && $arhiva == true)
 			{
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && wget -qO- ".$S_Install_Dir. " | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && wget -q ".$S_Install_Dir." -O /home/".$user."/ && tar -xvzf *.tar.gz && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == true) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. " . | tar -xvzf - && rm -rf *.tar.gz";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && cp -r ".$S_Install_Dir. " /home/".$user."/ | tar -xvzf *.tar.gz && rm -rf *.tar.gz";
 			} else if ($link == false && $arhiva == false) {
-			 $cmd_final = "nice -n 19 rm -Rf /home/".server_username($Server_ID)."/* && cd /home/".$user."/ && cp -r ".$S_Install_Dir. "/* .";
+			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && cp -r ".$S_Install_Dir. "/* /home/".$user."/";
 			}
-			$ssh->exec($cmd_final);
+			$cmd3 = "chown ".$user." -Rf /home/".$user;	
+	    	$cmd4 = "chmod -R 700 /home/".$user;
+			$ssh->write("$cmd_final\n");
+			sleep(10);
+			$ssh->write("$cmd3\n");
+			sleep(2);
+			$ssh->write("$cmd4\n");
 			$return = true;
 		}
 }
