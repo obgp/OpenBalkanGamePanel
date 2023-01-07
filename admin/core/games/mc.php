@@ -3,7 +3,7 @@ if (gp_game_id($Server_ID) == 3) {
 		#Minecraft
 		$S_Command = game_command($Server_ID);
 		if (empty($S_Command) || $S_Command == '') {
-			$S_Command = 'java -d64 -Xincgc -Xms512M -Xmx1024M -XX:MaxPermSize=128M -XX:+DisableExplicitGC -XX:+AggressiveOpts -Dfile.encoding=UTF-8 -jar Server.jar';
+			$S_Command = 'java -Xms512M -Xmx1024M -XX:MaxPermSize=128M -XX:+DisableExplicitGC -XX:+AggressiveOpts -Dfile.encoding=UTF-8 -jar Server.jar';
 		}
 
 		//Instalation exec query command

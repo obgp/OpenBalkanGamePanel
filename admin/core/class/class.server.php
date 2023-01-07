@@ -737,8 +737,8 @@ function install_mod($Box_ID, $S_Install_Dir, $Server_ID) {
 			 $cmd2 = "cp -r ".$S_Install_Dir. "/* /home/".$Srv_Username."/";
 			}
 			$cmd1 = "screen -m -S ".$Srv_Username."_install";	
-	    	$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
-	    	$cmd4 = "chmod -R 700 /home/".$Srv_Username;	
+	    		$cmd3 = "chown ".$Srv_Username." -Rf /home/".$Srv_Username;	
+	    		$cmd4 = "chmod -R 700 /home/".$Srv_Username;	
 			$ssh->write("$cmd1\n");	
 			sleep(1);	
 			$ssh->write("$cmd2\n");	

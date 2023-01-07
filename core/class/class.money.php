@@ -14,39 +14,27 @@ function is_money() {
 }
 
 function drzava_valuta($d) {
-	if($d == "RS") {
-		$drzava = "din";
-	} else if($d == "HR") {
-		$drzava = "kn";
-	} else if($d == "BA") {
-		$drzava = "km";
-	} else if($d == "MK") { 
-		$drzava = "den";
-	} else if($d == "ME") { 
-		$drzava = "&euro;";
-	} else if($d == "other") { 
-		$drzava = "&euro;";
-	}
+	$rootsec = rootsec();
 
-	return $drzava;
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC->Execute(array($d));
+	$drzava = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	if($drzava) {
+	return $drzava["currencysign"];
+	} else {
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `id` = ?");
+	$SQLSEC->Execute(array(0));
+	$drzava = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	return $drzava["currencysign"];
+	}
 }
 
 function drzava($d) {
-	if($d == "RS") {
-		$drzava = "Srbija";
-	} else if($d == "HR") {
-		$drzava = "Hrvatska";
-	} else if($d == "BA") {
-		$drzava = "Bosna i Hercegovina";
-	} else if($d == "MK") { 
-		$drzava = "Makedonija";
-	} else if($d == "ME") { 
-		$drzava = "Montenegro";
-	} else if($d == "other") { 
-		$drzava = "No Balkan";
-	}
-
-	return $drzava;
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC->Execute(array($d));
+	$drzava = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	return $drzava["country"];
 }
 
 function euro_for_slot($s_id) {
@@ -67,21 +55,11 @@ function euro_for_slot($s_id) {
 
 	$cena_slota = explode('|', $slot_cena['cena_slota']);
 
-	if ($uu_info['zemlja'] == "RS") {
-		$cena = $cena_slota[0];
-	} else if ($uu_info['zemlja'] == "HR") {
-		$cena = $cena_slota[1];
-	} else if ($uu_info['zemlja'] == "BA") {
-		$cena = $cena_slota[2];
-	} else if ($uu_info['zemlja'] == "MK") {
-		$cena = $cena_slota[3];
-	} else if ($uu_info['zemlja'] == "ME") {
-		$cena = $cena_slota[4];
-	} else if ($uu_info['zemlja'] == "other") {
-		$cena = $cena_slota[0];
-	} else {
-		$cena = '';
-	}
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($uu_info['zemlja']));
+	$drzava = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
+
+	$cena = $cena_slota[$drzava["id"]];
 
 	$cenaslota = round($cena * server_slot($s_id), 2);
 	$cenaslota = number_format($cenaslota, 2);
@@ -108,21 +86,12 @@ function cena_slota($slot_12) {
 	$SQLSEC3->Execute(array($g_id));
 	$slot_cena = $SQLSEC3->fetch(PDO::FETCH_ASSOC);
 
-	$cena_slota = explode('|', $slot_cena['cena']);
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($uu_info['zemlja']));
+	$drzava = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
 
-	if ($uu_info['zemlja'] == "RS") {
-		$cena = $cena_slota[0];
-	} else if ($uu_info['zemlja'] == "HR") {
-		$cena = $cena_slota[1];
-	} else if ($uu_info['zemlja'] == "BA") {
-		$cena = $cena_slota[2];
-	} else if ($uu_info['zemlja'] == "MK") {
-		$cena = $cena_slota[3];
-	} else if ($uu_info['zemlja'] == "ME") {
-		$cena = $cena_slota[4];
-	} else if ($uu_info['zemlja'] == "other") {
-		$cena = $cena_slota[0];
-	}
+	$cena_slota = explode('|', $slot_cena['cena_slota']);
+	$cena = $cena_slota[$drzava["id"]];
 
 	$cenaslota = round($cena * $slot_12, 2);
 	$cenaslota = number_format($cenaslota, 2);
@@ -133,52 +102,51 @@ function cena_slota($slot_12) {
 }
 
 function money_num($novac, $drzava) {
-	if($drzava == "RS"){
-		$novac = $novac*125;
+	$rootsec = rootsec();
+
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($drzava));
+	$drzavares = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
+	if($drzavares){
+		$novac = $novac*$drzavares["multiply"];	
+		$novacc = number_format(floatval($novac), 2).''.drzava_valuta($drzava);
+		return $novacc;	
+	} else {
 		$novacc = $novac;
 		return $novacc;	
-	} else if($drzava == "HR"){
-		$novac = $novac*6.5;	
-		$novacc = $novac;
-		return $novacc;		
-	} else if($drzava == "BA"){
-		$novac = $novac*1.7;		
-		$novacc = $novac;
-		return $novacc;		
-	} else if($drzava == "MK"){
-		$novac = $novac*5.36;	
-		$novacc = $novac;
-		return $novacc;		
-	} else if($drzava == "ME" || $drzava == "other"){
-		$novacc = $novac;
-		return $novacc;		
 	}
-
 	return false;
 }
+function money_num_clean($novac, $drzava) {
+	$rootsec = rootsec();
 
-function money_val($novac, $drzava) {
-	if($drzava == "RS"){
-		$novac = $novac*120;	
-		$novacc = number_format(floatval($novac), 2).''.drzava_valuta($drzava);
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($drzava));
+	$drzavares = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
+	if($drzavares){
+		$novac = $novac*$drzavares["multiply"];	
+		$novacc = floatval($novac);
 		return $novacc;	
-	} else if($drzava == "HR"){
-		$novac = $novac*6.5;	
-		$novacc = number_format(floatval($novac), 2).''.drzava_valuta($drzava);
-		return $novacc;		
-	} else if($drzava == "BA"){
-		$novac = $novac*1.7;		
-		$novacc = number_format(floatval($novac), 2).''.drzava_valuta($drzava);
-		return $novacc;		
-	} else if($drzava == "MK"){
-		$novac = $novac*5.36;	
-		$novacc = number_format(floatval($novac), 2).''.drzava_valuta($drzava);
-		return $novacc;		
-	} else if($drzava == "ME" || $drzava == "other"){	
-		$novacc = number_format(floatval($novac), 2).' '.drzava_valuta($drzava);
-		return $novacc;		
+	} else {
+		$novacc = $novac;
+		return $novacc;	
 	}
+	return false;
+}
+function money_val($novac, $drzava) {
+	$rootsec = rootsec();
 
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($drzava));
+	$drzavares = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
+	if($drzavares){
+		$novac = $novac*$drzava["multiply"];	
+		$novacc = number_format(floatval($novac), 2).' '.drzava_valuta($drzava);
+		return $novacc;	
+	} else {
+		$novacc = $novac;
+		return $novacc;	
+	}
 	return false;
 }
 
@@ -317,27 +285,19 @@ function cena_slota_code_v($slot, $game_id, $loc = 'lite1') {
 }
 
 function money_val_code($novac, $drzava) {
-	if($drzava == "RS"){
-		$novac = $novac*120;	
-		$novacc = number_format(floatval($novac), 2);
-		return $novacc;	
-	} else if($drzava == "HR"){
-		$novac = $novac*6.5;	
-		$novacc = number_format(floatval($novac), 2);
-		return $novacc;		
-	} else if($drzava == "BA"){
-		$novac = $novac*1.7;		
-		$novacc = number_format(floatval($novac), 2);
-		return $novacc;		
-	} else if($drzava == "MK"){
-		$novac = $novac*5.36;	
-		$novacc = number_format(floatval($novac), 2);
-		return $novacc;		
-	} else if($drzava == "ME" || $drzava == "other"){	
-		$novacc = number_format(floatval($novac), 2);
-		return $novacc;		
-	}
+	$rootsec = rootsec();
 
+	$SQLSEC4 = $rootsec->prepare("SELECT * FROM `billing_currency` WHERE `countryshort` = ?");
+	$SQLSEC4->Execute(array($drzava));
+	$drzavares = $SQLSEC4->fetch(PDO::FETCH_ASSOC);
+	if($drzavares){
+		$novac = $novac*$drzava["multiply"];	
+		$novacc = number_format(floatval($novac), 2).' '.drzava_valuta($drzava);
+		return $novacc;	
+	} else {
+		$novacc = $novac;
+		return $novacc;	
+	}
 	return false;
 }
 

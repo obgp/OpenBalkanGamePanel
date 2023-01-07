@@ -64,17 +64,17 @@ if (isset($_GET['a']) && $_GET['a'] == "register") {
 	
 	if ($User_SigCodC != $User_SigCod) {
 		sMSG("Sigurnosni kod nije tacan! $User_SigCodC | $User_SigCod", 'error');
-		redirect_to('register.php');
+		redirect_to('register');
 		die();
 	} else {
 		if ($User_Password != $User_Password2) {
 			sMSG("Sigurnosni kod nije tacan!", 'error');
-			redirect_to('register.php');
+			redirect_to('/home');
 			die();
 		} else {
 			if(!is_user_info_free($User_Email, $User_Username)) {
 				sMSG("Nalog sa ovim podacima vec postoji!", 'error');
-				redirect_to('register.php');
+				redirect_to('/home');
 				die();
 			} else {
 				$User_Password = md5($User_Password);
@@ -85,12 +85,12 @@ if (isset($_GET['a']) && $_GET['a'] == "register") {
 
 				if (!$drkamkurac) {
 					sMSG('Doslo je do greske, molimo pokusajte opet malo kasnije.', 'error');
-					redirect_to('register.php');
+					redirect_to('/home');
 					die();
 				} else {
 					send_mail(site_noreply_mail(), "Register", "Register", "Register", $User_Email);
 					sMSG('Uspesno ste kreirali nalog!', 'success');
-					redirect_to('index.php');
+					redirect_to('/');
 					die();
 				}
 			}
@@ -138,14 +138,14 @@ if (isset($_GET['a']) && $_GET['a'] == "add_newtiket") {
 	} else {
 		if (is_valid_server($Server_ID) == false) {
 			sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-			redirect_to('gp-new_ticket.php');
+			redirect_to('new_ticket');
 			die();
 		}
 	}
 
 	if (empty($Ticket_Name)||empty($Ticket_MSG)||$Ticket_Name == ''||$Ticket_MSG == '') {
 		sMSG('Potrebno je popuniti sva polja!', 'error');
-		redirect_to('gp-new_ticket.php');
+		redirect_to('new_ticket');
 		die();
 	}
 	$rootsec = rootsec();
@@ -155,7 +155,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_newtiket") {
 
 	if (!$drkamkurac) {
 		sMSG('Doslo je do greske, molimo pokusajte opet malo kasnije.', 'error');
-		redirect_to('gp-support.php');
+		redirect_to('support');
 		die();
 	} else {
 	/*	$Ticket_ID = $SQLSEC->lastInsertId();
@@ -168,7 +168,7 @@ if (isset($_GET['a']) && $_GET['a'] == "add_newtiket") {
 		$SQLSEC->Execute(array($Ticket_ID, $Ticket_Red));*/
 		
 		sMSG('Uspesno ste otvorili novi tiket.', 'success');
-		redirect_to('gp-support.php');
+		redirect_to('support');
 		die();
 	}
 
@@ -181,24 +181,24 @@ if (isset($_GET['a']) && $_GET['a'] == "ticket_add_odg") {
 
 	if (is_valid_ticket($Ticket_ID) == false) {
 		sMSG('Ovaj tiket ne postoji ili nemate pristup istom.', 'error');
-		redirect_to('gp-support.php');
+		redirect_to('support');
 		die();
 	}
 
 	if (empty($Ticket_MSG) || $Ticket_MSG == '') {
 		sMSG('Molimo pookusajte opet, polje: "Dodaj odgovor" je bilo prazno!', 'error');
-		redirect_to('gp-ticket.php?id='.$Ticket_ID);
+		redirect_to('ticket?id='.$Ticket_ID);
 		die();
 	}
 
 	if(ticket_status_id($Ticket_ID) == 1||ticket_status_id($Ticket_ID) == 2||ticket_status_id($Ticket_ID) == 3) { 
 		if(last_odg_time($Ticket_ID) > (time() - 300)) { 
 			sMSG('Antispam! Vreme izmedju postavljanja sledeceg odgovora je 5 minuta, molimo strpite se malo!', 'info');
-			redirect_to('gp-ticket.php?id='.$Ticket_ID);
+			redirect_to('ticket?id='.$Ticket_ID);
 			die();
 		} else if(ticket_status_id($Ticket_ID) == 4) { 
 			sMSG('Ovaj tiket je zakljkucan, ukoliko vam je potrebna pomoc otvorite novi!', 'error');
-			redirect_to('gp-support.php');
+			redirect_to('support');
 			die();
 		} 
 	}
@@ -210,11 +210,11 @@ if (isset($_GET['a']) && $_GET['a'] == "ticket_add_odg") {
 
 	if (!$drkamkurac) {
 		sMSG('Doslo je do greske, molimo pokusajte opet malo kasnije.', 'error');
-		redirect_to('gp-ticket.php?id='.$Ticket_ID);
+		redirect_to('ticket?id='.$Ticket_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste dodali odgovor na ovaj tiket.', 'success');
-		redirect_to('gp-ticket.php?id='.$Ticket_ID);
+		redirect_to('ticket?id='.$Ticket_ID);
 		die();
 	}
 }
@@ -227,14 +227,14 @@ if (isset($_GET['a']) && $_GET['a'] == "naruci_server") {
 	$Buy_Slot 		= txt($_POST['slotovi']);
 	$Buy_Mesec 		= txt($_POST['mesec']);
 	$Buy_Name 		= txt($_POST['name']);
-	$Buy_Mod 		= txt($_POST['mod']);
+//	$Buy_Mod 		= txt($_POST['mod']);
 	$Buy_Cena 		= txt($_POST['cena']);
 	$Buy_Date 		= date('m.d.Y, H:i');
 	$User_ID 		= $_SESSION['user_login'];
 
-	if ($Buy_Game == ''||$Buy_Location == ''||$Buy_Slot == ''||$Buy_Mesec == ''||$Buy_Name == ''||$Buy_Mod == '') {
+	if ($Buy_Game == ''||$Buy_Location == ''||$Buy_Slot == ''||$Buy_Mesec == ''||$Buy_Name == '') {
 		sMSG('Doslo je do greske!');
-		redirect_to('naruci.php?game='.$Buy_Game);
+		redirect_to('order='.$Buy_Game);
 		die();
 	}
 
@@ -244,195 +244,76 @@ if (isset($_GET['a']) && $_GET['a'] == "naruci_server") {
 	$rootsec = rootsec();
 	
 	$SQLSEC = $rootsec->prepare("INSERT INTO `billing` (`id`, `user_id`, `game_id`, `mod_id`, `location`, `slotovi`, `mesec`, `name`, `cena`, `date`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	$drkamkurac = $SQLSEC->Execute(array(NULL, $User_ID, $Buy_Game, $Buy_Mod, $Buy_Location, $Buy_Slot, $Buy_Mesec, $Buy_Name, $Buy_Cena, $Buy_Date, 'pending'));
+	$drkamkurac = $SQLSEC->Execute(array(NULL, $User_ID, $Buy_Game, "", $Buy_Location, $Buy_Slot, $Buy_Mesec, $Buy_Name, $Buy_Cena, $Buy_Date, 'pending'));
 
 	if (!$drkamkurac) {
 		sMSG('Doslo je do greske, molimo pokusajte opet malo kasnije.', 'error');
-		redirect_to('naruci.php?game='.$Buy_Game);
+		redirect_to('order='.$Buy_Game);
 		die();
 	} else {
-		sMSG('Hvala vam! Uspesno ste narucili novi server. (Bicete obavjesteni putem emaila i vaseg GP-a kada nas support pogleda ovu narudzbu!)', 'success');
-		redirect_to('gp-billing.php');
+		sMSG('Hvala vam! Uspesno ste narucili novi server. (Bicete obavjesteni putem emaila i vaseg a kada nas support pogleda ovu narudzbu!)', 'success');
+		redirect_to('billing');
 		die();
 	}
 }
 
-/* Server process WebFTP */
-
-if (isset($_GET['a']) && $_GET['a'] == "delete_folder") {
-	$Server_ID 			= txt($_POST['server_id']);
-	$Server_Path 		= txt($_POST['path']);
-	$Server_Folder 		= txt($_POST['f_name']);
+if (isset($_GET['a']) && $_GET['a'] == "ftp") {
+	$Server_ID 			= txt($_GET['server_id']);
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
-	$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-	if(!$ftp_connect) {
-		sMSG('Doslo je do greske prilikom spajanja na FTP server.', 'error');
-		redirect_to('gp-webftp.php?id='.$Server_ID);
-		die();
-	}
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/FTP/php/elFinderConnector.class.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/FTP/php/elFinder.class.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/FTP/php/elFinderVolumeDriver.class.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/FTP/php/elFinderVolumeLocalFileSystem.class.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/core/inc/libs/FTP/php/elFinderVolumeFTP.class.php');
+	
+		$opts = array( 
+			'roots' => array(
+				array(
+					'driver' => 'FTP',
+					'URL' => 'ftp://'.server_username($Server_ID).':'.server_password($Server_ID).'@'.server_ip($Server_ID).':21/',
+					'host'   => server_ip($Server_ID),
+					'user'   => server_username($Server_ID),
+					'pass'   => server_password($Server_ID),
+					'port'   => 21,  
+					'mode'   => 'passive',
+					'path'   => '/',
+					'read' => true,
+					'write' => true,
+					'utf8fix' => true,
+					'bind' => array(
+						'mkdir mkfile rename duplicate upload rm paste' => 'logger'
+					),
+					'rootAlias'=>'Server Root',
+					'fileURL'=>True,
+					'dotFiles'=>True,
+					'dirSize'=>True,
+					'fileMode'=>0644,
+					'dirMode'=>0775,
+					'imgLib'=>False,
+					'tmbDir'=>'.tmb',
+					'tmbAtOnce'=>5,
+					'debug'=>True
+				),
+				'attributes' => array(
+					array(
+						'pattern' => '~/\.~',
+						'read' => true,
+						'write' => true,
+						'hidden' => true	
+					),
+		 		
+				)
+			)
+		);
+		$connector = new elFinderConnector(new elFinder($opts));
+		$connector->run();
 
-	if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-		ftp_pasv($ftp_connect, true);
-
-		if(!empty($Server_Path)) {
-			ftp_chdir($ftp_connect, $Server_Path);	
-		}
-
-		function ftp_delAll($conn_id, $dst_dir) {
-			$ar_files = ftp_nlist($conn_id, $dst_dir);
-			if (is_array($ar_files)) { 
-				for ($i=0;$i<sizeof($ar_files);$i++) { 
-					$st_file = basename($ar_files[$i]);
-					if($st_file == '.' || $st_file == '..') continue;
-					if (ftp_size($conn_id, $dst_dir.'/'.$st_file) == -1) ftp_delAll($conn_id,  $dst_dir.'/'.$st_file); 
-					else ftp_delete($conn_id,  $dst_dir.'/'.$st_file);
-				}
-				sleep(1);
-				ob_flush();
-			}
-			if(ftp_rmdir($conn_id, $dst_dir)) return true;
-		}
-
-		function ftp_folderdel($conn_id, $dst_dir) {
-			$ar_files = ftp_nlist($conn_id, $dst_dir);
-			if (is_array($ar_files)) { 
-				for ($i=0;$i<sizeof($ar_files);$i++) { 
-					$st_file = basename($ar_files[$i]);
-					if($st_file == '.' || $st_file == '..') continue;
-					if (ftp_size($conn_id, $dst_dir.'/'.$st_file) == -1) { 
-						ftp_delAll($conn_id,  $dst_dir.'/'.$st_file); 
-					} else {
-						ftp_delete($conn_id,  $dst_dir.'/'.$st_file);
-					}
-				}
-				sleep(1);
-				ob_flush();
-			}
-
-			if(ftp_rmdir($conn_id, $dst_dir)) {
-				return true;
-			}
-		}			
-		
-		if(ftp_folderdel($ftp_connect, $Server_Path.'/'.$Server_Folder)) {
-			sMSG('Uspesno ste obrisali folder: #'.$Server_Folder, 'success');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path);
-			die();
-		} else {
-			sMSG('Doslo je do greske prilikom brisanja foldera.', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path);
-			die();
-		}
-	}
-	ftp_close($ftp_connect);
-}
-
-if (isset($_GET['a']) && $_GET['a'] == "edit_folder") {
-	$Server_ID 			= txt($_POST['server_id']);
-	$Server_Path 		= txt($_POST['path']);
-	$Server_File 		= txt($_POST['f_name']);
-	$New_File_Name 		= txt($_POST['new_file_name']);
-
-	if (is_valid_server($Server_ID) == false) {
-		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
-		die();
-	}
-
-	sMSG('Ova opcija je u izradi..', 'info');
-	redirect_to('gp-server.php?id='.$Server_ID);
-	die();
-
-}
-
-if (isset($_GET['a']) && $_GET['a'] == "delete_file") {
-	$Server_ID 			= txt($_POST['server_id']);
-	$Server_Path 		= txt($_POST['path']);
-	$Server_File 		= txt($_POST['f_name']);
-
-	if (is_valid_server($Server_ID) == false) {
-		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
-		die();
-	}
-
-	$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-	if(!$ftp_connect) {
-		sMSG('Doslo je do greske prilikom spajanja na FTP server.', 'error');
-		redirect_to('gp-webftp.php?id='.$Server_ID);
-		die();
-	}
-		
-	if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-		ftp_pasv($ftp_connect, true);
-
-		if(!empty($Server_Path)) {
-			ftp_chdir($ftp_connect, $Server_Path);	
-		}		
-		
-		if(ftp_delete($ftp_connect, $Server_Path.'/'.$Server_File)) {
-			sMSG('Uspesno ste obrisali file: #'.$Server_File, 'success');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path);
-			die();
-		} else {
-			sMSG('Doslo je do greske prilikom brisanja fajl-a.', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path);
-			die();
-		}
-	}
-	ftp_close($ftp_connect);
-}
-
-if (isset($_GET['a']) && $_GET['a'] == "save_ftp_file") {
-	$Server_ID 			= txt($_POST['server_id']);
-	$Server_Path 		= txt($_POST['path']);
-	$Server_File 		= txt($_POST['f_name']);
-
-	$File_Edit 			= $_POST['file_text_edit']; 
-
-	if (is_valid_server($Server_ID) == false) {
-		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
-		die();
-	}
-
-	$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
-	if(!$ftp_connect) {
-		sMSG('Doslo je do greske prilikom spajanja na FTP server.', 'error');
-		redirect_to('gp-webftp.php?id='.$Server_ID);
-		die();
-	}
-		
-	if (ftp_login($ftp_connect, server_username($Server_ID), server_password($Server_ID))) {
-		ftp_pasv($ftp_connect, true);
-		if(!empty($Server_Path)) {
-			ftp_chdir($ftp_connect, $Server_Path);	
-		}
-
-		$folder = $_SERVER['DOCUMENT_ROOT'].'/assets/_cache/panel_'.server_username($Server_ID).'_'.$Server_File;
-		$fw = fopen(''.$folder.'', 'w+');
-		$fb = fwrite($fw, stripslashes($File_Edit));
-		$remote_file = ''.$Server_Path.'/'.$Server_File.'';
-		if (ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)){
-			sMSG('Uspesno ste sacuvali file: #'.$Server_File, 'success');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path.'&fajl='.$Server_File.'#server_info_infor2');
-			die();
-		} else {
-			sMSG('Doslo je do greske prilikom editovanja fajl-a. (Promene nisu sacuvane!)', 'error');
-			redirect_to('gp-webftp.php?id='.$Server_ID.'&path='.$Server_Path.'&fajl='.$Server_File.'#server_info_infor2');
-			die();
-		}
-		
-		fclose($fw);
-		unlink($folder);
-	}
-	ftp_close($ftp_connect);
 }
 
 /* Dodaj admina */
@@ -459,20 +340,20 @@ if (isset($_GET['a']) && $_GET['a'] == "add_admin") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (empty($Vrsta_Admina)||empty($Name_Admina)||empty($Perm_Admina)) {
 		sMSG('Morate popuniti sva polja!', 'error');
-		redirect_to('gp-admins.php?id='.$Server_ID);
+		redirect_to('admins?id='.$Server_ID);
 		die();
 	}
 
 	$ftp_connect = ftp_connect(server_ip($Server_ID), 21);
 	if(!$ftp_connect) {
 		sMSG('Doslo je do greske prilikom spajanja na FTP server.', 'error');
-		redirect_to('gp-admins.php?id='.$Server_ID);
+		redirect_to('admins?id='.$Server_ID);
 		die();
 	}
 
@@ -503,23 +384,23 @@ if (isset($_GET['a']) && $_GET['a'] == "add_admin") {
 	    $fw = fopen(''.$folder.'', 'w+');
 	    if(!$fw){
 	        sMSG('Ne mogu otvoriti fajl! (Admin nije dodat)', 'error');
-			redirect_to('gp-admins.php?id='.$Server_ID);
+			redirect_to('admins?id='.$Server_ID);
 			die();
 	    } else {  
 	        $fb = fwrite($fw, stripslashes($contents));
 	        if(!$fb) {
 	       		sMSG('Doslo je do greske, molimo pokusajte malo kasnije.', 'error');
-				redirect_to('gp-admins.php?id='.$Server_ID);
+				redirect_to('admins?id='.$Server_ID);
 				die();
 	        } else {               
 	            $remote_file = 'users.ini';
 	            if (ftp_put($ftp_connect, $remote_file, $folder, FTP_BINARY)) {
 	            	sMSG('Uspesno ste dodali novog admina!', 'success');
-					redirect_to('gp-admins.php?id='.$Server_ID);
+					redirect_to('admins?id='.$Server_ID);
 					die();
 	            } else {
 	                sMSG('Doslo je do greske! (Admin nije dodat)', 'error');
-					redirect_to('gp-admins.php?id='.$Server_ID);
+					redirect_to('admins?id='.$Server_ID);
 					die();
 	            }
 	            unlink($folder);                                
@@ -537,24 +418,24 @@ if (isset($_GET['a']) && $_GET['a'] == "install_plugin") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (is_valid_plugin($Plugin_ID) == false) {
 		sMSG('Ovaj plugin ne postoji!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
 	$Pl_Install = plugin_action($Server_ID, $Plugin_ID, 1);
 	if (!$Pl_Install) {
 		sMSG('Doslo je do greske!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste instalirali plugin: '.plugin_name($Plugin_ID), 'success');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
@@ -568,24 +449,24 @@ if (isset($_GET['a']) && $_GET['a'] == "remove_plugin") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (is_valid_plugin($Plugin_ID) == false) {
 		sMSG('Ovaj plugin ne postoji!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
 	$Pl_Install = plugin_action($Server_ID, $Plugin_ID, 2);
 	if ($Pl_Install != true) {
 		sMSG('Doslo je do greske!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste obrisali plugin: '.plugin_name($Plugin_ID), 'success');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
@@ -599,24 +480,24 @@ if (isset($_GET['a']) && $_GET['a'] == "install_map") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (is_valid_map($Map_ID) == false) {
 		sMSG('Ova mapa ne postoji!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
 	$Map_Install = map_action($Server_ID, $Map_ID, 1);
 	if ($Map_Install != true) {
 		sMSG('Doslo je do greske!', 'error');
-		redirect_to('gp-maps.php?id='.$Server_ID);
+		redirect_to('maps?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste instalirali mapu: '.plugin_name($Map_ID), 'success');
-		redirect_to('gp-maps.php?id='.$Server_ID);
+		redirect_to('maps?id='.$Server_ID);
 		die();
 	}
 
@@ -630,24 +511,24 @@ if (isset($_GET['a']) && $_GET['a'] == "remove_map") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (is_valid_map($Map_ID) == false) {
 		sMSG('Ova mapa ne postoji!', 'error');
-		redirect_to('gp-plugins.php?id='.$Server_ID);
+		redirect_to('plugins?id='.$Server_ID);
 		die();
 	}
 
 	$Map_Install = map_action($Server_ID, $Map_ID, 2);
 	if (!$Map_Install) {
 		sMSG('Doslo je do greske!', 'error');
-		redirect_to('gp-maps.php?id='.$Server_ID);
+		redirect_to('maps?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste obrisali mapu: '.plugin_name($Map_ID), 'success');
-		redirect_to('gp-maps.php?id='.$Server_ID);
+		redirect_to('maps?id='.$Server_ID);
 		die();
 	}
 
@@ -665,7 +546,7 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 
 	if (!$drkamkurac) {
 		sMSG('Doslo je do greske! Molimo prijavite ovaj bag (#AutoRestart).', 'error');
-		redirect_to('gp-autorestart.php?id='.$Server_ID);
+		redirect_to('autorestart?id='.$Server_ID);
 		die();
 	} else {
 		if ($Vreme == '-1') {
@@ -674,7 +555,7 @@ if (isset($_GET['a']) && $_GET['a'] == "autorestart") {
 			$s_m = 'Uspesno ste ukljucili autorestart! Server ce se od danas restartovati svakim danom u: '.$Vreme.':00h';
 		}
 		sMSG($s_m, 'success');
-		redirect_to('gp-autorestart.php?id='.$Server_ID);
+		redirect_to('autorestart?id='.$Server_ID);
 		die();
 	}
 }
@@ -688,22 +569,25 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Ovaj server je vec startovan! (Probajte restartovati vas server)', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 	
-	include($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
+ 	/*foreach(glob($_SERVER['DOCUMENT_ROOT'].'/core/games/*.php') as $game){   
+    	require_once($game); 
+	}*/
+	require($_SERVER['DOCUMENT_ROOT'].'/core/games/mc.php'); 
 	//echo box_ip($Box_ID)." ".box_ssh($Box_ID)." ".box_username($Box_ID)." ".box_password($Box_ID)." ".game_command($Server_ID)." ".server_username($Server_ID);
 	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
 	if ($start_server != true) {
 		sMSG('Server nije startovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		$rootsec = rootsec();
@@ -712,7 +596,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_start") {
 		$SQLSEC->Execute(array($Server_ID));
 
 		sMSG('Server je uspesno startovan.', 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -724,17 +608,15 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 	
-	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
-
 	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
 	$start_server = start_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), game_command($Server_ID), server_username($Server_ID));
 	if (!$stop_server == true && !$start_server == true) {
 		sMSG('Server nije restartovan. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		$rootsec = rootsec();
@@ -743,7 +625,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_restart") {
 		$SQLSEC->Execute(array($Server_ID));
 		
 		sMSG('Server je uspesno restartovan.', 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -756,20 +638,20 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 	$user = server_username($Server_ID);
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (server_is_start($Server_ID) == false) {
 		sMSG('Ovaj server je vec stopiran! (Probajte startovati vas server)', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
 	$stop_server = stop_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $user);
 	if ($stop_server != true) {
 		sMSG('Server nije stopiran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		$rootsec = rootsec();
@@ -778,7 +660,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_stop") {
 		$SQLSEC->Execute(array($Server_ID));
 
 		sMSG('Server je uspesno stopiran.', 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -796,25 +678,30 @@ if (isset($_GET['s']) && $_GET['s'] == "server_reinstall") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Server mora biti stopiran! (Probajte stopirati vas server)', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
-//	include_once($_SERVER['DOCUMENT_ROOT'].'/core/games/inc.php');
+	$games = glob($_SERVER['DOCUMENT_ROOT'].'/core/games/'."*");
+
+ 	foreach($games as $game){   
+     		require_once("$game"); 
+	}
+
 	$reinstall_server = reinstall_server(box_ip($Box_ID), box_ssh($Box_ID), box_username($Box_ID), box_password($Box_ID), $ModLoc, server_username($Server_ID));
 	if ($reinstall_server != true) {
 		sMSG('Server nije Reinstaliran. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Server je uspesno Reinstaliran. (Sacekajte par minuta "Predlog: 1/2min")', 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 }
@@ -826,13 +713,13 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 	
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Server mora biti stopiran! (Probajte stopirati vas server)', 'info');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 	$RandomNumber		=		random_s_key(5);
@@ -853,7 +740,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	
 	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 	
@@ -861,11 +748,11 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup") {
 	
 	if ($backup_server != true) {
 		sMSG('Backup nije napravljen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Backup je uspjesno napravljen.', 'success');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 }
@@ -877,13 +764,13 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_restore") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 	
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Server mora biti stopiran! (Probajte stopirati vas server)', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 	
@@ -898,11 +785,11 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_restore") {
 	
 	if ($server_backup_restore != true) {
 		sMSG('Backup nije vracen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Backup je uspjesno vracen.', 'success');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 }
@@ -914,13 +801,13 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 	
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji!', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 	
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Server mora biti stopiran! (Probajte stopirati vas server)', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 	
@@ -937,7 +824,7 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 		
 	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske sa bazom! (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 	
@@ -945,11 +832,11 @@ if (isset($_GET['s']) && $_GET['s'] == "server_backup_delete") {
 	
 	if ($server_backup_delete != true) {
 		sMSG('Backup nije vracen. (GamePanel je u BETA fazi, te vas molimo da nam prijavite ovaj bag)', 'error');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Backup je uspjesno obrisan.', 'success');
-		redirect_to('gp-backup.php?id='.$Server_ID);
+		redirect_to('backup?id='.$Server_ID);
 		die();
 	}
 }
@@ -961,19 +848,19 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (server_mod($Server_ID) == false) {
 		sMSG('Ovaj mod ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
 	if (server_is_start($Server_ID) == true) {
 		sMSG('Server mora biti stopiran!', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -982,21 +869,22 @@ if (isset($_GET['a']) && $_GET['a'] == "change_mod") {
 	$install_mod = install_mod($Box_ID, $S_Install_Dir, $Server_ID);
 	if ($install_mod != true) {
 		sMSG('Promena moda nije uspela! #ChangeMod | #err1', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
-	$rootsec = rootsec();
-	$query = "UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?";
-	$SQLSEC = $rootsec->prepare($query);
-	$seksdrogasekulicgoga = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
+		$rootsec = rootsec();
+
+		$query = "UPDATE `serveri` SET `modovi` = ? WHERE `id` = ?";
+		$SQLSEC = $rootsec->prepare($query);
+		$seksdrogasekulicgoga = $SQLSEC->Execute(array($Mod_ID, $Server_ID));
 		
 		if (!$seksdrogasekulicgoga) {
 			sMSG('Uspesno ste instalirali '.server_mod_name($Server_ID).' mod! (Mod nije upisan u bazi, prijavite ovaj problem)', 'info');
-			redirect_to('gp-server.php?id='.$Server_ID);
+			redirect_to('server?id='.$Server_ID);
 			die();
 		} else {
 			sMSG('Uspesno ste instalirali '.server_mod_name($Server_ID).' mod! (Sacekajte par minuta "Predlog: 1/2min")', 'success');
-			redirect_to('gp-server.php?id='.$Server_ID);
+			redirect_to('server?id='.$Server_ID);
 			die();
 		}
 	}
@@ -1011,7 +899,7 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 
 	if (empty($User_Name)||empty($User_lName)) {
 		sMSG('Molimo kako bismo sacuvali vase izmene potrebno je uneti text u oba inputa!(Ime & Prezime)', 'info');
-		redirect_to('gp-settings.php');
+		redirect_to('settings');
 		die();
 	}
 
@@ -1027,11 +915,11 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 
 		if (!$in_base || !$in_base2) {
 			sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji!', 'error');
-			redirect_to('gp-settings.php');
+			redirect_to('settings');
 			die();
 		} else {
 			sMSG('Uspesno ste sacuvali izmene!', 'success');
-			redirect_to('gp-settings.php');
+			redirect_to('settings');
 			die();
 		}
 	} else {
@@ -1052,20 +940,20 @@ if (isset($_GET['a']) && $_GET['a'] == "edit_profile") {
 
 			if (!$in_base || !$in_base2 || !$in_base3) {
 				sMSG('Doslo je do greske, molimo prijavite ovaj bag nasoj administraciji! #Edit_Prof', 'error');
-				redirect_to('gp-settings.php');
+				redirect_to('settings');
 				die();
 			} else {
 				sMSG('Uspesno ste sacuvali izmene!', 'success');
-				redirect_to('gp-settings.php');
+				redirect_to('settings');
 				die();
 			}
 
 			sMSG('Uspesno ste sacuvali izmene!', 'success');
-			redirect_to('gp-settings.php');
+			redirect_to('settings');
 			die();
 		} else {
 			sMSG('Molimo kako bismo sacuvali vas password potrebno je uneti isti u oba inputa!(Password & R. Password)', 'info');
-			redirect_to('gp-settings.php');
+			redirect_to('settings');
 			die();
 		}
 	}
@@ -1078,13 +966,13 @@ if (isset($_GET['a']) && $_GET['a'] == "produzi_srv") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (empty($Save_Date) || $Save_Date == "") {
 		sMSG('Greska, izgleda da cete morati javiti supportu da vam produzi server, dok se ne popravi ovaj bag.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -1092,7 +980,7 @@ if (isset($_GET['a']) && $_GET['a'] == "produzi_srv") {
 	$novac_vvl = my_money($_SESSION['user_login']);
 	if (empty($moj_novac) || $novac_vvl == '0') {
 		sMSG('Postovani korisnice, stanje na vasem racunu je '.$moj_novac, 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 
@@ -1119,11 +1007,11 @@ if (isset($_GET['a']) && $_GET['a'] == "produzi_srv") {
 	if($moj_novac<$cena)
 	{
 		sMSG('Postovani korisnice, nemate dovoljno sredstava na vasem racunu', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else if ($date>$sdatum) {
 		sMSG('Postovani korisnice, ne mozete staviti manji datum nego sto je uplacen', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 
@@ -1134,7 +1022,7 @@ if (isset($_GET['a']) && $_GET['a'] == "produzi_srv") {
 		$SQLSEC2->Execute(array($formatiraj, $Server_ID));
 
 		sMSG('Postovani korisnice, Uspesno ste produzili vas server', 'info');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 
 	}
@@ -1147,13 +1035,13 @@ if (isset($_GET['a']) && $_GET['a'] == "change_sname") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (empty($S_New_Name) || $S_New_Name == "") {
 		sMSG('Molimo proverite dali ste uneli tacno ime.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 	
@@ -1164,11 +1052,11 @@ if (isset($_GET['a']) && $_GET['a'] == "change_sname") {
 	
 	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske! Ime servera nije sacuvano u bazi.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste promenili ime servera u GamePanel-u! '.$S_New_Name, 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 }
@@ -1179,13 +1067,13 @@ if (isset($_GET['a']) && $_GET['a'] == "change_m_name") {
 
 	if (is_valid_server($Server_ID) == false) {
 		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
-		redirect_to('gp-servers.php');
+		redirect_to('servers');
 		die();
 	}
 
 	if (empty($S_New_Name) || $S_New_Name == "") {
 		sMSG('Molimo proverite dali ste uneli tacno ime mape.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 	
@@ -1196,14 +1084,32 @@ if (isset($_GET['a']) && $_GET['a'] == "change_m_name") {
 	
 	if (!$seksdrogasekulicgoga) {
 		sMSG('Doslo je do greske! Default mapa nije sacuvana u bazi.', 'error');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	} else {
 		sMSG('Uspesno ste promenili default mapu servera! '.$S_New_Name, 'success');
-		redirect_to('gp-server.php?id='.$Server_ID);
+		redirect_to('server?id='.$Server_ID);
 		die();
 	}
 }
+
+if (isset($_GET['a']) && $_GET['a'] == "server_usage") {
+	$Server_ID 		= txt($_GET['id']);
+
+	if (is_valid_server($Server_ID) == false) {
+		sMSG('Ovaj server ne postoji ili za njega nemate pristup.', 'error');
+		redirect_to('servers');
+		die();
+	}
+	header('Content-Type: application/json');
+
+	$stats = array();
+	$stats["cpu"] = get_cpu_usage($Server_ID);
+	$stats["ram"] = get_ram_usage($Server_ID);
+	
+	echo json_encode($stats, JSON_PRETTY_PRINT);
+}
+
 
 if (isset($_GET['a']) && $_GET['a'] == "boost") {
 	$mdb = masterserver();
@@ -1212,7 +1118,7 @@ if (isset($_GET['a']) && $_GET['a'] == "boost") {
 	
 	if ($server_id == "") {
 		$_SESSION['error'] = "Greska - BOOST";
-		header("Location: gp-home.php");
+		header("Location: home");
 		die();
 	}
 	

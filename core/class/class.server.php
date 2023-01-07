@@ -122,31 +122,13 @@ function server_game_id($srv_id) {
 }
 
 function srv_game_name($g_id) {
-	if ($g_id == 1) {
-		$game_name = 'Counter-Strike 1.6';
-	} else if ($g_id == 2) {
-		$game_name = 'San Andreas Multiplayer';
-	} else if ($g_id == 3) {
-		$game_name = 'Minecraft';
-	} else if ($g_id == 4) {
-		$game_name = 'Call of Duty 2';
-	} else if ($g_id == 5) {
-		$game_name = 'Call of Duty 4';
-	} else if ($g_id == 6) {
-		$game_name = 'TeamSpeak 3';
-	} else if ($g_id == 7) {
-		$game_name = 'Counter-Strike GO';
-	} else if ($g_id == 8) {
-		$game_name = 'Multi Theft Auto';
-	} else if ($g_id == 9) {
-		$game_name = 'ARK';
-	} else if ($g_id == 10) {
-		$game_name = 'FDL';
-	} else if ($g_id == 11) {
-		$game_name = 'FiveM';
-	}
+	$rootsec = rootsec();
 
-	return $game_name;
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `games` WHERE `id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$game = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+
+	return $game["gamename"];
 }
 
 function gp_game($srv_id) {
@@ -161,32 +143,12 @@ function gp_game($srv_id) {
 	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 	
 	$g_id = txt($s_info['igra']);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `games` WHERE `id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$game = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
-	if ($g_id == 1) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon"> Counter-Strike 1.6';
-	} else if ($g_id == 2) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/samp.jpg" class="gp_game_icon"> San Andreas Multiplayer';
-	} else if ($g_id == 3) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mc.png" class="gp_game_icon"> Minecraft';
-	} else if ($g_id == 4) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod2.png" class="gp_game_icon"> Call of Duty 2';
-	} else if ($g_id == 5) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod4.png" class="gp_game_icon"> Call of Duty 4';
-	} else if ($g_id == 6) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ts3.png" class="gp_game_icon"> TeamSpeak 3';
-	} else if ($g_id == 7) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/csgo.jpg" class="gp_game_icon"> Counter-Strike GO';
-	} else if ($g_id == 8) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mta.png" class="gp_game_icon"> Multi Theft Auto';
-	} else if ($g_id == 9) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ark.png" class="gp_game_icon"> ARK';
-	} else if ($g_id == 10) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/fdl.png" class="gp_game_icon"> FDL';
-	} else if ($g_id == 11) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/fivem.png" class="gp_game_icon"> FiveM';
-	}
-
-	return $gp_game;
+	return $game["icon"];
 }
 
 function gp_game_icon($srv_id) {
@@ -201,32 +163,12 @@ function gp_game_icon($srv_id) {
 	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
 	$g_id = txt($s_info['igra']);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `games` WHERE `id` = ?");
+	$SQLSEC->Execute(array($g_id));
+	$game = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
-	if ($g_id == 1) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cs.ico" class="gp_game_icon">';
-	} else if ($g_id == 2) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/samp.jpg" class="gp_game_icon">';
-	} else if ($g_id == 3) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mc.png" class="gp_game_icon">';
-	} else if ($g_id == 4) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod2.png" class="gp_game_icon">';
-	} else if ($g_id == 5) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/cod4.png" class="gp_game_icon">';
-	} else if ($g_id == 6) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ts3.png" class="gp_game_icon">';
-	} else if ($g_id == 7) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/csgo.jpg" class="gp_game_icon">';
-	} else if ($g_id == 8) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/mta.png" class="gp_game_icon">';
-	} else if ($g_id == 9) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/ark.png" class="gp_game_icon">';
-	} else if ($g_id == 10) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/fdl.png" class="gp_game_icon">';
-	} else if ($g_id == 11) {
-		$gp_game = '<img src="/assets/img/icon/gp/game/fivem.png" class="gp_game_icon">';
-	}
-
-	return $gp_game;
+	return $game["icon"];
 }
 
 function gp_game_id($srv_id) {
@@ -253,8 +195,16 @@ function game_command($srv_id) {
 	$SQLSEC = $rootsec->prepare("SELECT * FROM `modovi` WHERE `id` = ?");
 	$SQLSEC->Execute(array($s_info["modovi"]));
 	$m_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	if(txt($m_info['komanda'])!="") {
+		return txt($m_info['komanda']);
+	} else {
+		$SQLSEC = $rootsec->prepare("SELECT * FROM `games` WHERE `id` = ?");
+		$SQLSEC->Execute(array($m_info["igra"]));
+		$g_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
 
-	return txt($m_info['komanda']);
+		return txt($m_info['defaultstartcmd']);
+	}
 }
 
 function server_location($srv_id) {
@@ -457,6 +407,59 @@ function get_mod_link($m_id) {
 	return txt($m_info['link']);	
 }	
 
+function get_cpu_usage($srv_id) {
+	$rootsec = rootsec();
+
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
+	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `box` WHERE `boxid` = ?");
+	$SQLSEC->Execute(array($s_info['box_id']));
+	$b_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+
+	if(!($ssh = new Net_SSH2($b_info["ip"], $b_info["sshport"]))) {
+		die();
+		return 0;
+	} else {
+	   	if($ssh->login(box_username($s_info['box_id']), box_password($s_info['box_id']))) {
+			$cpu = intval(preg_replace("/\r\n|\r|\n/",'',$ssh->exec("top -b -n 1 -u ".$s_info['username']." | awk 'NR>7 { sum += $9; } END { print sum; }'")));
+			if($cpu>100) {
+				return 100;
+	   		} else {
+				return $cpu;
+			}
+	   	} else {
+	   		return 0;
+			die();
+	   	}
+	}
+}
+
+function get_ram_usage($srv_id) {
+	$rootsec = rootsec();
+
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `serveri` WHERE `id` = ? AND `user_id` = ?");
+	$SQLSEC->Execute(array($srv_id, $_SESSION["user_login"]));
+	$s_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+	
+	$SQLSEC = $rootsec->prepare("SELECT * FROM `box` WHERE `boxid` = ?");
+	$SQLSEC->Execute(array($s_info['box_id']));
+	$b_info = $SQLSEC->fetch(PDO::FETCH_ASSOC);
+
+	if(!($ssh = new Net_SSH2($b_info["ip"], $b_info["sshport"]))) {
+		return 0;
+		die();
+	} else {
+	   if($ssh->login(box_username($s_info['box_id']), box_password($s_info['box_id']))) {
+		return intval(preg_replace("/\r\n|\r|\n/",'',$ssh->exec("top -b -n 1 -u ".$s_info['username']." | awk 'NR>7 { sum += $10; } END { print sum; }'")));
+	   } else {
+		return 0;
+		die();
+	   }
+	}
+}
+
 function MTA_Max_Player($s_id, $f_name, $find) {
 	$file = 'ftp://'.server_username($s_id).':'.server_password($s_id).'@'.server_ip($s_id).':21/'.$f_name;
 				
@@ -521,17 +524,22 @@ function MTA_ServerHTTPPort($s_id, $f_name, $find) {
 function start_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Command, $user) {
 	if(!($ssh = new Net_SSH2($BOX_IP, $BOX_SSH))) {
 	    $return = false;
-		echo "crko 1";
-		die();
 	} else {
 	   if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
-			echo "crko 2 ". $BOX_User. " ". $Box_Pass;
-			die();
 	    } else {
-			$cmd1='su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user;
-			$ssh->write("$cmd1\n");
-			sleep(2);
+			$userha = explode(':', $ssh->exec('cat /etc/passwd | grep ' . $user . ':'));
+
+			$ssh->exec('docker create --tty --rm --name=' . $user . ' --network=host --cpus=1 --memory=512M --memory-swap=-1 --volume="/home/' . $user . '/:/home/container/" --workdir=/home/container debian:stretch > /dev/null 2>&1');
+
+			$ssh->exec('docker start ' . $user . ' > /dev/null 2>&1');
+
+			$ssh->exec('docker exec ' . $user . ' groupadd -g ' . $userha[3] . ' gameservers > /dev/null 2>&1');
+
+			$ssh->exec('docker exec ' . $user . ' useradd -u ' . $userha[2] . ' -g gameservers -p ' . crypt(mt_rand(111111111, 999999999), 'tlas') . ' -d /home/container/ ' . $user . ' > /dev/null 2>&1');
+
+			$ssh->exec('docker exec ' . $user . ' su -lc "screen -L -AmdS gameserver '.$S_Command.'" '.$user. ' > /dev/null 2>&1');
+
 			$return = true;
 	    }
 	}	
@@ -545,11 +553,13 @@ function stop_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $user) {
 		if(!$ssh->login($BOX_User, $Box_Pass)) {
 	    	$return = false;
 	    } else {
-			$cmd1='su -lc "screen -r gameserver -X quit" '.$user;
-			$ssh->write("$cmd1\n");
-			sleep(2);
-			$return = true;
-	}
+			if($ssh->exec("docker stop ".$user))
+			{
+				$return = true;
+			} else {
+				$return = false;
+			}
+		}
 }
 	return $return;
 }
@@ -585,7 +595,7 @@ function reinstall_server($BOX_IP, $BOX_SSH, $BOX_User, $Box_Pass, $S_Install_Di
 			 $cmd_final = "nice -n 19 rm -Rf /home/".$user."/* && cp -r ".$S_Install_Dir. "/* /home/".$user."/";
 			}
 			$cmd3 = "chown ".$user." -Rf /home/".$user;	
-	    	$cmd4 = "chmod -R 700 /home/".$user;
+	    		$cmd4 = "chmod -R 700 /home/".$user;
 			$ssh->write("$cmd_final\n");
 			sleep(10);
 			$ssh->write("$cmd3\n");

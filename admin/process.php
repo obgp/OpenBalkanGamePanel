@@ -424,10 +424,10 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 		$rootsec = rootsec();
 		$name = $Box_Name.' - '.$Box_Location;
 		$boxpass = box_pass_in_base($Box_Password);
-		$rootsec = rootsec();
-		$SQLSEC = $rootsec->prepare("INSERT INTO `box` (`name`, `location`, `ip`, `login`, `password`, `sshport`, `maxsrv`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-		$SQLSEC->Execute(array($name, $Box_Location, $Box_IP, $Box_Username, $boxpass, $Box_SSH, 20));
-		
+
+		$SQLSEC = $rootsec->prepare("INSERT INTO `box` (`name`, `location`, `ip`, `login`, `password`, `sshport`, `ftpport`, `maxsrv`, `cache`, `box_load_5min`, `box_load`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		if($SQLSEC->Execute(array($name, $Box_Location, $Box_IP, $Box_Username, $boxpass, $Box_SSH, 21, 100, NULL, NULL, NULL)))
+		{
 		###
 		$Box_ID = $rootsec->lastInsertId();
 		###
@@ -441,6 +441,11 @@ if (isset($_GET['a']) && $_GET['a'] == "add_box") {
 		sMSG('Masina je uspesno dodata.', 'success');
 		redirect_to('box_info.php?id='.$Box_ID);
 		die();
+		} else {
+		sMSG('Greska prilikom dodavanje masine u bazu!', 'error');
+		redirect_to('add_box.php');
+		die();
+		}
 	} else {
 		sMSG('Podaci za prijavu nisu tacni, molimo preverite sve unete podatke!', 'error');
 		redirect_to('add_box.php');
@@ -710,12 +715,12 @@ if (isset($_GET['a']) && $_GET['a'] == "add_server") {
 	} else {
 		//in base
 		$rootsec = rootsec();
-		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`id`, `user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		$in_base = $SQLSEC->Execute(array($User_ID, $Box_ID, $Srv_Name, '00000', $Mod_ID, $Srv_Mapa, $Srv_Port, 300, $Srv_Slot, $Srv_Username, $Srv_Password, $Srv_Istice, 1, 0, 0, 1, $Game_ID, $Srv_Komanda, $Srv_Cena, 0, 0, 0, 'Nema', '-1', 0));
+		$SQLSEC = $rootsec->prepare("INSERT INTO `serveri` (`user_id`, `box_id`, `name`, `rank`, `modovi`, `map`, `port`, `fps`, `slotovi`, `username`, `password`, `istice`, `status`, `startovan`, `free`, `uplatnica`, `igra`, `komanda`, `cena`, `boost`, `cache`, `graph`, `reinstaliran`, `backup`, `napomena`, `autorestart`, `backupstatus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base = $SQLSEC->Execute(array($User_ID, $Box_ID, $Srv_Name, '00000', $Mod_ID, $Srv_Mapa, $Srv_Port, 300, $Srv_Slot, $Srv_Username, $Srv_Password, $Srv_Istice, 1, 0, 0, 1, $Game_ID, $Srv_Komanda, $Srv_Cena, 0, NULL, NULL, 0, 0, 'Nema', '-1', 0));
 		$Server_ID 	= $rootsec->lastInsertId();
 		$Get_IPP 	= box_ip($Box_ID);
-		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		$in_base2 = $SQLSEC->Execute(array($G_type, $Get_IPP, $Srv_Port, $Srv_Port, 0, 0, 0, '$Srv_Name', '', '', ''));
+		$SQLSEC = $rootsec->prepare("INSERT INTO `lgsl` (`id`, `type`, `ip`, `c_port`, `q_port`, `s_port`, `zone`, `disabled`, `comment`, `status`, `cache`, `cache_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$in_base2 = $SQLSEC->Execute(array($G_type, $Get_IPP, $Srv_Port, $Srv_Port, 0, 0, 0, '$Srv_Name', 0, '', ''));
 		if (!$in_base && !$in_base2) {
 			sMSG('Server je instaliran, ali dogodila se greska prilikom spajanja na mysql bazu!', 'error');
 			redirect_to('add_server.php?user_id='.$User_ID.'&box_id='.$Box_ID);
