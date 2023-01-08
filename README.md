@@ -27,6 +27,7 @@
 - NEW WEBFTP (DONE)
 - NEW GAME TEMPLATE SYSTEM (IN PROGRESS)
 - MYSQL SUPPORT (IN PROGRESS)
+- PAYMENTS (IN PROGRESS)
 
 ## Kako koristiti
 <a href="https://obgp.herokuapp.com/">DEMO</a>
